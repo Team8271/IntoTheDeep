@@ -1,19 +1,20 @@
-package org.firstinspires.ftc.teamcode;
+package org.firstinspires.ftc.teamcode.Examples;
 
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
-import com.qualcomm.robotcore.hardware.DcMotorSimple;
 
-public class HardwareMap {
+
+
+public class HardwareMapTwo {
     private LinearOpMode opMode = null;
 
     public DcMotor fl;
-    public DcMotor intake;
+    //public DcMotor intake;
     public DcMotor bl;
     public DcMotor fr;
     public DcMotor br;
 
-    public HardwareMap(LinearOpMode opMode) {
+    public HardwareMapTwo(LinearOpMode opMode) {
         this.opMode = opMode;
     }
     public void init() {
@@ -35,7 +36,10 @@ public class HardwareMap {
         br.setDirection(DcMotor.Direction.FORWARD);
         br.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
 
-        intake = hardwareMap.get(DcMotor.class, "Intake");
-        intake.setDirection(DcMotorSimple.Direction.REVERSE);
+
+
+       // intake = hardwareMap.get(DcMotor.class, "Intake");
+       // intake.setDirection(DcMotorSimple.Direction.REVERSE);
+
     }
 }

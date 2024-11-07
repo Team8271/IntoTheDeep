@@ -1,10 +1,10 @@
-package org.firstinspires.ftc.teamcode;
+package org.firstinspires.ftc.teamcode.Examples;
 
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
-@TeleOp(name="testTeleop")
-public class TestTeleop extends LinearOpMode {
+@TeleOp(name="schoolBot")
+public class SchoolBot extends LinearOpMode {
 
     private HardwareMap robot = null;
 
@@ -32,11 +32,13 @@ public class TestTeleop extends LinearOpMode {
             robot.bl.setPower(leftBackPower*power);
             robot.br.setPower(rightBackPower*power);
 
-            if (gamepad1.left_bumper) {
+           /* if (gamepad1.left_bumper) {
                 robot.intake.setPower(-gamepad1.left_trigger);
             } else {
                 robot.intake.setPower(gamepad1.left_trigger);
             }
+
+            */
 
 
             telemetry.addData("Trigger: ",gamepad1.right_trigger);

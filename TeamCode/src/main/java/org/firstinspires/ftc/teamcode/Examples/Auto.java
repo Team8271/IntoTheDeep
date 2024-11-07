@@ -1,4 +1,4 @@
-package org.firstinspires.ftc.teamcode;
+package org.firstinspires.ftc.teamcode.Examples;
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
@@ -24,6 +24,7 @@ public class Auto extends LinearOpMode {
 
         setMotorPower(0,0,0);
 
+        /*
         robot.intake.setPower(1);
 
         sleep(500);
@@ -35,6 +36,7 @@ public class Auto extends LinearOpMode {
         setMotorPower(0,0,0);
 
         robot.intake.setPower(0);
+*/
     }
 
     private void setMotorPower(double axial, double lateral, double yaw) {
