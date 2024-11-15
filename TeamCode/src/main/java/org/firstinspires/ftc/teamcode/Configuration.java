@@ -13,7 +13,7 @@ public class Configuration {
     private LinearOpMode opMode;
 
     //Global Variables
-    public int vertMax = 1300, horzMax = 400;
+    public int vertMax = 2250, horzMax = 400;
     public int intakeOnDistance = 200;
 
     public DcMotor fl, fr, bl, br, horizontalMotor, verticalMotor, intakeMotor;
@@ -56,17 +56,19 @@ public class Configuration {
         verticalMotor.setDirection(DcMotor.Direction.REVERSE);
         verticalMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
 
+
         intakeMotor = hwMap.get(DcMotor.class, "In");
         intakeMotor.setDirection(DcMotorSimple.Direction.FORWARD);
         intakeMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
 
-        verticalLimiter = hwMap.get(TouchSensor.class, "VertSens");
-        horizontalLimiter = hwMap.get(TouchSensor.class, "HorzSens");
+        verticalLimiter = hwMap.get(TouchSensor.class, "VerticalLimiter");
+        horizontalLimiter = hwMap.get(TouchSensor.class, "HorizontalLimiter");
 
         flipServo = hwMap.get(Servo.class, "Flip");
         redServo = hwMap.get(Servo.class, "Red");
         blueServo = hwMap.get(Servo.class, "Blue");
         boxServo = hwMap.get(Servo.class, "Box");
+
 
         imu = hwMap.get(IMU.class, "imu");
         IMU.Parameters parameters = new IMU.Parameters(

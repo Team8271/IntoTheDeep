@@ -12,13 +12,17 @@ import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 public class Teleop extends LinearOpMode {
     private Configuration robot;
 
+    boolean pincherControl = false;
+
     //Main OpMode
     @Override
     public void runOpMode() {
         robot = new Configuration(this);
         robot.init();
 
+
         telemetry.addLine("Initialized");
+        telemetry.update();
         waitForStart();
         telemetry.clearAll();
 
@@ -34,8 +38,15 @@ public class Teleop extends LinearOpMode {
             double horzControl = gamepad2.right_stick_x;
             double vertControl = -gamepad2.left_stick_y;
             boolean boxControl = gamepad2.left_trigger >.25;
-            boolean pincherControl = gamepad2.left_trigger>.25;
             boolean reverseIntake = gamepad2.right_trigger>.25;
+
+            if(gamepad2.a){
+                pincherControl = true; //true is closed
+            }
+            else if(gamepad2.b){
+                pincherControl = false;
+            }
+
 
             //Drivetrain
             double axial = axialControl;
@@ -105,18 +116,27 @@ public class Teleop extends LinearOpMode {
             // Intake
             if (robot.verticalMotor.getCurrentPosition()<=10 && //Retracted
             robot.horizontalMotor.getCurrentPosition()<=10) {
-                robot.flipServo.setPosition(.99);
-                robot.intakeMotor.setPower(reverseIntake?-1:1);
+                robot.flipServo.setPosition(.8);
+                robot.intakeMotor.setPower(0);
+                if(reverseIntake){//reverseIntake?-1:1 was here
+                    robot.intakeMotor.setPower(-0.5);
+                }
                 telemetry.addLine("Intake retracted");
             }
             else if(robot.horizontalMotor.getCurrentPosition()>=robot.intakeOnDistance){ // Extended
-                robot.flipServo.setPosition(-.4);
-                robot.intakeMotor.setPower(reverseIntake?-1:1);
+                robot.flipServo.setPosition(0);
+                robot.intakeMotor.setPower(1);//reverseIntake?-1:1 was here
+                if(reverseIntake){//reverseIntake?-1:1 was here
+                    robot.intakeMotor.setPower(-0.5);
+                }
                 telemetry.addLine("Intake Extended");
             }
             else { //Gray zone
                 robot.flipServo.setPosition(.6);
-                robot.intakeMotor.setPower(reverseIntake?-1:.5);
+                robot.intakeMotor.setPower(0); //reverseIntake?-1:.5   //aslo 0.5 power
+                if(reverseIntake){//reverseIntake?-1:1 was here
+                    robot.intakeMotor.setPower(-0.5);
+                }
                 telemetry.addLine("Intake waiting");
             }
             telemetry.addLine();
@@ -162,14 +182,14 @@ public class Teleop extends LinearOpMode {
             telemetry.addLine();
 
             //Pincher
-            if(pincherControl){
-                //robot.Red.setPosition(0.5);
-                //robot.Blue.setPosition(0.5);
+            if(pincherControl){ //closed
+                robot.redServo.setPosition(0.65);//Bigger more close
+                robot.blueServo.setPosition(0.35); //less more close
                 telemetry.addLine("Red and Blue closed");
             }
-            else{
-                //robot.Red.setPosition(0.5);
-                //robot.Blue.setPosition(0.5);
+            else{ //open
+                robot.redServo.setPosition(0.5);
+                robot.blueServo.setPosition(0.5);
                 telemetry.addLine("Red and Blue open");
             }
 
