@@ -9,6 +9,9 @@ import com.qualcomm.robotcore.hardware.IMU;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.hardware.TouchSensor;
 
+import dev.narlyx.tweetybird.Odometers.ThreeWheeled;
+import dev.narlyx.tweetybird.TweetyBird;
+
 public class Configuration {
     private LinearOpMode opMode;
 
@@ -24,6 +27,8 @@ public class Configuration {
 
     public IMU imu;
 
+    public ThreeWheeled odometer;
+
     public Configuration(LinearOpMode opMode){
         this.opMode=opMode;
     }
@@ -32,16 +37,16 @@ public class Configuration {
     public void init(){
         HardwareMap hwMap=opMode.hardwareMap;
 
-        fl = hwMap.get(DcMotor.class,"FL");
-        fl.setDirection(DcMotor.Direction.FORWARD);
+        fl = hwMap.get(DcMotor.class,"FR");
+        fl.setDirection(DcMotor.Direction.REVERSE);
         fl.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
 
-        fr = hwMap.get(DcMotor.class,"FR");
-        fr.setDirection(DcMotorSimple.Direction.REVERSE);
+        fr = hwMap.get(DcMotor.class,"FL");
+        fr.setDirection(DcMotorSimple.Direction.FORWARD);
         fr.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
 
         bl = hwMap.get(DcMotor.class,"BL");
-        bl.setDirection(DcMotor.Direction.REVERSE);
+        bl.setDirection(DcMotor.Direction.FORWARD);
         bl.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
 
         br = hwMap.get(DcMotor.class,"BR");
@@ -73,11 +78,27 @@ public class Configuration {
         imu = hwMap.get(IMU.class, "imu");
         IMU.Parameters parameters = new IMU.Parameters(
                 new RevHubOrientationOnRobot( //Mes swith me
-                        RevHubOrientationOnRobot.LogoFacingDirection.LEFT,
-                        RevHubOrientationOnRobot.UsbFacingDirection.UP
+                        RevHubOrientationOnRobot.LogoFacingDirection.DOWN,
+                        RevHubOrientationOnRobot.UsbFacingDirection.FORWARD
                 )
         );
         imu.initialize(parameters);
+
+        odometer = new ThreeWheeled.Builder()
+                .setLeftEncoder(bl)
+                .setRightEncoder(fl)
+                .setMiddleEncoder(br)
+
+                .setEncoderTicksPerRotation(2000)
+                .setEncoderWheelRadius(0.944882)
+
+                .setFlipLeftEncoder(true)
+                .setFlipRightEncoder(false)
+                .setFlipMiddleEncoder(false)
+
+                .setSideEncoderDistance(12.75)
+                .setMiddleEncoderOffset(9.75)
+                .build();
 
     }
 }

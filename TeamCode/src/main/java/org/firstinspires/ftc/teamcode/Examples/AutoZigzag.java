@@ -1,9 +1,11 @@
 package org.firstinspires.ftc.teamcode.Examples;
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 
 @Autonomous (name="Zigzag")
+@Disabled
 public class AutoZigzag extends LinearOpMode {
     private HardwareMap robot = null;
     @Override

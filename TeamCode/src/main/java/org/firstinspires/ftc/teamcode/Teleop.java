@@ -29,8 +29,8 @@ public class Teleop extends LinearOpMode {
         while (opModeIsActive()){
             //Driver 1
             double axialControl = -gamepad1.left_stick_y;
-            double lateralControl = -gamepad1.right_stick_x;
-            double yawControl = -gamepad1.left_stick_x;
+            double lateralControl = gamepad1.left_stick_x;
+            double yawControl = gamepad1.right_stick_x;
             double mainThrottle = .2+(gamepad1.right_trigger*0.8);
             boolean resetFCD = gamepad1.dpad_up;
 
@@ -53,25 +53,35 @@ public class Teleop extends LinearOpMode {
             double lateral = lateralControl;
 
             if (resetFCD){
-                robot.imu.resetYaw();
+                robot.odometer.resetTo(0,0,0);
             }
+
 
             double gamepadRadians = Math.atan2(lateralControl, axialControl);
             double gamepadHypot = Range.clip(Math.hypot(lateralControl, axialControl), 0, 1);
-            double robotRadians = -robot.imu.getRobotYawPitchRollAngles().getYaw(AngleUnit.RADIANS);
+            double robotRadians = robot.odometer.getZ();
             double targetRadians = gamepadRadians + robotRadians;
             lateral = Math.sin(targetRadians)*gamepadHypot;
             axial = Math.cos(targetRadians)*gamepadHypot;
+            telemetry.addData("gamepadRadians",String.valueOf(gamepadRadians));
+            telemetry.addData("gamepadHypot",String.valueOf(gamepadHypot));
+            telemetry.addData("robotRadians",String.valueOf(robotRadians));
+            telemetry.addData("targetRadians",String.valueOf(targetRadians));
 
-            double leftFrontPower = axialControl + lateralControl + yawControl;
-            double rightFrontPower = axialControl - lateralControl - yawControl;
-            double leftBackPower = axialControl - lateralControl + yawControl;
-            double rightBackPower = axialControl + lateralControl - yawControl;
+
+
+            double leftFrontPower = axial + lateral + yawControl;
+            double rightFrontPower = axial - lateral - yawControl;
+            double leftBackPower = axial - lateral + yawControl;
+            double rightBackPower = axial + lateral - yawControl;
+
 
             robot.fl.setPower(leftFrontPower * mainThrottle);
             robot.fr.setPower(rightFrontPower * mainThrottle);
             robot.bl.setPower(leftBackPower * mainThrottle);
             robot.br.setPower(rightBackPower * mainThrottle);
+
+            telemetry.addLine();
 
             //Horizontal Slide
             telemetry.addData("Horizontal Slide Pos",robot.horizontalMotor.getCurrentPosition());
@@ -114,12 +124,13 @@ public class Teleop extends LinearOpMode {
             telemetry.addLine();
 
             // Intake
-            if (robot.verticalMotor.getCurrentPosition()<=10 && //Retracted
-            robot.horizontalMotor.getCurrentPosition()<=10) {
+            if (robot.verticalMotor.getCurrentPosition()<=15 && //Retracted
+            robot.horizontalMotor.getCurrentPosition()<=15) {
                 robot.flipServo.setPosition(.8);
                 robot.intakeMotor.setPower(0);
                 if(reverseIntake){//reverseIntake?-1:1 was here
                     robot.intakeMotor.setPower(-0.5);
+
                 }
                 telemetry.addLine("Intake retracted");
             }

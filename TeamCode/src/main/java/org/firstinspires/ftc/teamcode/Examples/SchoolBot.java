@@ -1,13 +1,13 @@
 package org.firstinspires.ftc.teamcode.Examples;
 
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
-
+@Disabled
 @TeleOp(name="schoolBot")
 public class SchoolBot extends LinearOpMode {
 
     private HardwareMap robot = null;
-
     @Override
     public void runOpMode() {
         robot = new HardwareMap(this);
