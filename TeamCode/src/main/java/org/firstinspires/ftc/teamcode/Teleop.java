@@ -35,7 +35,7 @@ public class Teleop extends LinearOpMode {
             boolean resetFCD = gamepad1.dpad_up;
 
             //Driver 2
-            double horzControl = gamepad2.right_stick_x;
+            double horzControl = gamepad2.right_stick_x *1; //I know the 1 isn't word I can't spell
             double vertControl = -gamepad2.left_stick_y;
             boolean boxControl = gamepad2.left_trigger >.25;
             boolean reverseIntake = gamepad2.right_trigger>.25;
@@ -59,7 +59,7 @@ public class Teleop extends LinearOpMode {
 
             double gamepadRadians = Math.atan2(lateralControl, axialControl);
             double gamepadHypot = Range.clip(Math.hypot(lateralControl, axialControl), 0, 1);
-            double robotRadians = robot.odometer.getZ();
+            double robotRadians = -robot.odometer.getZ(); //negative cause auto needs odom class true/false things yipee
             double targetRadians = gamepadRadians + robotRadians;
             lateral = Math.sin(targetRadians)*gamepadHypot;
             axial = Math.cos(targetRadians)*gamepadHypot;
@@ -83,6 +83,14 @@ public class Teleop extends LinearOpMode {
 
             telemetry.addLine();
 
+
+            //Dpad down make vertical go down
+            if(gamepad1.dpad_down){
+                while(!robot.verticalLimiter.isPressed() && opModeIsActive()){
+                    //vertControl
+                }
+            }
+
             //Horizontal Slide
             telemetry.addData("Horizontal Slide Pos",robot.horizontalMotor.getCurrentPosition());
             telemetry.addData("Horizontal Slide Limiter",robot.horizontalLimiter.isPressed());
@@ -105,8 +113,15 @@ public class Teleop extends LinearOpMode {
                 if(robot.horizontalMotor.getMode() != DcMotor.RunMode.RUN_WITHOUT_ENCODER){
                     robot.horizontalMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
                 }
-                robot.horizontalMotor.setPower(horzControl);
+                if(horzControl < 0){
+                    robot.horizontalMotor.setPower(horzControl*.4);
+                }
+                else{
+                    robot.horizontalMotor.setPower(horzControl);
+                }
                 telemetry.addLine("Horizontal Slide moving..");
+                telemetry.addData("horzControl:", horzControl);
+
             }
             else { //stop and hold
                 if(robot.horizontalMotor.getMode() != DcMotor.RunMode.RUN_TO_POSITION){
@@ -129,7 +144,7 @@ public class Teleop extends LinearOpMode {
                 robot.flipServo.setPosition(.8);
                 robot.intakeMotor.setPower(0);
                 if(reverseIntake){//reverseIntake?-1:1 was here
-                    robot.intakeMotor.setPower(-0.5);
+                    robot.intakeMotor.setPower(-0.8);
 
                 }
                 telemetry.addLine("Intake retracted");
@@ -138,7 +153,7 @@ public class Teleop extends LinearOpMode {
                 robot.flipServo.setPosition(0);
                 robot.intakeMotor.setPower(1);//reverseIntake?-1:1 was here
                 if(reverseIntake){//reverseIntake?-1:1 was here
-                    robot.intakeMotor.setPower(-0.5);
+                    robot.intakeMotor.setPower(-0.8);
                 }
                 telemetry.addLine("Intake Extended");
             }
@@ -146,7 +161,7 @@ public class Teleop extends LinearOpMode {
                 robot.flipServo.setPosition(.6);
                 robot.intakeMotor.setPower(0); //reverseIntake?-1:.5   //aslo 0.5 power
                 if(reverseIntake){//reverseIntake?-1:1 was here
-                    robot.intakeMotor.setPower(-0.5);
+                    robot.intakeMotor.setPower(-0.8);
                 }
                 telemetry.addLine("Intake waiting");
             }
