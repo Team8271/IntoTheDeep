@@ -30,8 +30,7 @@ public class Configuration {
     public IMU imu;
 
     public ThreeWheeled odometer;
-    public Mecanum mecanum;
-    public TweetyBird tweetyBird;
+
 
 
 
@@ -91,12 +90,15 @@ public class Configuration {
         );
         imu.initialize(parameters);
 
+        /*
         mecanum = new Mecanum.Builder()
                 .setFrontLeftMotor(fl)
                 .setFrontRightMotor(fr)
                 .setBackLeftMotor(bl)
                 .setBackRightMotor(br)
                 .build();
+
+         */
 
 
 
@@ -117,7 +119,7 @@ public class Configuration {
                 .build();
 
     }
-
+/*
     public void initTweatyBird(){
         tweetyBird = new TweetyBird.Builder()
                 // Your configuration options here
@@ -131,6 +133,8 @@ public class Configuration {
                 .setDebuggingEnabled(true)
                 .build();
     }
+
+ */
 
 
 }

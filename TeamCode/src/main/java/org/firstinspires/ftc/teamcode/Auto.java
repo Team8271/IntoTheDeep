@@ -15,7 +15,6 @@ public class Auto extends LinearOpMode {
     public void runOpMode() {
         robot = new Configuration(this);
         robot.init();
-        robot.initTweatyBird();
 /*
         robot.fl.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         robot.fr.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
@@ -62,15 +61,77 @@ public class Auto extends LinearOpMode {
         reverse 3 inch
 
          */
-        robot.odometer.resetTo(0,0,0);
 
+
+    //Reset odometry values
+        robot.odometer.resetTo(0,0,0);
+/*
+    //Move off of wall and to the right
         robot.tweetyBird.sendTargetPosition(0,10,0);
         robot.tweetyBird.waitWhileBusy();
+        sleep(1000);
         robot.tweetyBird.sendTargetPosition(10,10,0);
 
-        while (opModeIsActive());
-
         robot.tweetyBird.close();
+*/
+
+
+        //close claw
+        robot.redServo.setPosition(0.65);//Bigger more close
+        robot.blueServo.setPosition(0.35); //less more close
+        telemetry.addLine("Red and Blue closed");
+
+        sleep(1000);
+
+        //Lift arm
+        robot.verticalMotor.setTargetPosition(6100);
+        robot.verticalMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        robot.verticalMotor.setPower(1);
+        sleep(5000);
+
+        //Drive to the submersible until sensor is pressed
+        robot.fl.setPower(power);
+        robot.fr.setPower(power);
+        robot.bl.setPower(power);
+        robot.br.setPower(power);
+        //Add telemetry
+        while(!robot.frontSensor.isPressed() && opModeIsActive()){
+            telemetry.addLine("Not Pressed");
+            telemetry.update();
+        }
+
+        //back up a little
+        robot.fl.setPower(-power);
+        robot.fr.setPower(-power);
+        robot.bl.setPower(-power);
+        robot.br.setPower(-power);
+        sleep(20);
+        brakeAndReset();
+
+        robot.boxServo.setPosition(.6);
+
+        //arm down
+        robot.verticalMotor.setTargetPosition(-100);
+        robot.verticalMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        robot.verticalMotor.setPower(1);
+        sleep(600);
+
+        robot.redServo.setPosition(0.5);
+        robot.blueServo.setPosition(0.5);
+        telemetry.addLine("Red and Blue open");
+
+        //back up a little
+        robot.fl.setPower(-power);
+        robot.fr.setPower(-power);
+        robot.bl.setPower(-power);
+        robot.br.setPower(-power);
+        sleep(100);
+        brakeAndReset();
+
+        while(!robot.verticalLimiter.isPressed());
+        robot.verticalMotor.setPower(0);
+
+
 
         /*
         //drive to submersible until sensor pressed
