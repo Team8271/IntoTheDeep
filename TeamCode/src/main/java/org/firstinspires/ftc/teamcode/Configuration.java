@@ -109,8 +109,8 @@ public class Configuration {
             middleEncoder = false;
         }
         else{
-            leftEncoder = true;
-            rightEncoder = false;
+            leftEncoder = true; //was true
+            rightEncoder = false; //was false
             middleEncoder = false;
         }
 

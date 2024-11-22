@@ -78,11 +78,18 @@ public class Auto extends LinearOpMode {
         robot.tweetyBird.close();
 */
 
-
         //close claw
         robot.redServo.setPosition(0.65);//Bigger more close
         robot.blueServo.setPosition(0.35); //less more close
         telemetry.addLine("Red and Blue closed");
+        sleep(1000); //wait for servos to respond
+
+
+        //align with chamber
+        forward(2);
+        left(4.5);
+
+
 
         sleep(1000);
 
@@ -108,7 +115,7 @@ public class Auto extends LinearOpMode {
         robot.fr.setPower(-power);
         robot.bl.setPower(-power);
         robot.br.setPower(-power);
-        sleep(20);
+        sleep(25);
         brakeAndReset();
 
         //set the box servo so it doesn't stop vertical slide from going all the way down
@@ -119,8 +126,13 @@ public class Auto extends LinearOpMode {
         robot.verticalMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
         robot.verticalMotor.setPower(1);
 
+        //reverse ahalf inch
+        reverse(0.5);
+
         //let the arm go down a little
-        sleep(600);
+        sleep(700);
+
+
 
         //open the claw
         robot.redServo.setPosition(0.5);
@@ -200,6 +212,7 @@ public class Auto extends LinearOpMode {
         brakeAndReset();
     }
 
+    //Dont use more or you die die I borken
     private void reverse(double distance){
         while(robot.odometer.getY() < distance && opModeIsActive()){
             telemetry.addData("Going reverse:", distance);
@@ -214,7 +227,7 @@ public class Auto extends LinearOpMode {
     }
 
     private void right(double distance){
-        while(robot.odometer.getY() < distance && opModeIsActive()){
+        while(robot.odometer.getX() < distance && opModeIsActive()){
             telemetry.addData("Going right:", distance);
             telemetry.addData("Current Position:", robot.odometer.getY());
             telemetry.update();
@@ -227,7 +240,7 @@ public class Auto extends LinearOpMode {
     }
 
     private void left(double distance){
-        while(-robot.odometer.getY() < distance && opModeIsActive()){
+        while(-robot.odometer.getX() < distance && opModeIsActive()){
             telemetry.addData("Going left:", distance);
             telemetry.addData("Current Position:", -robot.odometer.getY());
             telemetry.update();
