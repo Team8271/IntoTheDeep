@@ -41,6 +41,8 @@ public class Teleop extends LinearOpMode {
                 double vertControl = -gamepad2.left_stick_y;
                 boolean boxControl = gamepad2.left_trigger >.25;
                 boolean reverseIntake = gamepad2.right_trigger>.25;
+                boolean lowerVert = gamepad2.dpad_down;
+                boolean raiseVert = gamepad2.dpad_up;
 
                 if(gamepad2.a){
                     pincherControl = true; //true is closed
@@ -66,8 +68,8 @@ public class Teleop extends LinearOpMode {
                 lateral = Math.sin(targetRadians)*gamepadHypot;
                 axial = Math.cos(targetRadians)*gamepadHypot;
 
-            telemetry.addData("getZ", robot.odometer.getZ());
-            telemetry.update();
+                telemetry.addData("getZ", robot.odometer.getZ());
+
 
                 telemetry.addData("gamepadRadians",String.valueOf(gamepadRadians));
                 telemetry.addData("gamepadHypot",String.valueOf(gamepadHypot));
@@ -90,11 +92,37 @@ public class Teleop extends LinearOpMode {
                 telemetry.addLine();
 
 
-                //Dpad down make vertical go down
-                if(gamepad1.dpad_down){
-                    while(!robot.verticalLimiter.isPressed() && opModeIsActive()){
-                        //vertControl
+                /*when dpad-down is pressed on gamepad2
+                 *lower the arm
+                 *if vertical limiter isn't pressed
+                 *and opMode is active
+                 *and driver2 isn't attempting to move the arm
+                 */
+                if(lowerVert){
+                    robot.verticalMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+                    while(!robot.verticalLimiter.isPressed() && opModeIsActive()
+                            && vertControl == 0){
+                        robot.verticalMotor.setPower(-1);
                     }
+                    robot.verticalMotor.setPower(0);
+                    robot.verticalMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+                }
+
+                /*
+                 * when dpad-up is pressed on gamepad2
+                 * raise the arm
+                 * if opMode is active
+                 * and driver2 isn't attempting to move the arm
+                 */
+                if(raiseVert){
+                    if(robot.verticalMotor.getMode() != DcMotor.RunMode.RUN_TO_POSITION){
+                        robot.verticalMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+                    }
+                    robot.verticalMotor.setTargetPosition(robot.vertMax);
+                    while(robot.verticalMotor.getCurrentPosition() <= robot.vertMax && opModeIsActive()){
+                        robot.verticalMotor.setPower(1);
+                    }
+                    robot.verticalMotor.setPower(0.5); //Hold position
                 }
 
                 //Horizontal Slide

@@ -19,72 +19,31 @@ public class Auto extends LinearOpMode {
         robot = new Configuration(this);
         robot.init(true);
 
+        //set all the wheels to brake on no power (remove drifting)
         robot.fl.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         robot.fr.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         robot.bl.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         robot.br.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 
+        //Wait for driver to press START
         waitForStart();
 
-        //set the box servo so it doesn't stop vertical slide from going all the way down
+        //initialize the boxServo
         robot.boxServo.setPosition(.6);
-/*
-        while (x&&opModeIsActive()) {
-            telemetry.addData("Forward/Reverse:", -robot.odometer.getY());
-            telemetry.addData("Left/Right:", robot.odometer.getX());
-
-            //telemetry.addData("getX:", robot.odometer.getX()); //right/left     positive/negative
-            //telemetry.addData("Forward:", -robot.odometer.getY()); //forward/backward  positive/negative
-
-            telemetry.update();
-            if(gamepad1.dpad_up){
-                brakeAndReset();
-            }
-            if (gamepad1.a) {
-                x = false;
-            }
-        }
-
-        int y=0;
-
-        sleep(10000);
 
 
-        robot.odometer.getX();*/
 
-        //rotate180();
+        robot.verticalMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         while(true && opModeIsActive()){
             telemetry.addData("Arm thing", robot.verticalMotor.getCurrentPosition());
             telemetry.update();
             //specimin middle is 9 inches from ground
         }
 
-        //robot.tweetyBird.sendTargetPosition();
-        //robot.tweetyBird.waitWhileBusy();
-
-        
-
-        /*
-        move forward 1 inch
-        move right 3 inch
-        raise arm
-        move to touch submersible
-        reverse 3 inch
-
-         */
 
 
-    //Reset odometry values
+    //Reset odom values
         robot.odometer.resetTo(0,0,0);
-/*
-    //Move off of wall and to the right
-        robot.tweetyBird.sendTargetPosition(0,10,0);
-        robot.tweetyBird.waitWhileBusy();
-        sleep(1000);
-        robot.tweetyBird.sendTargetPosition(10,10,0);
-
-        robot.tweetyBird.close();
-*/
 
         ///Start of 2
 
@@ -167,7 +126,12 @@ public class Auto extends LinearOpMode {
 
         //END OF 2
 
-       /* public void sampleNetZone() {
+        /* What is sampleNetZone?
+         *
+         * Starts with a preloaded specimen and clips it on high chamber
+         * Goes left and pushes all three samples into net zone
+         */
+       /* private void sampleNetZone() {
             robot.odometer.resetTo(0,0,0);
             //close claw
             robot.redServo.setPosition(0.65);//Bigger more close
