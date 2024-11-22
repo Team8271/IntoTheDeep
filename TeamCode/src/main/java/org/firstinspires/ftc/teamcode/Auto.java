@@ -25,6 +25,9 @@ public class Auto extends LinearOpMode {
         robot.br.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 
         waitForStart();
+
+        //set the box servo so it doesn't stop vertical slide from going all the way down
+        robot.boxServo.setPosition(.6);
 /*
         while (x&&opModeIsActive()) {
             telemetry.addData("Forward/Reverse:", -robot.odometer.getY());
@@ -91,13 +94,13 @@ public class Auto extends LinearOpMode {
 
 
 
-        sleep(1000);
+        sleep(300);
 
         //Lift arm
         robot.verticalMotor.setTargetPosition(6100);
         robot.verticalMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
         robot.verticalMotor.setPower(1);
-        sleep(5000);
+        sleep(1800);
 
         //Drive to the submersible until sensor is pressed
         robot.fl.setPower(power);
@@ -118,8 +121,7 @@ public class Auto extends LinearOpMode {
         sleep(25);
         brakeAndReset();
 
-        //set the box servo so it doesn't stop vertical slide from going all the way down
-        robot.boxServo.setPosition(.6);
+
 
         //arm down
         robot.verticalMotor.setTargetPosition(-100);
@@ -151,27 +153,61 @@ public class Auto extends LinearOpMode {
         while(!robot.verticalLimiter.isPressed());
         robot.verticalMotor.setPower(0);
 
-        //go left
+        //go left 37 inches
+        left(37);
 
-        //go forward
+        //go forward 25in
+        forward(25);
 
         //go left
+        left(6);
 
         //push sample into net zone
+        reverse(45);
+        forward(.25);
+        right(10);
+        //keep going back for a second
+        robot.fl.setPower(-power);
+        robot.fr.setPower(-power);
+        robot.bl.setPower(-power);
+        robot.br.setPower(-power);
+        sleep(500);
+        brakeAndReset();
+
+
+        //push sample left
+        forward(0.25);
+        left(10);
 
         //go forward
+        forward(50);
 
         //go left
+        left(6);
 
         //push sample into net zone
+        reverse(41);
 
         //go forward
+        forward(41);
 
-        //go left
+        //go left into wall
+        robot.fl.setPower(-power);
+        robot.fr.setPower(power);
+        robot.bl.setPower(power);
+        robot.br.setPower(-power);
+        sleep(2);
+        brakeAndReset();
+
+        //right off the wall a little
+        right(0.5);
 
         //push sample into net zone
+        reverse(38);
 
         //drive right to the observation zone for parking
+        forward(0.3);
+        right(120);
 
 
     }
