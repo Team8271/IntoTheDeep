@@ -65,6 +65,10 @@ public class Teleop extends LinearOpMode {
                 double targetRadians = gamepadRadians + robotRadians;
                 lateral = Math.sin(targetRadians)*gamepadHypot;
                 axial = Math.cos(targetRadians)*gamepadHypot;
+
+            telemetry.addData("getZ", robot.odometer.getZ());
+            telemetry.update();
+
                 telemetry.addData("gamepadRadians",String.valueOf(gamepadRadians));
                 telemetry.addData("gamepadHypot",String.valueOf(gamepadHypot));
                 telemetry.addData("robotRadians",String.valueOf(robotRadians));
