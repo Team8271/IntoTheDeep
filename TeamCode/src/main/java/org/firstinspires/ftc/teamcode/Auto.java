@@ -3,6 +3,7 @@ package org.firstinspires.ftc.teamcode;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.util.ElapsedTime;
 
 @Autonomous (name="Auto")
 public class Auto extends LinearOpMode {
@@ -10,16 +11,18 @@ public class Auto extends LinearOpMode {
 
     boolean x = true;
     double power = 0.4;
+    private ElapsedTime runtime = new ElapsedTime();
+
 
     @Override
     public void runOpMode() {
         robot = new Configuration(this);
-        robot.init();
-/*
+        robot.init(true);
+
         robot.fl.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         robot.fr.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         robot.bl.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-        robot.br.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);*/
+        robot.br.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 
         waitForStart();
 /*
@@ -108,93 +111,69 @@ public class Auto extends LinearOpMode {
         sleep(20);
         brakeAndReset();
 
+        //set the box servo so it doesn't stop vertical slide from going all the way down
         robot.boxServo.setPosition(.6);
 
         //arm down
         robot.verticalMotor.setTargetPosition(-100);
         robot.verticalMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
         robot.verticalMotor.setPower(1);
+
+        //let the arm go down a little
         sleep(600);
 
+        //open the claw
         robot.redServo.setPosition(0.5);
         robot.blueServo.setPosition(0.5);
         telemetry.addLine("Red and Blue open");
 
-        //back up a little
+        //back up a bit
         robot.fl.setPower(-power);
         robot.fr.setPower(-power);
         robot.bl.setPower(-power);
         robot.br.setPower(-power);
-        sleep(100);
+        sleep(300);
         brakeAndReset();
 
+        //wait until Vertical Slide bottoms out
         while(!robot.verticalLimiter.isPressed());
         robot.verticalMotor.setPower(0);
 
+        //go left
+
+        //go forward
+
+        //go left
+
+        //push sample into net zone
+
+        //go forward
+
+        //go left
+
+        //push sample into net zone
+
+        //go forward
+
+        //go left
+
+        //push sample into net zone
+
+        //drive right to the observation zone for parking
 
 
-        /*
-        //drive to submersible until sensor pressed
-        robot.fl.setPower(power);
-        robot.fr.setPower(power);
-        robot.bl.setPower(power);
-        robot.br.setPower(power);
-        while(!robot.frontSensor.isPressed() && opModeIsActive()){
-            telemetry.addLine("Not Pressed");
-            telemetry.update();
-        }
-        telemetry.addLine("Pressed!");
-        brakeAndReset();
-        telemetry.addLine("LOOK MA I DID IT!");
-        telemetry.update();*/
-
-
-
-
-
-
-
-
-
-
-
+    }
 
 
 
-
-
-        /*
-        sleep(5000);
-        forward(5);//testing
-        sleep(5000);
-        reverse(5);
-        sleep(5000);
-        left(5);
-        sleep(5000);
-        right(5);
-        sleep(10000);//end testing
-
-        forward(28.6);
-        sleep(2000);
-        reverse(26.7);
-        sleep(2000);
-        left(28.7);
-
-        forward(23.4);
-        left(9.7);
-        reverse(44);
-
-        forward(44);
-        left(10.3);
-        reverse(44);
-
-        forward(44);
-        left(5);
-        reverse(36);
-
-        right(105);
-*/
-
+    private void writeTelemetry(){
+        telemetry.addData("Runtime", runtime.toString());
+        telemetry.addLine();
+        telemetry.addData("posX", robot.odometer.getX());
+        telemetry.addData("posY", robot.odometer.getY());
+        telemetry.addData("posZ", robot.odometer.getZ());
+        telemetry.addLine();
+        telemetry.update();
     }
 
 
@@ -206,6 +185,8 @@ public class Auto extends LinearOpMode {
         robot.odometer.resetTo(0,0,0);
     }
 
+
+    //Directions may be incorrect for Odom pods (fix in Config)
     private void forward(double distance){
         while(-robot.odometer.getY() < distance && opModeIsActive()){
             telemetry.addData("Going forward:", distance);

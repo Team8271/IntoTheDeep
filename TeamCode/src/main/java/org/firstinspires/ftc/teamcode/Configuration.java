@@ -31,6 +31,8 @@ public class Configuration {
 
     public ThreeWheeled odometer;
 
+    private boolean leftEncoder, rightEncoder, middleEncoder;
+
 
 
 
@@ -39,7 +41,7 @@ public class Configuration {
     }
 
 
-    public void init(){
+    public void init(boolean autoConfig){
         HardwareMap hwMap=opMode.hardwareMap;
 
         fl = hwMap.get(DcMotor.class,"FR");
@@ -101,6 +103,16 @@ public class Configuration {
          */
 
 
+        if(autoConfig){
+            leftEncoder = false;
+            rightEncoder = true;
+            middleEncoder = false;
+        }
+        else{
+            leftEncoder = true;
+            rightEncoder = false;
+            middleEncoder = false;
+        }
 
         odometer = new ThreeWheeled.Builder()
                 .setLeftEncoder(bl)
@@ -110,9 +122,10 @@ public class Configuration {
                 .setEncoderTicksPerRotation(2000)
                 .setEncoderWheelRadius(0.944882)
 
-                .setFlipLeftEncoder(false)
-                .setFlipRightEncoder(true)
-                .setFlipMiddleEncoder(false)
+                //Change the true/false values to correct directions
+                .setFlipLeftEncoder(true)  //false for auto
+                .setFlipRightEncoder(false) //true for auto
+                .setFlipMiddleEncoder(false) //false for auto
 
                 .setSideEncoderDistance(12.75)
                 .setMiddleEncoderOffset(9.75)
