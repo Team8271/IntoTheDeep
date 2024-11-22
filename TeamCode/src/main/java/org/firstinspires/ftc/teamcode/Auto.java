@@ -52,7 +52,12 @@ public class Auto extends LinearOpMode {
 
         robot.odometer.getX();*/
 
-
+        //rotate180();
+        while(true && opModeIsActive()){
+            telemetry.addData("Arm thing", robot.verticalMotor.getCurrentPosition());
+            telemetry.update();
+            //specimin middle is 9 inches from ground
+        }
 
         //robot.tweetyBird.sendTargetPosition();
         //robot.tweetyBird.waitWhileBusy();
@@ -83,9 +88,6 @@ public class Auto extends LinearOpMode {
 
         ///Start of 2
 
-        while(true&&opModeIsActive()){
-
-        }
 
 /*
         robot.odometer.resetTo(0,0,0);
@@ -314,8 +316,15 @@ public class Auto extends LinearOpMode {
     }
 
     //Rotate def
-    private void rotate(double angle){
-        //while()
+    private void rotate180(){
+        robot.odometer.resetTo(0,0,0);
+        while(robot.odometer.getZ() > -3.07 && opModeIsActive()){
+            robot.fl.setPower(power);
+            robot.fr.setPower(-power);
+            robot.bl.setPower(power);
+            robot.br.setPower(-power);
+        }
+        brakeAndReset();
     }
 
 
