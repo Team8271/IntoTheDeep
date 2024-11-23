@@ -18,12 +18,12 @@ public class Configuration {
     private LinearOpMode opMode;
 
     //Global Variables
-    public int vertMax = 6100, horzMax = 400;
+    public int vertMax = 6150, horzMax = 400;
     public int intakeOnDistance = 200;
 
     public DcMotor fl, fr, bl, br, horizontalMotor, verticalMotor, intakeMotor;
 
-    public Servo flipServo, redServo, blueServo, boxServo;
+    public Servo flipServo, redServo, blueServo, boxServo; //flipservo
 
     public TouchSensor verticalLimiter, horizontalLimiter, frontSensor;
 
@@ -62,7 +62,9 @@ public class Configuration {
 
         horizontalMotor = hwMap.get(DcMotor.class,"Horz");
         horizontalMotor.setDirection(DcMotor.Direction.FORWARD);
+        horizontalMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         horizontalMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+
 
         verticalMotor = hwMap.get(DcMotor.class,"Vert");
         verticalMotor.setDirection(DcMotor.Direction.REVERSE);

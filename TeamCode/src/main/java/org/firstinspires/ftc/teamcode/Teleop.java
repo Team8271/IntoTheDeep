@@ -14,6 +14,7 @@ public class Teleop extends LinearOpMode {
     private Configuration robot;
 
     boolean pincherControl = false;
+    boolean allTheWayUp = false;
 
     //Main OpMode
     @Override
@@ -43,6 +44,7 @@ public class Teleop extends LinearOpMode {
                 boolean reverseIntake = gamepad2.right_trigger>.25;
                 boolean lowerVert = gamepad2.dpad_down;
                 boolean raiseVert = gamepad2.dpad_up;
+                boolean raiseWall = gamepad2.dpad_right;
 
                 if(gamepad2.a){
                     pincherControl = true; //true is closed
@@ -50,6 +52,7 @@ public class Teleop extends LinearOpMode {
                 else if(gamepad2.b){
                     pincherControl = false;
                 }
+
 
 
                 //Drivetrain
@@ -97,16 +100,20 @@ public class Teleop extends LinearOpMode {
                  *if vertical limiter isn't pressed
                  *and opMode is active
                  *and driver2 isn't attempting to move the arm
-                 */
+                 *//*
                 if(lowerVert){
                     robot.verticalMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-                    while(!robot.verticalLimiter.isPressed() && opModeIsActive()
-                            && vertControl == 0){
+                    if(!robot.verticalLimiter.isPressed() && vertControl == 0){
                         robot.verticalMotor.setPower(-1);
                     }
+                }
+                if(vertControl != 0){
+                    robot.verticalMotor.setPower(0);
+                }
+                if(robot.verticalLimiter.isPressed()){
                     robot.verticalMotor.setPower(0);
                     robot.verticalMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-                }
+                }*/
 
                 /*
                  * when dpad-up is pressed on gamepad2
@@ -114,16 +121,41 @@ public class Teleop extends LinearOpMode {
                  * if opMode is active
                  * and driver2 isn't attempting to move the arm
                  */
-                if(raiseVert){
+                /*if(raiseVert){
                     if(robot.verticalMotor.getMode() != DcMotor.RunMode.RUN_TO_POSITION){
                         robot.verticalMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
                     }
                     robot.verticalMotor.setTargetPosition(robot.vertMax);
-                    while(robot.verticalMotor.getCurrentPosition() <= robot.vertMax && opModeIsActive()){
+                    if(robot.verticalMotor.getCurrentPosition() <= robot.vertMax){
                         robot.verticalMotor.setPower(1);
                     }
-                    robot.verticalMotor.setPower(0.5); //Hold position
+                    allTheWayUp = true;
                 }
+                if(robot.verticalMotor.getCurrentPosition() <= robot.vertMax-5 ||
+                robot.verticalMotor.getCurrentPosition() >= robot.vertMax+5
+                && allTheWayUp){
+                    robot.verticalMotor.setPower(0.5); //Hold position
+                }*/
+
+
+
+                /*
+                 * When dpad-right pressed on gamepad2
+                 * raise arm to wall position
+                 * if opMode is active
+                 * and driver 2 isn't attempting to move the arm
+                 */  /*
+                if(raiseWall){
+                    if(robot.verticalMotor.getMode() != DcMotor.RunMode.RUN_TO_POSITION){
+                        robot.verticalMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+                    }
+                    robot.verticalMotor.setTargetPosition(2760);
+                    if(robot.verticalMotor.getCurrentPosition() <= 2760){
+                        robot.verticalMotor.setPower(0.5);
+                    }
+                }*/
+
+
 
                 //Horizontal Slide
                 telemetry.addData("Horizontal Slide Pos",robot.horizontalMotor.getCurrentPosition());
@@ -136,7 +168,7 @@ public class Teleop extends LinearOpMode {
                     robot.horizontalMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
                     telemetry.addLine("Horizontal slide bottomed out!");
                 }
-                else if(robot.horizontalMotor.getCurrentPosition()>=robot.vertMax) { // Slide topped out
+                else if(robot.horizontalMotor.getCurrentPosition()>=robot.horzMax) { // Slide topped out
                     if(horzControl>0){
                         horzControl = 0;
                     }
@@ -175,7 +207,7 @@ public class Teleop extends LinearOpMode {
                 // Intake
                 if (robot.verticalMotor.getCurrentPosition()<=15 && //Retracted
                         robot.horizontalMotor.getCurrentPosition()<=15) {
-                    robot.flipServo.setPosition(.8);
+                    robot.flipServo.setPosition(.9);
                     robot.intakeMotor.setPower(0);
                     if(reverseIntake){//reverseIntake?-1:1 was here
                         robot.intakeMotor.setPower(-0.8);
@@ -184,7 +216,7 @@ public class Teleop extends LinearOpMode {
                     telemetry.addLine("Intake retracted");
                 }
                 else if(robot.horizontalMotor.getCurrentPosition()>=robot.intakeOnDistance){ // Extended
-                    robot.flipServo.setPosition(0);
+                    robot.flipServo.setPosition(0.07);
                     robot.intakeMotor.setPower(1);//reverseIntake?-1:1 was here
                     if(reverseIntake){//reverseIntake?-1:1 was here
                         robot.intakeMotor.setPower(-0.8);
