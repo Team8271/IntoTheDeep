@@ -18,8 +18,8 @@ public class Configuration {
     private LinearOpMode opMode;
 
     //Global Variables
-    public int vertMax = 6150, horzMax = 400;
-    public int intakeOnDistance = 200;
+    public int vertMax = 6100, horzMax = 400;
+    public int intakeOnDistance = 150;
 
     public DcMotor fl, fr, bl, br, horizontalMotor, verticalMotor, intakeMotor;
 
@@ -32,7 +32,6 @@ public class Configuration {
     public ThreeWheeled odometer;
 
     private boolean leftEncoder, rightEncoder, middleEncoder;
-
 
 
 
@@ -134,6 +133,21 @@ public class Configuration {
                 .build();
 
     }
+
+    public void closeClaw() {
+        redServo.setPosition(0.65);//Bigger more close
+        blueServo.setPosition(0.35); //less more close
+        //telemetry.addLine("Red and Blue closed");
+    }
+
+    public void openClaw(){
+        redServo.setPosition(0.5);
+        blueServo.setPosition(0.5);
+    }
+
+
+
+
 /*
     public void initTweatyBird(){
         tweetyBird = new TweetyBird.Builder()

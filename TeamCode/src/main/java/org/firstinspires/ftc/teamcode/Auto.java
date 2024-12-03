@@ -9,13 +9,12 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 public class Auto extends LinearOpMode {
     private Configuration robot;
 
-    boolean x = true;
-    double power = 0.4;
+    boolean swapDirection = false;
+
     double lowPower = 0.2;
     double normalPower = 0.4;
     double highPower = 0.6;
     private ElapsedTime runtime = new ElapsedTime();
-
 
     @Override
     public void runOpMode() {
@@ -31,119 +30,82 @@ public class Auto extends LinearOpMode {
         //Wait for driver to press START
         waitForStart();
 
+
+
+
+
+
+
+
+
+
+        //run main auto
+        //runAuto1();
+
+    }
+
+
+    private void mainAuto(int delay, int startPosition){
+        robot.closeClaw(); //grab preloaded specimen
+        sleep(delay);//Adjustable delay
+        alignWithSubmersible(startPosition);//align with submersible
+        setVerticalPosition(vertChamber);//Start moving Vertical Slide to high position
+        driveToSubmersible();//Move forward until Touch Sensor is pressed
+        clipSpecimin();//Clip the Specimen on the high chamber
+        reverse(5, normalPower); //clear the submersible
+        right(39, normalPower); //go to observation
+        rotate180(); // face the human element
+        grabSpecimenFromWall();
+
+
+
+
+        setVerticalPosition(vertWall);//Start moving vert into position
+        driveUntilBlocked("forward"); //Drive into wall
+        robot.closeClaw();
+    }
+
+    public void grabSpecimenFromWall(){
+        setVerticalPosition(vertWall);//Start moving Vertical slide into position
+        driveUntilBlocked("forward");//Drive into wall
+        robot.closeClaw();//Close the Claw
+        sleep(300);//Give Claw time to close
+        setVerticalPosition(vertWall+200);//Lift slide so Specimen clears wall
+    }
+
+    public void setVerticalPosition(int position){
+        robot.verticalMotor.setTargetPosition(position);
+        robot.verticalMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        robot.verticalMotor.setPower(1);
+    }
+
+    public void driveUntilBlocked(String direction){
+        //magic goes here
+    }
+
+
+
+
+
+    private void runAuto1(){
         //initialize the boxServo
         robot.boxServo.setPosition(.6);
 
 
 
 
-    //Reset odom values
+        //Reset odom values
         robot.odometer.resetTo(0,0,0);
 
 
 
-        ///Start of 2
-
-
-/*
-        robot.odometer.resetTo(0,0,0);
         //close claw
-        robot.redServo.setPosition(0.65);//Bigger more close
-        robot.blueServo.setPosition(0.35); //less more close
+        robot.closeClaw();
         telemetry.addLine("Red and Blue closed");
         sleep(1000); //wait for servos to respond
 
 
-        //align with chamber
-        forward(2);
-        left(4.5);
 
-
-
-        sleep(300);
-
-        //Lift arm
-        robot.verticalMotor.setTargetPosition(6100);
-        robot.verticalMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-        robot.verticalMotor.setPower(1);
-        sleep(1800);
-
-        //Drive to the submersible until sensor is pressed
-        robot.fl.setPower(power);
-        robot.fr.setPower(power);
-        robot.bl.setPower(power);
-        robot.br.setPower(power);
-        //Add telemetry
-        while(!robot.frontSensor.isPressed() && opModeIsActive()){
-            telemetry.addLine("Not Pressed");
-            telemetry.update();
-        }
-
-        //back up a little
-        robot.fl.setPower(-power);
-        robot.fr.setPower(-power);
-        robot.bl.setPower(-power);
-        robot.br.setPower(-power);
-        sleep(25);
-        brakeAndReset();
-
-
-
-        //arm down
-        robot.verticalMotor.setTargetPosition(-100);
-        robot.verticalMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-        robot.verticalMotor.setPower(1);
-
-        //reverse ahalf inch
-        reverse(0.5);
-
-        //let the arm go down a little
-        sleep(700);
-
-
-
-        //open the claw
-        robot.redServo.setPosition(0.5);
-        robot.blueServo.setPosition(0.5);
-        telemetry.addLine("Red and Blue open");
-
-        //back up a bit
-        robot.fl.setPower(-power);
-        robot.fr.setPower(-power);
-        robot.bl.setPower(-power);
-        robot.br.setPower(-power);
-        sleep(300);
-        brakeAndReset();
-
-        //go right
-        right(30);*/
-
-
-
-
-        //END OF 2
-
-        /* What is sampleNetZone?
-         *
-         * Starts with a preloaded specimen and clips it on high chamber
-         * Goes left and pushes all three samples into net zone
-         */
-       //private void sampleNetZone() {
-
-        //close claw
-        robot.redServo.setPosition(0.65);//Bigger more close
-        robot.blueServo.setPosition(0.35); //less more close
-        telemetry.addLine("Red and Blue closed");
-        sleep(1000); //wait for servos to respond
-
-
-        //Additional wait
-        //sleep(6000);
-
-
-        //align with chamber starting at right
-        //forward(2, normalPower);
-        //left(4.5, normalPower);
 
         //align w/ chambers
         forward(2, normalPower);
@@ -160,10 +122,10 @@ public class Auto extends LinearOpMode {
         sleep(1800);
 
         //Drive to the submersible until sensor is pressed
-        robot.fl.setPower(power);
-        robot.fr.setPower(power);
-        robot.bl.setPower(power);
-        robot.br.setPower(power);
+        robot.fl.setPower(normalPower);
+        robot.fr.setPower(normalPower);
+        robot.bl.setPower(normalPower);
+        robot.br.setPower(normalPower);
         //Add telemetry
         while(!robot.frontSensor.isPressed() && opModeIsActive()){
             telemetry.addLine("Not Pressed");
@@ -171,10 +133,10 @@ public class Auto extends LinearOpMode {
         }
 
         //back up a little
-        robot.fl.setPower(-power);
-        robot.fr.setPower(-power);
-        robot.bl.setPower(-power);
-        robot.br.setPower(-power);
+        robot.fl.setPower(-normalPower);
+        robot.fr.setPower(-normalPower);
+        robot.bl.setPower(-normalPower);
+        robot.br.setPower(-normalPower);
         sleep(20);
         brakeAndReset();
 
@@ -194,32 +156,38 @@ public class Auto extends LinearOpMode {
 
 
         //open the claw
-        robot.redServo.setPosition(0.5);
-        robot.blueServo.setPosition(0.5);
+        robot.openClaw();
         telemetry.addLine("Red and Blue open");
 
         //back up a bit
-        robot.fl.setPower(-power);
-        robot.fr.setPower(-power);
-        robot.bl.setPower(-power);
-        robot.br.setPower(-power);
+        robot.fl.setPower(-normalPower);
+        robot.fr.setPower(-normalPower);
+        robot.bl.setPower(-normalPower);
+        robot.br.setPower(-normalPower);
         sleep(300);
         brakeAndReset();
 
         //wait until Vertical Slide bottoms out
         ////while(!robot.verticalLimiter.isPressed());
+
+
+
+        //Lower arm to reset
+        robot.verticalMotor.setTargetPosition(-100);
+        robot.verticalMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        robot.verticalMotor.setPower(1);
+
+
+        //go right 39 and whip a 180 WHOOOOHOOOO
+        right(39, normalPower);
+        rotate180();
+
         //move arm to grab spec
         robot.verticalMotor.setTargetPosition(2760);
         robot.verticalMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
         robot.verticalMotor.setPower(1);
 
-
-
-        //go right 39
-        right(39, normalPower);
-        rotate180();
-
-        //forward broken right now
+        //Go forward into wall
         telemetry.addLine("Going forward");
         telemetry.update();
         robot.fl.setPower(normalPower);
@@ -229,67 +197,30 @@ public class Auto extends LinearOpMode {
         sleep(2000);
         brakeAndReset();
 
+        sleep(500);
 
+        //close claw
+        robot.closeClaw();
 
+        telemetry.addData("Arm pos: ", robot.verticalMotor.getCurrentPosition());
+        telemetry.update();
 
-
-
-
-
-/*
-        //go left 37 inches
-        left(37, normalPower); //modified
-
-        //go forward 25in
-        forward(16, normalPower); //was 25
-
-        //new stuff
-        left(6.5, normalPower);
-        right(0.5, normalPower);
-        forward(3, normalPower);
-        left(1.5, normalPower);
-
-        //go left
-        left(6, normalPower);
-
-        //push sample into net zone
-        reverse(45, normalPower);
-
-        //go forward
-        forward(50, normalPower);
-
-        //go left
-        left(6, normalPower);
-
-        //push second sample into net zone
-        reverse(46, normalPower);
-
-        //go forward
-        forward(40, normalPower);
-
-        //go left into wall
-        robot.fl.setPower(-power);
-        robot.fr.setPower(power);
-        robot.bl.setPower(power);
-        robot.br.setPower(-power);
-        sleep(1500);
+        sleep(500);
+        //back up a bit
+        robot.fl.setPower(-normalPower);
+        robot.fr.setPower(-normalPower);
+        robot.bl.setPower(-normalPower);
+        robot.br.setPower(-normalPower);
+        sleep(300);
         brakeAndReset();
 
-        //right off the wall a little
-        right(0.5, normalPower);
+        sleep(2000);
 
-        //push sample into net zone
-        reverse(38, normalPower);
-
-        //drive right to the observation zone for parking
-        forward(0.3, normalPower);
-        right(120, normalPower);
-        //}
-
-
-*/
+        //arm up a little
+        robot.verticalMotor.setTargetPosition(3500);
+        robot.verticalMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        robot.verticalMotor.setPower(1);
     }
-
 
 
     private void writeTelemetry(){
@@ -315,17 +246,23 @@ public class Auto extends LinearOpMode {
     private void rotate180(){
         robot.odometer.resetTo(0,0,0);
         while(robot.odometer.getZ() > -3.07 && opModeIsActive()){
-            robot.fl.setPower(power);
-            robot.fr.setPower(-power);
-            robot.bl.setPower(power);
-            robot.br.setPower(-power);
+            robot.fl.setPower(normalPower);
+            robot.fr.setPower(-normalPower);
+            robot.bl.setPower(normalPower);
+            robot.br.setPower(-normalPower);
         }
         brakeAndReset();
+        //swap direction (for other stuff)
+        swapDirection = !swapDirection;
     }
 
 
     //Directions may be incorrect for Odom pods (fix in Config)
-    private void forward(double distance, double power){
+    private void forward(double distance, double rawPower){
+        double power = rawPower;
+        if(swapDirection){
+            power = -power;
+        }
         while(-robot.odometer.getY() < distance && opModeIsActive()){
             telemetry.addData("Going forward:", distance);
             telemetry.addData("Current Position:", -robot.odometer.getY());
@@ -339,7 +276,11 @@ public class Auto extends LinearOpMode {
     }
 
     //Fixed
-    private void reverse(double distance, double power){
+    private void reverse(double distance, double rawPower){
+        double power = rawPower;
+        if(swapDirection){
+            power = -power;
+        }
         while(robot.odometer.getY() < distance && opModeIsActive()){
             telemetry.addData("Going reverse:", distance);
             telemetry.addData("Current Position:", robot.odometer.getY());
@@ -352,7 +293,11 @@ public class Auto extends LinearOpMode {
         brakeAndReset();
     }
 
-    private void right(double distance, double power){
+    private void right(double distance, double rawPower){
+        double power = rawPower;
+        if(swapDirection){
+            power = -power;
+        }
         while(robot.odometer.getX() < distance && opModeIsActive()){
             telemetry.addData("Going right:", distance);
             telemetry.addData("Current Position:", robot.odometer.getY());
@@ -365,7 +310,11 @@ public class Auto extends LinearOpMode {
         brakeAndReset();
     }
 
-    private void left(double distance, double power){
+    private void left(double distance, double rawPower){
+        double power = rawPower;
+        if(swapDirection){
+            power = -power;
+        }
         while(-robot.odometer.getX() < distance && opModeIsActive()){
             telemetry.addData("Going left:", distance);
             telemetry.addData("Current Position:", -robot.odometer.getY());
