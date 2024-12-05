@@ -11,6 +11,11 @@ public class Auto extends LinearOpMode {
 
     boolean swapDirection = false;
 
+    private static final int vertChamber = 20; //change me
+    private static final int vertWall = 20; //change me
+    private static final int belowChamber = 20; //change me
+
+
     double lowPower = 0.2;
     double normalPower = 0.4;
     double highPower = 0.6;
@@ -31,6 +36,10 @@ public class Auto extends LinearOpMode {
         waitForStart();
 
 
+        sleep(1000);
+        //driveForwardUntilBlocked(normalPower);
+        alignWithSubmersible(2);
+        sleep(5000);
 
 
 
@@ -48,10 +57,10 @@ public class Auto extends LinearOpMode {
     private void mainAuto(int delay, int startPosition){
         robot.closeClaw(); //grab preloaded specimen
         sleep(delay);//Adjustable delay
-        alignWithSubmersible(startPosition);//align with submersible
+        alignWithSubmersible(1);//align with submersible
         setVerticalPosition(vertChamber);//Start moving Vertical Slide to high position
-        driveToSubmersible();//Move forward until Touch Sensor is pressed
-        clipSpecimin();//Clip the Specimen on the high chamber
+        driveForwardUntilBlocked(normalPower);//Move forward until Touch Sensor is pressed/odom stops changing
+        clipSpecimen();//Clip the Specimen on the high chamber
         reverse(5, normalPower); //clear the submersible
         right(39, normalPower); //go to observation
         rotate180(); // face the human element
@@ -61,13 +70,35 @@ public class Auto extends LinearOpMode {
 
 
         setVerticalPosition(vertWall);//Start moving vert into position
-        driveUntilBlocked("forward"); //Drive into wall
+        driveForwardUntilBlocked(normalPower); //Drive into wall
         robot.closeClaw();
+    }
+
+    public void clipSpecimen(){
+        if(robot.verticalMotor.getCurrentPosition() < vertChamber){
+            robot.verticalMotor.setTargetPosition(vertChamber);
+            robot.verticalMotor.setPower(0.8);
+        }
+        reverse(0.5, lowPower);
+        robot.verticalMotor.setTargetPosition(belowChamber);
+        robot.openClaw();
+
+    }
+
+    public void alignWithSubmersible(int startPos){
+        if(startPos == 1){
+            forward(2, normalPower);
+            left(4.5, normalPower);
+        }
+        else if(startPos == 2){
+            forward(2, normalPower);
+            right(4.5, normalPower);
+        }
     }
 
     public void grabSpecimenFromWall(){
         setVerticalPosition(vertWall);//Start moving Vertical slide into position
-        driveUntilBlocked("forward");//Drive into wall
+        driveForwardUntilBlocked(normalPower);//Drive into wall
         robot.closeClaw();//Close the Claw
         sleep(300);//Give Claw time to close
         setVerticalPosition(vertWall+200);//Lift slide so Specimen clears wall
@@ -79,8 +110,28 @@ public class Auto extends LinearOpMode {
         robot.verticalMotor.setPower(1);
     }
 
-    public void driveUntilBlocked(String direction){
-        //magic goes here
+    public void driveForwardUntilBlocked(double power){
+        brakeAndReset();
+        telemetry.addLine("Starting driveForwardUntilBlocked!");
+        telemetry.update();
+        while (true){
+            double lastPos = -robot.odometer.getY();
+            robot.fl.setPower(power);
+            robot.fr.setPower(power);
+            robot.bl.setPower(power);
+            robot.br.setPower(power);
+            sleep(300);
+            telemetry.addData("Last pos:", lastPos);
+            telemetry.addData("Current Pos", -robot.odometer.getY());
+            telemetry.update();
+            if(lastPos+1 > -robot.odometer.getY() || robot.frontSensor.isPressed()){
+                brakeAndReset();
+                telemetry.clearAll();
+                telemetry.addLine("Stopping!");
+                telemetry.update();
+                break;
+            }
+        }
     }
 
 

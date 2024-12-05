@@ -38,7 +38,7 @@ public class Teleop extends LinearOpMode {
                 boolean resetFCD = gamepad1.dpad_up;
 
                 //Driver 2
-                double horzControl = gamepad2.right_stick_x *1; //I know the 1 isn't word I can't spell
+                double horzControl = gamepad2.right_stick_x;
                 double vertControl = -gamepad2.left_stick_y;
                 boolean boxControl = gamepad2.left_trigger >.25;
                 boolean reverseIntake = gamepad2.right_trigger>.25;
