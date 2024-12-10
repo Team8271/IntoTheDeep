@@ -2,48 +2,56 @@ package org.firstinspires.ftc.teamcode;
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
+import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.util.ElapsedTime;
+import java.util.HashMap;
 
-@Autonomous (name="Auto")
+@Autonomous (name="Auto") //add preselectTeleOp="TeleOp" to turn preselect on
 public class Auto extends LinearOpMode {
     private Configuration robot;
 
     boolean swapDirection = false;
 
-    private static final int vertChamber = 20; //change me
-    private static final int vertWall = 20; //change me
-    private static final int belowChamber = 20; //change me
+    private static final int vertAboveChamber = 20;  //change me
+    private static final int vertWall = 20;     //change me
+    private static final int vertBelowChamber = 20; //change me
 
 
     double lowPower = 0.2;
     double normalPower = 0.4;
     double highPower = 0.6;
-    private ElapsedTime runtime = new ElapsedTime();
+    private final ElapsedTime runtime = new ElapsedTime();
 
     @Override
     public void runOpMode() {
         robot = new Configuration(this);
         robot.init(true);
 
-        //set all the wheels to brake on no power (remove drifting)
-        robot.fl.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-        robot.fr.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-        robot.bl.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-        robot.br.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+
+        //
+        telemetrySelector();
+
 
         //Wait for driver to press START
         waitForStart();
 
-
-        sleep(1000);
-        //driveForwardUntilBlocked(normalPower);
+/*
         alignWithSubmersible(2);
+        driveForwardUntilBlocked(normalPower);
+
+        telemetry.addData("X", robot.odometer.getX());
+        telemetry.addData("Y", robot.odometer.getY());
+        telemetry.addData("Z", robot.odometer.getZ());
+        telemetry.update();
+        sleep(10000);
+
+ */
+
+
+        telemetry.addLine("Woooah auto is doing cool stuff!!");
+        telemetry.update();
         sleep(5000);
-
-
-
-
 
 
 
@@ -58,12 +66,12 @@ public class Auto extends LinearOpMode {
         robot.closeClaw(); //grab preloaded specimen
         sleep(delay);//Adjustable delay
         alignWithSubmersible(1);//align with submersible
-        setVerticalPosition(vertChamber);//Start moving Vertical Slide to high position
+        setVerticalPosition(vertAboveChamber);//Start moving Vertical Slide to high position
         driveForwardUntilBlocked(normalPower);//Move forward until Touch Sensor is pressed/odom stops changing
         clipSpecimen();//Clip the Specimen on the high chamber
         reverse(5, normalPower); //clear the submersible
         right(39, normalPower); //go to observation
-        rotate180(); // face the human element
+        rotate180(); //face the human element
         grabSpecimenFromWall();
 
 
@@ -74,18 +82,51 @@ public class Auto extends LinearOpMode {
         robot.closeClaw();
     }
 
+    private void telemetrySelector(){
+        int selection = 0;
+        boolean confirm = false;
+        HashMap<Integer, String> startPositions = new HashMap<>();
+        startPositions.put(0, "Centered with Submersible"); //Bot centered on center line
+        startPositions.put(1, "Center Right"); //Left of bot on center line
+        startPositions.put(2, "Center Left"); //Right of bot on center line
+        while(!confirm && !opModeIsActive()){ //While option hasn't been selected
+            telemetry.addLine("Choose start position (Dpad Up/Down) / Press 'A' to confirm");
+            if(gamepad1.dpad_up || gamepad2.dpad_up && selection!=startPositions.size()-1){ //if dpad up pressed and there are more options
+                selection++;//move to next selection
+            }
+            if(gamepad1.dpad_down || gamepad2.dpad_down && selection!=0){//if dpad down is pressed and there are more options
+                selection--;//move to previous selection
+            }
+            if(gamepad1.a || gamepad2.a){
+                confirm=true;
+            }
+            if(selection>2 || selection<0){
+                telemetry.addLine("invalid selection");
+                telemetry.addData("Sel", selection);
+            }
+            telemetry.addData("Starting Position", startPositions.get(selection));
+            telemetry.update();
+        }
+        telemetry.addData("Start Position", startPositions.get(selection));
+        telemetry.update();
+        sleep(500);
+    }
+
+
+
+
     public void clipSpecimen(){
-        if(robot.verticalMotor.getCurrentPosition() < vertChamber){
-            robot.verticalMotor.setTargetPosition(vertChamber);
+        if(robot.verticalMotor.getCurrentPosition() < vertAboveChamber){
+            robot.verticalMotor.setTargetPosition(vertAboveChamber);
             robot.verticalMotor.setPower(0.8);
         }
         reverse(0.5, lowPower);
-        robot.verticalMotor.setTargetPosition(belowChamber);
+        robot.verticalMotor.setTargetPosition(vertBelowChamber);
         robot.openClaw();
-
     }
 
     public void alignWithSubmersible(int startPos){
+        brakeAndReset();
         if(startPos == 1){
             forward(2, normalPower);
             left(4.5, normalPower);

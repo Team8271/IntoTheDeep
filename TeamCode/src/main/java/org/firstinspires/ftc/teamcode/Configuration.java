@@ -46,18 +46,23 @@ public class Configuration {
         fl = hwMap.get(DcMotor.class,"FR");
         fl.setDirection(DcMotor.Direction.REVERSE);
         fl.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        fl.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 
         fr = hwMap.get(DcMotor.class,"FL");
         fr.setDirection(DcMotorSimple.Direction.FORWARD);
         fr.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        fr.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 
         bl = hwMap.get(DcMotor.class,"BL");
         bl.setDirection(DcMotor.Direction.FORWARD);
         bl.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        bl.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 
         br = hwMap.get(DcMotor.class,"BR");
         br.setDirection(DcMotor.Direction.FORWARD);
         br.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        br.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+
 
         horizontalMotor = hwMap.get(DcMotor.class,"Horz");
         horizontalMotor.setDirection(DcMotor.Direction.FORWARD);
@@ -132,11 +137,12 @@ public class Configuration {
                 .setMiddleEncoderOffset(9.75)
                 .build();
 
+        odometer.resetTo(0,0,0);
     }
 
     public void closeClaw() {
-        redServo.setPosition(0.65);//Bigger more close
-        blueServo.setPosition(0.35); //less more close
+        redServo.setPosition(0.625);//Bigger more close
+        blueServo.setPosition(0.325); //less more close
         //telemetry.addLine("Red and Blue closed");
     }
 
