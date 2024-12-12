@@ -31,33 +31,26 @@ public class Auto extends LinearOpMode {
         //Wait for driver to press START
         waitForStart();
 
+        mainAuto(1, 1);
 
-        robot.verticalMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        robot.closeClaw();
-        sleep(1000);
-        alignWithSubmersible(1);
-        setVerticalPosition(5840);
-        sleep(3000);
-        driveForwardUntilBlocked(normalPower);
-        sleep(1000);
-        reverse(1, lowPower);
-
-        telemetry.addLine("did i do right?");
-        telemetry.update();
     }
 
-
-    private void mainAuto(int delay, int startPosition){
-        robot.closeClaw(); //grab preloaded specimen
-        sleep(delay);//Adjustable delay
-        alignWithSubmersible(1);//align with submersible
-        setVerticalPosition(vertAboveChamber);//Start moving Vertical Slide to high position
+    //the main auto stuff
+    //Arm stuff commented out cuz it borked rn (blame builder)
+    private void mainAuto(int delayInSeconds, int startPosition){
+        //robot.closeClaw(); //grab preloaded specimen
+        sleep(1000 + (delayInSeconds * 1000));//Adjustable delay
+        alignWithSubmersible(startPosition);//align with submersible
+        //setVerticalPosition(vertAboveChamber);//Start moving Vertical Slide to high position
+        sleep(2000);//Allow vertical slide to clear high chamber before moving
         driveForwardUntilBlocked(normalPower);//Move forward until Touch Sensor is pressed/odom stops changing
-        clipSpecimen();//Clip the Specimen on the high chamber
+        //clipSpecimen();//Clip the Specimen on the high chamber
+        sleep(2000); //REMOVE ME, JUST FOR TESTING
         reverse(5, normalPower); //clear the submersible
         right(39, normalPower); //go to observation
         rotate180(); //face the human element
-        grabSpecimenFromWall();
+        driveForwardUntilBlocked(lowPower);//Slowly move into the wall
+        //grabSpecimenFromWall();
 
 
 
@@ -66,6 +59,7 @@ public class Auto extends LinearOpMode {
         robot.closeClaw();
     }
 
+    //fix me ahhhhhhhhh i dont ready yet
     private void telemetrySelector(){
         HashMap<Integer, String> startingPositions = new HashMap<Integer, String>();
         startingPositions.put(0, "Centered with Submersible");
@@ -123,17 +117,23 @@ public class Auto extends LinearOpMode {
 
     }
 
-
+    //Clip Specimen on the High Chamber (Vertical slide needs to be vertAboveChamber!
     public void clipSpecimen(){
-        if(robot.verticalMotor.getCurrentPosition() < vertAboveChamber){
-            robot.verticalMotor.setTargetPosition(vertAboveChamber);
-            robot.verticalMotor.setPower(0.8);
+        if(robot.verticalMotor.getCurrentPosition() < vertAboveChamber-200){//If not above chamber
+            telemetry.addLine("Vertical Slide position is incorrect");//calm
+            telemetry.addLine("EXITING SPECIMEN CLIP!");//panik
+            telemetry.addLine("SCREAMING NO NO NO NO NO NO NO NO NO"); //panik
+            telemetry.update();
         }
-        reverse(0.5, lowPower);
-        robot.verticalMotor.setTargetPosition(vertBelowChamber);
-        robot.openClaw();
+        else {
+            reverse(0.5, lowPower);//Move back a little
+            robot.verticalMotor.setTargetPosition(vertBelowChamber);//set target below chamber
+            robot.verticalMotor.setPower(0.4);//Set power
+            robot.openClaw();//release the specimen
+        }
     }
 
+    //Align with the submersible from starting position
     public void alignWithSubmersible(int startPos){
         brakeAndReset();
         if(startPos == 1){
@@ -146,6 +146,7 @@ public class Auto extends LinearOpMode {
         }
     }
 
+    //Grab Specimen off of the Wall (Wow!)
     public void grabSpecimenFromWall(){
         setVerticalPosition(vertWall);//Start moving Vertical slide into position
         driveForwardUntilBlocked(normalPower);//Drive into wall
@@ -154,12 +155,14 @@ public class Auto extends LinearOpMode {
         setVerticalPosition(vertWall+200);//Lift slide so Specimen clears wall
     }
 
+    //Set position of the vertical slide (Applies power of 1)
     public void setVerticalPosition(int position){
         robot.verticalMotor.setTargetPosition(position);
         robot.verticalMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
         robot.verticalMotor.setPower(1);
     }
 
+    //Drive forward until button is pressed or odom change is little
     public void driveForwardUntilBlocked(double power){
         brakeAndReset();
         telemetry.addLine("Starting driveForwardUntilBlocked!");
@@ -174,7 +177,7 @@ public class Auto extends LinearOpMode {
             telemetry.addData("Last pos:", lastPos);
             telemetry.addData("Current Pos", -robot.odometer.getY());
             telemetry.update();
-            if(lastPos+1 > -robot.odometer.getY() || robot.frontSensor.isPressed()){
+            if(lastPos+0.25 > -robot.odometer.getY() || robot.frontSensor.isPressed()){
                 brakeAndReset();
                 telemetry.clearAll();
                 telemetry.addLine("Stopping!");
@@ -184,32 +187,22 @@ public class Auto extends LinearOpMode {
         }
     }
 
-
+    //Auto used at first qualifier in Butte
     private void runAuto1(){
         //initialize the boxServo
         robot.boxServo.setPosition(.6);
 
-
-
-
         //Reset odom values
         robot.odometer.resetTo(0,0,0);
-
-
 
         //close claw
         robot.closeClaw();
         telemetry.addLine("Red and Blue closed");
         sleep(1000); //wait for servos to respond
 
-
-
-
         //align w/ chambers
         forward(2, normalPower);
         left(4.5, normalPower);
-
-
 
         sleep(300);
 
@@ -321,17 +314,6 @@ public class Auto extends LinearOpMode {
     }
 
 
-    private void writeTelemetry(){
-        telemetry.addData("Runtime", runtime.toString());
-        telemetry.addLine();
-        telemetry.addData("posX", robot.odometer.getX());
-        telemetry.addData("posY", robot.odometer.getY());
-        telemetry.addData("posZ", robot.odometer.getZ());
-        telemetry.addLine();
-        telemetry.update();
-    }
-
-
     private void brakeAndReset(){
         robot.fl.setPower(0);
         robot.fr.setPower(0);
@@ -373,7 +355,6 @@ public class Auto extends LinearOpMode {
         brakeAndReset();
     }
 
-    //Fixed
     private void reverse(double distance, double rawPower){
         double power = rawPower;
         if(swapDirection){

@@ -14,7 +14,7 @@ public class NewRobotConfig {
     //Global Variables
     public DcMotor fl, fr, bl, br;
 
-
+    public IMU imu;
 
 
     public NewRobotConfig(LinearOpMode opMode) {
@@ -44,6 +44,15 @@ public class NewRobotConfig {
         br.setDirection(DcMotor.Direction.FORWARD);
         br.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         br.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+
+        imu = hwMap.get(IMU.class, "imu");
+        IMU.Parameters parameters = new IMU.Parameters(
+                new RevHubOrientationOnRobot( //Mes swith me
+                        RevHubOrientationOnRobot.LogoFacingDirection.DOWN,
+                        RevHubOrientationOnRobot.UsbFacingDirection.FORWARD
+                )
+        );
+        imu.initialize(parameters);
 
     }
 }
