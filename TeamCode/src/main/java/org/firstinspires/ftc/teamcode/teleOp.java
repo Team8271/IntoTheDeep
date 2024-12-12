@@ -5,12 +5,10 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.util.Range;
 
-@TeleOp(name="TeleOp")
+@TeleOp(name="Jax TeleOp")
 public class teleOp extends LinearOpMode {
     private Configuration robot;
 
-    boolean pincherControl = false;
-    boolean allTheWayUp = false;
 
     //Main OpMode
     @Override
@@ -38,15 +36,13 @@ public class teleOp extends LinearOpMode {
                 double vertControl = -gamepad2.left_stick_y;
                 boolean boxControl = gamepad2.left_trigger >.25;
                 boolean reverseIntake = gamepad2.right_trigger>.25;
-                boolean lowerVert = gamepad2.dpad_down;
-                boolean raiseVert = gamepad2.dpad_up;
-                boolean raiseWall = gamepad2.dpad_right;
+
 
                 if(gamepad2.a){
-                    pincherControl = true; //true is closed
+                    robot.closeClaw();
                 }
                 else if(gamepad2.b){
-                    pincherControl = false;
+                    robot.openClaw();
                 }
 
 
@@ -90,66 +86,6 @@ public class teleOp extends LinearOpMode {
 
                 telemetry.addLine();
 
-
-                /*when dpad-down is pressed on gamepad2
-                 *lower the arm
-                 *if vertical limiter isn't pressed
-                 *and opMode is active
-                 *and driver2 isn't attempting to move the arm
-                 *//*
-                if(lowerVert){
-                    robot.verticalMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-                    if(!robot.verticalLimiter.isPressed() && vertControl == 0){
-                        robot.verticalMotor.setPower(-1);
-                    }
-                }
-                if(vertControl != 0){
-                    robot.verticalMotor.setPower(0);
-                }
-                if(robot.verticalLimiter.isPressed()){
-                    robot.verticalMotor.setPower(0);
-                    robot.verticalMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-                }*/
-
-                /*
-                 * when dpad-up is pressed on gamepad2
-                 * raise the arm
-                 * if opMode is active
-                 * and driver2 isn't attempting to move the arm
-                 */
-                /*if(raiseVert){
-                    if(robot.verticalMotor.getMode() != DcMotor.RunMode.RUN_TO_POSITION){
-                        robot.verticalMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-                    }
-                    robot.verticalMotor.setTargetPosition(robot.vertMax);
-                    if(robot.verticalMotor.getCurrentPosition() <= robot.vertMax){
-                        robot.verticalMotor.setPower(1);
-                    }
-                    allTheWayUp = true;
-                }
-                if(robot.verticalMotor.getCurrentPosition() <= robot.vertMax-5 ||
-                robot.verticalMotor.getCurrentPosition() >= robot.vertMax+5
-                && allTheWayUp){
-                    robot.verticalMotor.setPower(0.5); //Hold position
-                }*/
-
-
-
-                /*
-                 * When dpad-right pressed on gamepad2
-                 * raise arm to wall position
-                 * if opMode is active
-                 * and driver 2 isn't attempting to move the arm
-                 */  /*
-                if(raiseWall){
-                    if(robot.verticalMotor.getMode() != DcMotor.RunMode.RUN_TO_POSITION){
-                        robot.verticalMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-                    }
-                    robot.verticalMotor.setTargetPosition(2760);
-                    if(robot.verticalMotor.getCurrentPosition() <= 2760){
-                        robot.verticalMotor.setPower(0.5);
-                    }
-                }*/
 
 
 
@@ -269,19 +205,6 @@ public class teleOp extends LinearOpMode {
 
                 telemetry.addLine();
 
-                //Pincher
-                if(pincherControl){ //closed
-                    robot.redServo.setPosition(0.65);//Bigger more close
-                    robot.blueServo.setPosition(0.35); //less more close
-                    telemetry.addLine("Red and Blue closed");
-                }
-                else{ //open
-                    robot.redServo.setPosition(0.5);
-                    robot.blueServo.setPosition(0.5);
-                    telemetry.addLine("Red and Blue open");
-                }
-
-                telemetry.addLine();
 
                 //Box
                 if(boxControl && robot.verticalMotor.getCurrentPosition()>=100){
@@ -295,102 +218,6 @@ public class teleOp extends LinearOpMode {
 
                 //Telemetry
                 telemetry.update();
-
-
-
-
-
-            /*
-            robot.fl.setPower(leftFrontPower * mainThrottle);
-            robot.fr.setPower(rightFrontPower * mainThrottle);
-            robot.bl.setPower(leftBackPower * mainThrottle);
-            robot.br.setPower(rightBackPower * mainThrottle);
-
-            //Intake control
-                //A button runs motor in
-                if(gamepad2.a) {
-                    robot.intakeMotor.setPower(0.5);
-                }
-                //Y runs motor out
-                if(gamepad2.y) {
-                    robot.intakeMotor.setPower(-0.5);
-                }
-                //x stops motor
-                if(gamepad2.x) {
-                   robot.intakeMotor.setPower(0.0);
-               }
-
-            //Horizontal motor
-                //right joystick forward = forward
-                robot.horizontalMotor.setPower(gamepad2.right_stick_x);
-
-            //Vertical motor
-                //left joystick forward = up
-
-
-                if (!robot.verticalLimiter.isPressed() && !robot.horizontalLimiter.isPressed())
-                {
-                    robot.verticalMotor.setPower(gamepad2.left_stick_y);
-                }
-                else {
-                    if (robot.verticalLimiter.isPressed()) {
-                    telemetry.addData("DETECTED", "Max - Reverse Direction");
-
-                    if (gamepad2.right_stick_y > 0) {
-                        telemetry.addData("Joystick Y", gamepad2.left_stick_y);
-                        robot.verticalMotor.setPower(gamepad2.left_stick_y);
-
-                    } else {
-
-                        robot.verticalMotor.setPower(0);
-                    }
-                } else if (robot.horizontalLimiter.isPressed()) {
-                    telemetry.addData("DETECTED", "Min - Reverse Direction");
-
-                    if (gamepad2.right_stick_y < 0) {
-
-                        telemetry.addData("Vert", gamepad2.left_stick_y);
-
-                    } else {
-
-                        robot.verticalMotor.setPower(0);
-                    }
-                }
-            }//End of Vert control
-
-            //Red and Blue servo control left trigger
-                //position servos to close when trigger pressed, open when released
-                if (gamepad2.left_trigger > 0.25) { //close
-                    robot.redServo.setPosition(0.5);
-                    robot.blueServo.setPosition(0.5);
-                    //tbd values
-
-                } else { //open
-                    robot.redServo.setPosition(0.5);
-                    robot.blueServo.setPosition(0.5);
-                    //tbd values
-                }
-
-
-            //Orb servo right bumper
-                //bumper pressed, flip out and start intake motor (In)
-                if (gamepad2.right_bumper) {
-                    robot.boxServo.setPosition(0.5); //tbd value
-                    robot.intakeMotor.setPower(1); //tbd value for direction
-                } else { //when released, stop intake and flip in
-                    robot.boxServo.setPosition(0.5); //tbd value
-                    robot.intakeMotor.setPower(0);
-                }
-
-                //determine what starts output
-                //ex. use retracted arm touch sensor to initiate intake motor
-
-            //Flip servo left bumper
-
-                //when bumper pressed, deliver
-                //when released, return to intake position
-
-            */
             }
         }
     }

@@ -7,7 +7,7 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.util.ElapsedTime;
 import java.util.HashMap;
 
-@Autonomous (name="Auto") //add preselectTeleOp="TeleOp" to turn preselect on
+@Autonomous (name="Jax Auto") //add preselectTeleOp="Jax TeleOp" to turn preselect on
 public class Auto extends LinearOpMode {
     private Configuration robot;
 
@@ -28,37 +28,22 @@ public class Auto extends LinearOpMode {
         robot = new Configuration(this);
         robot.init(true);
 
-
-        //
-        telemetrySelector();
-
-
         //Wait for driver to press START
         waitForStart();
 
-/*
-        alignWithSubmersible(2);
+
+        robot.verticalMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        robot.closeClaw();
+        sleep(1000);
+        alignWithSubmersible(1);
+        setVerticalPosition(5840);
+        sleep(3000);
         driveForwardUntilBlocked(normalPower);
+        sleep(1000);
+        reverse(1, lowPower);
 
-        telemetry.addData("X", robot.odometer.getX());
-        telemetry.addData("Y", robot.odometer.getY());
-        telemetry.addData("Z", robot.odometer.getZ());
+        telemetry.addLine("did i do right?");
         telemetry.update();
-        sleep(10000);
-
- */
-
-
-        telemetry.addLine("Woooah auto is doing cool stuff!!");
-        telemetry.update();
-        sleep(5000);
-
-
-
-
-        //run main auto
-        //runAuto1();
-
     }
 
 
@@ -76,43 +61,67 @@ public class Auto extends LinearOpMode {
 
 
 
-
         setVerticalPosition(vertWall);//Start moving vert into position
         driveForwardUntilBlocked(normalPower); //Drive into wall
         robot.closeClaw();
     }
 
     private void telemetrySelector(){
+        HashMap<Integer, String> startingPositions = new HashMap<Integer, String>();
+        startingPositions.put(0, "Centered with Submersible");
+        startingPositions.put(1, "Left of Center Line");
+        startingPositions.put(2, "Right of Center Line");
         int selection = 0;
         boolean confirm = false;
-        HashMap<Integer, String> startPositions = new HashMap<>();
-        startPositions.put(0, "Centered with Submersible"); //Bot centered on center line
-        startPositions.put(1, "Center Right"); //Left of bot on center line
-        startPositions.put(2, "Center Left"); //Right of bot on center line
-        while(!confirm && !opModeIsActive()){ //While option hasn't been selected
-            telemetry.addLine("Choose start position (Dpad Up/Down) / Press 'A' to confirm");
-            if(gamepad1.dpad_up || gamepad2.dpad_up && selection!=startPositions.size()-1){ //if dpad up pressed and there are more options
-                selection++;//move to next selection
+
+        //Starting Position Selector
+        while(!confirm){
+            telemetry.addLine("Select Starting Position (Dpad Up/Down and A to confirm)");
+            if(gamepad1.dpad_up || gamepad2.dpad_up && selection<=2){
+                selection++;
+                sleep(1000);
             }
-            if(gamepad1.dpad_down || gamepad2.dpad_down && selection!=0){//if dpad down is pressed and there are more options
-                selection--;//move to previous selection
+            if(gamepad1.dpad_down || gamepad2.dpad_down && selection>=0){
+                selection--;
+                sleep(1000);
             }
             if(gamepad1.a || gamepad2.a){
-                confirm=true;
+                confirm = true;
             }
-            if(selection>2 || selection<0){
-                telemetry.addLine("invalid selection");
-                telemetry.addData("Sel", selection);
-            }
-            telemetry.addData("Starting Position", startPositions.get(selection));
+            telemetry.addLine();
+            telemetry.addData("Starting Position", startingPositions.get(selection));
             telemetry.update();
         }
-        telemetry.addData("Start Position", startPositions.get(selection));
+        int startPos = selection;
+
+        //Start Delay Selector
+        confirm = false;
+        selection = 0;
+        while(!confirm){
+            telemetry.addLine("Choose Start Delay (Dpad Up/Down and A to confirm)");
+            if(gamepad1.dpad_up || gamepad2.dpad_up && selection<=30){
+                selection++;
+                sleep(500);
+            }
+            if(gamepad1.dpad_down || gamepad2.dpad_down && selection>=0){
+                selection--;
+                sleep(500);
+            }
+            if(gamepad1.a || gamepad2.a){
+                confirm = true;
+            }
+            telemetry.addLine();
+            telemetry.addData("Seconds to delay", selection);
+            telemetry.update();
+        }
+        int startDelay = selection;
+
+        telemetry.clearAll();
+        telemetry.addData("Starting Position", startPos);
+        telemetry.addData("Delay", startDelay);
         telemetry.update();
-        sleep(500);
+
     }
-
-
 
 
     public void clipSpecimen(){
@@ -174,9 +183,6 @@ public class Auto extends LinearOpMode {
             }
         }
     }
-
-
-
 
 
     private void runAuto1(){
@@ -417,10 +423,6 @@ public class Auto extends LinearOpMode {
             robot.br.setPower(-power);
         }
         brakeAndReset();
-    }
-
-    private void move(double distance, double speed){
-
     }
 
 
