@@ -151,6 +151,43 @@ public class Configuration {
         blueServo.setPosition(0.5);
     }
 
+    public void setVerticalPosition(int targetPosition){
+
+        //outside of while
+        verticalMotor.setPower(0);
+        verticalMotor.setTargetPosition(targetPosition);
+
+        //Set motor in RunToPosition mode
+        if(verticalMotor.getMode() != DcMotor.RunMode.RUN_TO_POSITION){
+            verticalMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        }
+
+        double startTime = opMode.getRuntime(); //(out of While)
+        double changeInTime = opMode.getRuntime() - startTime; //Change in time (In While)
+
+        double kP = 0; //Proportional Gain  (out of while
+        double kI = 0; //Integral Gain      (out of while
+        double kD = 0; //Derivative Gain    (out of while
+
+        double currentEncoderPosition = verticalMotor.getCurrentPosition(); //Within while
+        double error = targetPosition - currentEncoderPosition;             //Within while
+        double sumOfErrors = error * changeInTime; //Error value * change in time //Within while
+        double rateOfChangeOfError; //  Within while
+
+        double motorPower = kP * error + kI * sumOfErrors + kD * rateOfChangeOfError; //within while
+
+
+        verticalMotor.setPower(motorPower);
+    }
+
+
+
+
+
+
+
+
+
 
 
 

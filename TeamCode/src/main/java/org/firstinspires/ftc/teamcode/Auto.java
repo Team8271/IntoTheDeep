@@ -35,8 +35,8 @@ public class Auto extends LinearOpMode {
 
     }
 
-    //the main auto stuff
-    //Arm stuff commented out cuz it borked rn (blame builder)
+    //Main auto
+    //Vertical Slide and Claw things have been commented out for testing while robot is disabled
     private void mainAuto(int delayInSeconds, int startPosition){
         //robot.closeClaw(); //grab preloaded specimen
         sleep(1000 + (delayInSeconds * 1000));//Adjustable delay
@@ -155,13 +155,13 @@ public class Auto extends LinearOpMode {
         setVerticalPosition(vertWall+200);//Lift slide so Specimen clears wall
     }
 
-    //Set position of the vertical slide (Applies power of 1)
-    //Should be replaced with cool stuff Mr. Ren emailed
+    //!!! This is being moved to Configuration as a PID motor control
     public void setVerticalPosition(int position){
         robot.verticalMotor.setTargetPosition(position);
         robot.verticalMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
         robot.verticalMotor.setPower(1);
     }
+
 
     //Drive forward until button is pressed or odom change is little
     public void driveForwardUntilBlocked(double power){
