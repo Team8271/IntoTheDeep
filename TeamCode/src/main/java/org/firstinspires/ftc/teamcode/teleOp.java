@@ -5,6 +5,8 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.util.Range;
 
+import java.util.HashMap;
+
 @TeleOp(name="Jax TeleOp")
 public class teleOp extends LinearOpMode {
     private Configuration robot;
@@ -218,7 +220,6 @@ public class teleOp extends LinearOpMode {
 
                 //Telemetry
                 telemetry.update();
-            }
         }
     }
-
+}

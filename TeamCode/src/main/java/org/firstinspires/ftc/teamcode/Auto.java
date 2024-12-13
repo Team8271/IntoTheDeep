@@ -59,7 +59,7 @@ public class Auto extends LinearOpMode {
         robot.closeClaw();
     }
 
-    //fix me ahhhhhhhhh i dont ready yet
+    //Work in Progress (Don't use)
     private void telemetrySelector(){
         HashMap<Integer, String> startingPositions = new HashMap<Integer, String>();
         startingPositions.put(0, "Centered with Submersible");
@@ -117,7 +117,7 @@ public class Auto extends LinearOpMode {
 
     }
 
-    //Clip Specimen on the High Chamber (Vertical slide needs to be vertAboveChamber!
+    //Clip Specimen on the High Chamber (Vertical slide needs to be vertAboveChamber!)
     public void clipSpecimen(){
         if(robot.verticalMotor.getCurrentPosition() < vertAboveChamber-200){//If not above chamber
             telemetry.addLine("Vertical Slide position is incorrect");//calm
@@ -146,7 +146,7 @@ public class Auto extends LinearOpMode {
         }
     }
 
-    //Grab Specimen off of the Wall (Wow!)
+    //Grab Specimen off of the Wall
     public void grabSpecimenFromWall(){
         setVerticalPosition(vertWall);//Start moving Vertical slide into position
         driveForwardUntilBlocked(normalPower);//Drive into wall
@@ -156,6 +156,7 @@ public class Auto extends LinearOpMode {
     }
 
     //Set position of the vertical slide (Applies power of 1)
+    //Should be replaced with cool stuff Mr. Ren emailed
     public void setVerticalPosition(int position){
         robot.verticalMotor.setTargetPosition(position);
         robot.verticalMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
