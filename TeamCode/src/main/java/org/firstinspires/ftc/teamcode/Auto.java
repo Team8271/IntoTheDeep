@@ -31,9 +31,19 @@ public class Auto extends LinearOpMode {
         //Wait for driver to press START
         waitForStart();
 
-        mainAuto(1, 1);
+        tweetyAuto();
 
+        robot.tweetyBird.close();
     }
+
+
+
+    private void tweetyAuto(){
+        robot.tweetyBird.sendTargetPosition(5, 5, 90);
+        robot.tweetyBird.waitWhileBusy();
+    }
+
+
 
     //Main auto
     //Vertical Slide and Claw things have been commented out for testing while robot is disabled

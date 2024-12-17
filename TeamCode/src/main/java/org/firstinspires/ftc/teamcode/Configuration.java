@@ -29,10 +29,12 @@ public class Configuration {
 
     public IMU imu;
 
-    public ThreeWheeled odometer;
 
+    public ThreeWheeled odometer;
     private boolean leftEncoder, rightEncoder, middleEncoder;
 
+    public Mecanum mecanum;
+    public TweetyBird tweetyBird;
 
 
     public Configuration(LinearOpMode opMode){
@@ -98,15 +100,13 @@ public class Configuration {
         );
         imu.initialize(parameters);
 
-        /*
+
         mecanum = new Mecanum.Builder()
                 .setFrontLeftMotor(fl)
                 .setFrontRightMotor(fr)
                 .setBackLeftMotor(bl)
                 .setBackRightMotor(br)
                 .build();
-
-         */
 
 
         if(autoConfig){
@@ -162,37 +162,36 @@ public class Configuration {
             verticalMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
         }
 
-        double startTime = opMode.getRuntime(); //(out of While)
-        double changeInTime = opMode.getRuntime() - startTime; //Change in time (In While)
+        double startTime = opMode.getRuntime();
+        double changeInTime;
 
-        double kP = 0; //Proportional Gain  (out of while
-        double kI = 0; //Integral Gain      (out of while
-        double kD = 0; //Derivative Gain    (out of while
+        double kP = 0; //Proportional Gain
+        double kI = 0; //Integral Gain
+        double kD = 0; //Derivative Gain
 
-        double currentEncoderPosition = verticalMotor.getCurrentPosition(); //Within while
-        double error = targetPosition - currentEncoderPosition;             //Within while
-        double sumOfErrors = error * changeInTime; //Error value * change in time //Within while
-        double rateOfChangeOfError; //  Within while
+        double currentEncoderPosition;
+        double error;
+        double previousError = 0;
+        double sumOfErrors;
+        double rateOfChangeOfError;
 
-        double motorPower = kP * error + kI * sumOfErrors + kD * rateOfChangeOfError; //within while
 
+        while(opMode.opModeIsActive()){
+            changeInTime = opMode.getRuntime() - startTime; //Change in time
+            currentEncoderPosition = verticalMotor.getCurrentPosition(); //Get the Current Position
+            error = targetPosition - currentEncoderPosition;             //The Distance from target
+            sumOfErrors = error * changeInTime; //Error value * change in time //Within while
+            rateOfChangeOfError = previousError - error; //prev error subtract current error
 
-        verticalMotor.setPower(motorPower);
+            double motorPower = kP * error + kI * sumOfErrors + kD * rateOfChangeOfError; //Calculate power
+            verticalMotor.setPower(motorPower); //Send power
+
+            previousError = error; //Get the previous Error
+        }
+
     }
 
 
-
-
-
-
-
-
-
-
-
-
-
-/*
     public void initTweatyBird(){
         tweetyBird = new TweetyBird.Builder()
                 // Your configuration options here
@@ -206,8 +205,5 @@ public class Configuration {
                 .setDebuggingEnabled(true)
                 .build();
     }
-
- */
-
 
 }
