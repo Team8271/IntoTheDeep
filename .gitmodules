@@ -1,0 +1,3 @@
+[submodule "tweetybird"]
+	path = tweetybird
+	url = https://github.com/narlyx/tweetybird

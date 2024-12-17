@@ -1,1 +1,0 @@
-packageSearchIndex = [{"l":"All Packages","u":"allpackages-index.html"},{"l":"dev.narlyx.tweetybird"},{"l":"dev.narlyx.tweetybird.Drivers"},{"l":"dev.narlyx.tweetybird.Odometers"}];updateSearchResults();
