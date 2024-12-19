@@ -16,7 +16,7 @@ public class teleOp extends LinearOpMode {
     @Override
     public void runOpMode() {
         robot = new Configuration(this);
-        robot.init(false);
+        robot.init();
 
 
         telemetry.addLine("Initialized");
@@ -65,14 +65,16 @@ public class teleOp extends LinearOpMode {
                 lateral = Math.sin(targetRadians)*gamepadHypot;
                 axial = Math.cos(targetRadians)*gamepadHypot;
 
+                telemetry.addData("getX", robot.odometer.getX());
+                telemetry.addData("getY", robot.odometer.getY());
                 telemetry.addData("getZ", robot.odometer.getZ());
 
-
+/*
                 telemetry.addData("gamepadRadians",String.valueOf(gamepadRadians));
                 telemetry.addData("gamepadHypot",String.valueOf(gamepadHypot));
                 telemetry.addData("robotRadians",String.valueOf(robotRadians));
                 telemetry.addData("targetRadians",String.valueOf(targetRadians));
-
+*/
 
 
                 double leftFrontPower = axial + lateral + yawControl;
@@ -203,6 +205,21 @@ public class teleOp extends LinearOpMode {
                         robot.verticalMotor.setPower(.5);
                     }
                     telemetry.addLine("Vertical slide holding...");
+
+                    if(gamepad2.dpad_down && !robot.verticalLimiter.isPressed()){
+                        robot.verticalMotor.setTargetPosition(0);
+                        robot.verticalMotor.setPower(0.6);
+                    }
+
+                    if(gamepad2.dpad_right){
+                        robot.verticalMotor.setTargetPosition(robot.vertWall);
+                        robot.verticalMotor.setPower(0.6);
+                    }
+
+                    if(gamepad2.dpad_up){
+                        robot.verticalMotor.setTargetPosition(robot.vertAboveChamber);
+                        robot.verticalMotor.setPower(0.6);
+                    }
                 }
 
                 telemetry.addLine();

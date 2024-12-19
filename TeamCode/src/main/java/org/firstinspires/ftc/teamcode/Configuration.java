@@ -18,8 +18,10 @@ public class Configuration {
     private LinearOpMode opMode;
 
     //Global Variables
-    public int vertMax = 6100, horzMax = 400;
+    public int vertMax = 5050, horzMax = 400;
     public int intakeOnDistance = 150;
+    public int vertAboveChamber = 4070, vertWall = 1635, vertBelowChamber = 3811;
+
 
     public DcMotor fl, fr, bl, br, horizontalMotor, verticalMotor, intakeMotor;
 
@@ -28,6 +30,8 @@ public class Configuration {
     public TouchSensor verticalLimiter, horizontalLimiter, frontSensor;
 
     public IMU imu;
+
+    //Color not yet
 
 
     public ThreeWheeled odometer;
@@ -42,7 +46,7 @@ public class Configuration {
     }
 
 
-    public void init(boolean autoConfig){
+    public void init(){
         HardwareMap hwMap=opMode.hardwareMap;
 
         fl = hwMap.get(DcMotor.class,"FR");
@@ -109,16 +113,6 @@ public class Configuration {
                 .build();
 
 
-        if(autoConfig){
-            leftEncoder = false;
-            rightEncoder = true;
-            middleEncoder = false;
-        }
-        else{
-            leftEncoder = true; //was true
-            rightEncoder = false; //was false
-            middleEncoder = false;
-        }
 
         odometer = new ThreeWheeled.Builder()
                 .setLeftEncoder(bl)
@@ -129,9 +123,9 @@ public class Configuration {
                 .setEncoderWheelRadius(0.944882)
 
                 //Change the true/false values to correct directions
-                .setFlipLeftEncoder(true)  //false for auto
-                .setFlipRightEncoder(false) //true for auto
-                .setFlipMiddleEncoder(false) //false for auto
+                .setFlipLeftEncoder(true)  //false for auto     true
+                .setFlipRightEncoder(false) //true for auto       false
+                .setFlipMiddleEncoder(false) //false for auto    false for teleop
 
                 .setSideEncoderDistance(12.75)
                 .setMiddleEncoderOffset(9.75)

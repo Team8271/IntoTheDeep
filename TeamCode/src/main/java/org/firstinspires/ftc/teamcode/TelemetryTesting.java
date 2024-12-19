@@ -17,49 +17,21 @@ public class TelemetryTesting extends LinearOpMode {
     @Override
     public void runOpMode() {
         robot = new Configuration(this);
-        robot.init(false);
-        robot.verticalMotor.setTargetPosition(0);
-        robot.verticalMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-        robot.verticalMotor.setPower(0);
-        telemetry.addLine("I move when you start me!");
+        robot.init();
+
+        robot.verticalMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        telemetry.addLine("i reset :)");
         telemetry.update();
 
 
+
         waitForStart();
-        robot.verticalMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-
-        robot.horizontalMotor.setTargetPosition(40);
-        robot.horizontalMotor.setPower(0);
-
-        while(opModeIsActive()){
-            while(gamepad2.x && opModeIsActive() && robot.verticalMotor.getCurrentPosition() < 6000){
-                targetPos+=2;
-                robot.verticalMotor.setTargetPosition(targetPos);
-                if(robot.verticalMotor.getPower() != 1){
-                    robot.verticalMotor.setPower(1);
-                }
-            }
-            if(gamepad2.a && !robot.verticalLimiter.isPressed()){
-                robot.verticalMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-                robot.verticalMotor.setPower(-0.6);
-            }
-            else {
-                robot.verticalMotor.setPower(0);
-            }
-            if(robot.verticalLimiter.isPressed()){
-                robot.verticalMotor.setPower(0);
-                robot.verticalMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-                robot.verticalMotor.setTargetPosition(0);
-                robot.verticalMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-            }
-            if(robot.verticalMotor.getMode() == DcMotor.RunMode.RUN_TO_POSITION){
-                robot.verticalMotor.setTargetPosition(targetPos);
-            }
 
 
-            telemetry.addData("Vertical Motor:", robot.verticalMotor.getCurrentPosition());
+        while(opModeIsActive()) {
+            telemetry.addData("Current position", robot.verticalMotor.getCurrentPosition());
             telemetry.update();
+            //5050 is top
         }
-
     }
 }

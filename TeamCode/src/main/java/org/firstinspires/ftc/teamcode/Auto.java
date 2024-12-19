@@ -13,9 +13,7 @@ public class Auto extends LinearOpMode {
 
     boolean swapDirection = false;
 
-    private static final int vertAboveChamber = 20;  //change me
-    private static final int vertWall = 20;     //change me
-    private static final int vertBelowChamber = 20; //change me
+
 
 
     double lowPower = 0.2;
@@ -26,35 +24,31 @@ public class Auto extends LinearOpMode {
     @Override
     public void runOpMode() {
         robot = new Configuration(this);
-        robot.init(true);
+        robot.init();
 
         //Wait for driver to press START
         waitForStart();
 
-        tweetyAuto();
-
-        robot.tweetyBird.close();
+        runAuto1();
     }
 
 
 
     private void tweetyAuto(){
-        robot.tweetyBird.sendTargetPosition(5, 5, 90);
+        robot.tweetyBird.sendTargetPosition(10, 10, 0);
         robot.tweetyBird.waitWhileBusy();
     }
-
-
 
     //Main auto
     //Vertical Slide and Claw things have been commented out for testing while robot is disabled
     private void mainAuto(int delayInSeconds, int startPosition){
-        //robot.closeClaw(); //grab preloaded specimen
+        robot.closeClaw(); //grab preloaded specimen
         sleep(1000 + (delayInSeconds * 1000));//Adjustable delay
         alignWithSubmersible(startPosition);//align with submersible
-        //setVerticalPosition(vertAboveChamber);//Start moving Vertical Slide to high position
+        setVerticalPosition(robot.vertAboveChamber);//Start moving Vertical Slide to high position
         sleep(2000);//Allow vertical slide to clear high chamber before moving
         driveForwardUntilBlocked(normalPower);//Move forward until Touch Sensor is pressed/odom stops changing
-        //clipSpecimen();//Clip the Specimen on the high chamber
+        clipSpecimen();//Clip the Specimen on the high chamber
         sleep(2000); //REMOVE ME, JUST FOR TESTING
         reverse(5, normalPower); //clear the submersible
         right(39, normalPower); //go to observation
@@ -64,7 +58,7 @@ public class Auto extends LinearOpMode {
 
 
 
-        setVerticalPosition(vertWall);//Start moving vert into position
+        setVerticalPosition(robot.vertWall);//Start moving vert into position
         driveForwardUntilBlocked(normalPower); //Drive into wall
         robot.closeClaw();
     }
@@ -129,7 +123,7 @@ public class Auto extends LinearOpMode {
 
     //Clip Specimen on the High Chamber (Vertical slide needs to be vertAboveChamber!)
     public void clipSpecimen(){
-        if(robot.verticalMotor.getCurrentPosition() < vertAboveChamber-200){//If not above chamber
+        if(robot.verticalMotor.getCurrentPosition() < robot.vertAboveChamber-200){//If not above chamber
             telemetry.addLine("Vertical Slide position is incorrect");//calm
             telemetry.addLine("EXITING SPECIMEN CLIP!");//panik
             telemetry.addLine("SCREAMING NO NO NO NO NO NO NO NO NO"); //panik
@@ -137,7 +131,7 @@ public class Auto extends LinearOpMode {
         }
         else {
             reverse(0.5, lowPower);//Move back a little
-            robot.verticalMotor.setTargetPosition(vertBelowChamber);//set target below chamber
+            robot.verticalMotor.setTargetPosition(robot.vertBelowChamber);//set target below chamber
             robot.verticalMotor.setPower(0.4);//Set power
             robot.openClaw();//release the specimen
         }
@@ -158,11 +152,11 @@ public class Auto extends LinearOpMode {
 
     //Grab Specimen off of the Wall
     public void grabSpecimenFromWall(){
-        setVerticalPosition(vertWall);//Start moving Vertical slide into position
+        setVerticalPosition(robot.vertWall);//Start moving Vertical slide into position
         driveForwardUntilBlocked(normalPower);//Drive into wall
         robot.closeClaw();//Close the Claw
         sleep(300);//Give Claw time to close
-        setVerticalPosition(vertWall+200);//Lift slide so Specimen clears wall
+        setVerticalPosition(robot.vertWall+200);//Lift slide so Specimen clears wall
     }
 
     //!!! This is being moved to Configuration as a PID motor control
@@ -171,7 +165,6 @@ public class Auto extends LinearOpMode {
         robot.verticalMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
         robot.verticalMotor.setPower(1);
     }
-
 
     //Drive forward until button is pressed or odom change is little
     public void driveForwardUntilBlocked(double power){
@@ -324,7 +317,6 @@ public class Auto extends LinearOpMode {
         robot.verticalMotor.setPower(1);
     }
 
-
     private void brakeAndReset(){
         robot.fl.setPower(0);
         robot.fr.setPower(0);
@@ -346,7 +338,6 @@ public class Auto extends LinearOpMode {
         //swap direction (for other stuff)
         swapDirection = !swapDirection;
     }
-
 
     //Directions may be incorrect for Odom pods (fix in Config)
     private void forward(double distance, double rawPower){
