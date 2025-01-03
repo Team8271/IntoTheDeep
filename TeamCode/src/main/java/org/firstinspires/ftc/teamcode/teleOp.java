@@ -17,6 +17,7 @@ public class teleOp extends LinearOpMode {
     public void runOpMode() {
         robot = new Configuration(this);
         robot.init(false);
+        PIDControl thread1 = new PIDControl(this);
 
 
         telemetry.addLine("Initialized");
@@ -25,6 +26,9 @@ public class teleOp extends LinearOpMode {
 
         telemetry.clearAll();
 
+        //
+        // thread1.setVerticalTargetPosition(0);
+        //thread1.start();
         while (opModeIsActive()){
                 //Driver 1
                 double axialControl = -gamepad1.left_stick_y;
@@ -89,6 +93,7 @@ public class teleOp extends LinearOpMode {
                 robot.br.setPower(rightBackPower * mainThrottle);
 
                 telemetry.addLine();
+
 
 
 

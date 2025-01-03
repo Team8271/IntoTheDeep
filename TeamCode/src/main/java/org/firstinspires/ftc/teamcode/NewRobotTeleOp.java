@@ -14,7 +14,7 @@ public class NewRobotTeleOp extends LinearOpMode {
     @Override
     public void runOpMode() {
         robot = new NewRobotConfig(this);
-        robot.init();
+        robot.init(false);
         ElapsedTime runtime = new ElapsedTime();
 
 
@@ -32,6 +32,10 @@ public class NewRobotTeleOp extends LinearOpMode {
             double yaw = gamepad1.right_stick_x;
             double mainThrottle = .2 + (gamepad1.right_trigger * 0.8);
 
+            //Driver 2
+            double verticalPower = gamepad2.left_stick_y;
+            double horziontalPower = gamepad2.right_stick_x;
+
             double leftFrontPower = axial + lateral + yaw;
             double rightFrontPower = axial - lateral - yaw;
             double leftBackPower = axial - lateral + yaw;
@@ -41,6 +45,10 @@ public class NewRobotTeleOp extends LinearOpMode {
             robot.fr.setPower(rightFrontPower * mainThrottle);
             robot.bl.setPower(leftBackPower * mainThrottle);
             robot.br.setPower(rightBackPower * mainThrottle);
+
+            robot.leftHorizontal.setPower(horziontalPower);
+            robot.rightHorizontal.setPower(horziontalPower);
+            robot.verticalMotor.setPower(verticalPower);
 
             telemetry.addData("Runtime", runtime.toString());
 

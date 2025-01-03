@@ -1,7 +1,9 @@
 package org.firstinspires.ftc.teamcode;
 
+import com.qualcomm.hardware.rev.RevColorSensorV3;
 import com.qualcomm.hardware.rev.RevHubOrientationOnRobot;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
+import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.HardwareMap;
@@ -33,13 +35,15 @@ public class Configuration {
 
     public IMU imu;
 
+    public RevColorSensorV3 blonker;
+
     boolean flipLeftEncoder;
     boolean flipRightEncoder;
     boolean flipMiddleEncoder;
 
     //Turn off color light
-    NormalizedColorSensor colorSensor;
 
+    //how?
 
 
 
@@ -102,6 +106,8 @@ public class Configuration {
         redServo = hwMap.get(Servo.class, "Red");
         blueServo = hwMap.get(Servo.class, "Blue");
         boxServo = hwMap.get(Servo.class, "Box");
+
+        blonker = hwMap.get(RevColorSensorV3.class, "sensor_color");
 
 
         if(autoConfig){
@@ -166,45 +172,10 @@ public class Configuration {
         blueServo.setPosition(0.5);
     }
 
-    public void setVerticalPosition(int targetPosition){
-
-        //outside of while
-        verticalMotor.setPower(0);
-        verticalMotor.setTargetPosition(targetPosition);
-
-        //Set motor in RunToPosition mode
-        if(verticalMotor.getMode() != DcMotor.RunMode.RUN_TO_POSITION){
-            verticalMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-        }
-
-        double startTime = opMode.getRuntime();
-        double changeInTime;
-
-        double kP = 0; //Proportional Gain
-        double kI = 0; //Integral Gain
-        double kD = 0; //Derivative Gain
-
-        double currentEncoderPosition;
-        double error;
-        double previousError = 0;
-        double sumOfErrors;
-        double rateOfChangeOfError;
 
 
-        while(opMode.opModeIsActive()){
-            changeInTime = opMode.getRuntime() - startTime; //Change in time
-            currentEncoderPosition = verticalMotor.getCurrentPosition(); //Get the Current Position
-            error = targetPosition - currentEncoderPosition;             //The Distance from target
-            sumOfErrors = error * changeInTime; //Error value * change in time //Within while
-            rateOfChangeOfError = previousError - error; //prev error subtract current error
 
-            double motorPower = kP * error + kI * sumOfErrors + kD * rateOfChangeOfError; //Calculate power
-            verticalMotor.setPower(motorPower); //Send power
 
-            previousError = error; //Get the previous Error
-        }
-
-    }
 
 
     public void initTweatyBird(){
@@ -222,3 +193,5 @@ public class Configuration {
     }
 
 }
+
+

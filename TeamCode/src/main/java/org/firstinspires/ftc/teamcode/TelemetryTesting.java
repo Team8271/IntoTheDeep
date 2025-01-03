@@ -32,6 +32,7 @@ public class TelemetryTesting extends LinearOpMode {
             telemetry.addData("Current position", robot.verticalMotor.getCurrentPosition());
             telemetry.update();
             //5050 is top
+            //Try 4761 for above high chamber
         }
     }
 }
