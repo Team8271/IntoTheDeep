@@ -25,7 +25,7 @@ public class MotorTester extends LinearOpMode {
     public void runOpMode() {
         //Initialize
         robot = new Configuration(this);
-        robot.init();//change me
+        robot.init(false);//change me
 
         //Don't clear
         telemetry.setAutoClear(false);

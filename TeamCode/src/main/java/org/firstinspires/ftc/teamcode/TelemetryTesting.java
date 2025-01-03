@@ -17,7 +17,7 @@ public class TelemetryTesting extends LinearOpMode {
     @Override
     public void runOpMode() {
         robot = new Configuration(this);
-        robot.init();
+        robot.init(false);
 
         robot.verticalMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         telemetry.addLine("i reset :)");

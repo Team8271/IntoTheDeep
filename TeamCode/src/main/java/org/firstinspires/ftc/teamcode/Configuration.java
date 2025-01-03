@@ -6,7 +6,9 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.IMU;
+import com.qualcomm.robotcore.hardware.NormalizedColorSensor;
 import com.qualcomm.robotcore.hardware.Servo;
+import com.qualcomm.robotcore.hardware.SwitchableLight;
 import com.qualcomm.robotcore.hardware.TouchSensor;
 
 import dev.narlyx.tweetybird.Drivers.Mecanum;
@@ -31,7 +33,14 @@ public class Configuration {
 
     public IMU imu;
 
-    //Color not yet
+    boolean flipLeftEncoder;
+    boolean flipRightEncoder;
+    boolean flipMiddleEncoder;
+
+    //Turn off color light
+    NormalizedColorSensor colorSensor;
+
+
 
 
     public ThreeWheeled odometer;
@@ -46,7 +55,7 @@ public class Configuration {
     }
 
 
-    public void init(){
+    public void init(boolean autoConfig){
         HardwareMap hwMap=opMode.hardwareMap;
 
         fl = hwMap.get(DcMotor.class,"FR");
@@ -95,6 +104,18 @@ public class Configuration {
         boxServo = hwMap.get(Servo.class, "Box");
 
 
+        if(autoConfig){
+            flipLeftEncoder = false;
+            flipRightEncoder = true;
+            flipMiddleEncoder = false;
+        }
+        else{
+            flipLeftEncoder = true;
+            flipRightEncoder = false;
+            flipMiddleEncoder = false;
+        }
+
+
         imu = hwMap.get(IMU.class, "imu");
         IMU.Parameters parameters = new IMU.Parameters(
                 new RevHubOrientationOnRobot( //Mes swith me
@@ -123,9 +144,9 @@ public class Configuration {
                 .setEncoderWheelRadius(0.944882)
 
                 //Change the true/false values to correct directions
-                .setFlipLeftEncoder(true)  //false for auto     true
-                .setFlipRightEncoder(false) //true for auto       false
-                .setFlipMiddleEncoder(false) //false for auto    false for teleop
+                .setFlipLeftEncoder(flipLeftEncoder)  //false for auto     true
+                .setFlipRightEncoder(flipRightEncoder) //true for auto       false
+                .setFlipMiddleEncoder(flipMiddleEncoder) //false for auto    false for teleop
 
                 .setSideEncoderDistance(12.75)
                 .setMiddleEncoderOffset(9.75)

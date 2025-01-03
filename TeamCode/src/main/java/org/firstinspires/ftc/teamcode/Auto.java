@@ -24,7 +24,7 @@ public class Auto extends LinearOpMode {
     @Override
     public void runOpMode() {
         robot = new Configuration(this);
-        robot.init();
+        robot.init(true);
 
         //Wait for driver to press START
         waitForStart();
