@@ -2,9 +2,7 @@ package org.firstinspires.ftc.teamcode;
 
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
-import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.util.ElapsedTime;
-import com.qualcomm.robotcore.util.Range;
 
 @TeleOp(name="New Robot TeleOp")
 public class NewRobotTeleOp extends LinearOpMode {
@@ -46,9 +44,9 @@ public class NewRobotTeleOp extends LinearOpMode {
             robot.bl.setPower(leftBackPower * mainThrottle);
             robot.br.setPower(rightBackPower * mainThrottle);
 
-            robot.leftHorizontal.setPower(horziontalPower);
-            robot.rightHorizontal.setPower(horziontalPower);
-            robot.verticalMotor.setPower(verticalPower);
+            robot.leftHorz.setPower(horziontalPower);
+            robot.rightHorz.setPower(horziontalPower);
+            robot.vertMotor.setPower(verticalPower);
 
             telemetry.addData("Runtime", runtime.toString());
 

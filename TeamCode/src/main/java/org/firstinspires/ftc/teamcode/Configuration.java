@@ -41,9 +41,7 @@ public class Configuration {
     boolean flipRightEncoder;
     boolean flipMiddleEncoder;
 
-    //Turn off color light
-
-    //how?
+    //The light on color sensor is controlled via a switch on the device
 
 
 
