@@ -14,26 +14,31 @@ import dev.narlyx.tweetybird.TweetyBird;
 public class NewRobotConfig {
     private final LinearOpMode opMode;
 
+    //**Easily changeable values**\\
+    //Claw values (0-1 less-more closed)
+    private final double clawFullyClosed = 1, clawFullyOpen = 0;
+
+
     //Global Variables
-    public DcMotor fl, fr, bl, br, leftHorz, rightHorz, vertMotor;
-    public Servo VertFlipServo, HorzFlipServo, clawLeftServo, clawRightServo, intakeServo;
+    public DcMotor fl, fr, bl, br, leftHorz, rightHorz, vertMotor; //Motors
+    public Servo VertFlipServo, HorzFlipServo, clawLeftServo, clawRightServo, intakeServo; //Servos
+    private double clawLeftOpen, clawRightOpen, clawLeftClosed, clawRightClosed; //Claw Values
 
-    //TweatyBird Odometry Pod Flipping values
-    boolean flipLeftEncoder;
-    boolean flipRightEncoder;
-    boolean flipMiddleEncoder;
 
-    public ThreeWheeled odometer;
-
-    public Mecanum mecanum;
-    public TweetyBird tweetyBird;
+    //TweatyBird Values
+    boolean flipLeftEncoder;        //Used for flipping odom pods
+    boolean flipRightEncoder;       //Used for flipping odom pods
+    boolean flipMiddleEncoder;      //Used for flipping odom pods
+    public ThreeWheeled odometer;   //Used for setting up odom pods
+    public Mecanum mecanum;         //Used for mecanum wheels for TweetyBird
+    public TweetyBird tweetyBird;   //Used for tweetyBird setup
 
     //Let the config refer to opMode
     public NewRobotConfig(LinearOpMode opMode) {
         this.opMode = opMode;
     }
 
-
+    //Init method
     public void init(boolean autoConfig) {
         //Used to define all motors and servos
         HardwareMap hwMap = opMode.hardwareMap;
@@ -80,13 +85,18 @@ public class NewRobotConfig {
         vertMotor.setDirection(DcMotor.Direction.FORWARD);
         vertMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
 
-
         //Define Servos
         VertFlipServo = hwMap.get(Servo.class, "VertFlip");
         HorzFlipServo = hwMap.get(Servo.class, "HorzFlip");
         clawLeftServo = hwMap.get(Servo.class, "clawLeft");
         clawRightServo = hwMap.get(Servo.class, "clawRight");
+        intakeServo = hwMap.get(Servo.class, "intakeServo");
 
+        //Define Claw Positions
+        clawLeftClosed = 1-clawFullyClosed;
+        clawLeftOpen = 1-clawFullyOpen;
+        clawRightClosed = clawFullyClosed;
+        clawRightOpen = clawFullyOpen;
 
 
         //Used to define wheels in TweetyBird
@@ -131,4 +141,12 @@ public class NewRobotConfig {
         odometer.resetTo(0,0,0);
 
     }
+
+    public void closeClaw(){
+        clawLeftServo.setPosition(clawLeftClosed); //Set left servo to close position
+        clawRightServo.setPosition(clawRightClosed); //Set right servo to close position
+
+    }
+
+
 }

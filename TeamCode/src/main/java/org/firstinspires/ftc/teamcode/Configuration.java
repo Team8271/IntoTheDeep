@@ -160,8 +160,8 @@ public class Configuration {
     }
 
     public void closeClaw() {
-        redServo.setPosition(0.625);//Bigger more close
-        blueServo.setPosition(0.325); //less more close
+        redServo.setPosition(0.625);//Bigger more close (Right servo)
+        blueServo.setPosition(0.325); //less more close (Left servo)
         //telemetry.addLine("Red and Blue closed");
     }
 
