@@ -172,10 +172,6 @@ public class Configuration {
 
 
 
-
-
-
-
     public void initTweatyBird(){
         tweetyBird = new TweetyBird.Builder()
                 // Your configuration options here

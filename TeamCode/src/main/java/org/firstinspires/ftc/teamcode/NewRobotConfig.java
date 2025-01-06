@@ -15,13 +15,17 @@ public class NewRobotConfig {
     private final LinearOpMode opMode;
 
     //**Easily changeable values**\\
+    //Vertical pre-positions
+    private final int aboveChamber = 1234, belowChamber = 1200;
     //Claw values (0-1 less-more closed)
     private final double clawFullyClosed = 1, clawFullyOpen = 0;
 
 
+
     //Global Variables
     public DcMotor fl, fr, bl, br, leftHorz, rightHorz, vertMotor; //Motors
-    public Servo VertFlipServo, HorzFlipServo, clawLeftServo, clawRightServo, intakeServo; //Servos
+    public Servo VertFlipServo, HorzFlipServo, clawLeftServo,
+            clawRightServo, intakeServo, wristServo; //Servos
     private double clawLeftOpen, clawRightOpen, clawLeftClosed, clawRightClosed; //Claw Values
 
 
@@ -91,6 +95,7 @@ public class NewRobotConfig {
         clawLeftServo = hwMap.get(Servo.class, "clawLeft");
         clawRightServo = hwMap.get(Servo.class, "clawRight");
         intakeServo = hwMap.get(Servo.class, "intakeServo");
+        wristServo = hwMap.get(Servo.class, "wristServo");
 
         //Define Claw Positions
         clawLeftClosed = 1-clawFullyClosed;
@@ -139,13 +144,35 @@ public class NewRobotConfig {
 
         //Ensures that the Odometry is set at 0 when it starts
         odometer.resetTo(0,0,0);
+    }
 
+    //Init TweatyBird
+    public void initTweatyBird(){
+        tweetyBird = new TweetyBird.Builder()
+                // Your configuration options here
+                .setDistanceBuffer(1) //inches
+                .setDriver(mecanum)
+                .setLinearOpMode(opMode)
+                .setMaximumSpeed(0.5)
+                .setMinimumSpeed(0.2)
+                .setOdometer(odometer)
+                .setRotationBuffer(1)
+                .setDebuggingEnabled(true)
+                .build();
     }
 
     public void closeClaw(){
         clawLeftServo.setPosition(clawLeftClosed); //Set left servo to close position
         clawRightServo.setPosition(clawRightClosed); //Set right servo to close position
+    }
 
+    public void openClaw(){
+        clawLeftServo.setPosition(clawLeftOpen); //Set left servo to open position
+        clawRightServo.setPosition(clawRightOpen); //Set right servo to open position
+    }
+
+    public void clipSpecimen(){
+        if(vertMotor.)
     }
 
 
