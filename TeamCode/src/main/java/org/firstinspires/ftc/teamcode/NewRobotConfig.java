@@ -179,6 +179,14 @@ public class NewRobotConfig {
         clawRightServo.setPosition(clawRightOpen); //Set right servo to open position
     }
 
+    //Used to start the PID
+    public void PIDRun(){
+        PIDControl thread1 = new PIDControl(opMode);
+        opMode.telemetry.addLine("Starting PIDControl thread");
+        thread1.start();
+
+    }
+
 
     public void clipSpecimen(){
         PIDControl thread1 = new PIDControl(opMode);
@@ -191,7 +199,7 @@ public class NewRobotConfig {
         }
         thread1.targetPosition = belowChamber;
         openClaw();
-        thread1.interrupt();//add some de-buggin stuff here but not now lol
+        //thread1.interrupt();//add some de-buggin stuff here but not now lol
     }
 
 

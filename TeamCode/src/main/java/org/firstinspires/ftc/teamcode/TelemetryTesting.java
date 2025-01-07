@@ -6,7 +6,7 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 
 @TeleOp(name="Telemetry Testing")
 public class TelemetryTesting extends LinearOpMode {
-    private Configuration robot;
+    private NewRobotConfig robot;
         //everything in here needs scrapped,,, very bad
     //just copy paste from teleOp and add telemetry!
 
@@ -16,20 +16,27 @@ public class TelemetryTesting extends LinearOpMode {
     //Main OpMode
     @Override
     public void runOpMode() {
-        robot = new Configuration(this);
+        robot = new NewRobotConfig(this);
         robot.init(false);
 
-        robot.verticalMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        telemetry.addLine("i reset :)");
+
+        telemetry.addLine("Initialized Config");
+        robot.PIDRun();
         telemetry.update();
-
-
+        int target = robot.vertMotor.getCurrentPosition();
 
         waitForStart();
 
 
         while(opModeIsActive()) {
-            telemetry.addData("Current position", robot.verticalMotor.getCurrentPosition());
+            if(gamepad1.dpad_up){
+                target++;
+            }
+            if(gamepad1.dpad_down){
+                target--;
+            }
+            telemetry.addData("Target position", target);
+            telemetry.addData("Current position", robot.vertMotor.getCurrentPosition());
             telemetry.update();
             //5050 is top
             //Try 4761 for above high chamber

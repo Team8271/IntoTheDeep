@@ -2,6 +2,8 @@ package org.firstinspires.ftc.teamcode;
 
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 
+//      Driver2Controls thread1 = new Driver2Controls(this);
+
 public class Driver2Controls extends Thread{
     private final LinearOpMode opMode;
     public Driver2Controls(LinearOpMode opMode){
