@@ -16,9 +16,9 @@ public class NewRobotConfig {
 
     //**Easily changeable values**\\
     //Vertical pre-positions
-    private final int aboveChamber = 1234, belowChamber = 1200;
+    public final int aboveChamber = 1234, belowChamber = 1200, wallHeight = 1234, highBasket = 1234;
     //Claw values (0-1 less-more closed)
-    private final double clawFullyClosed = 1, clawFullyOpen = 0;
+    public final double clawFullyClosed = 1, clawFullyOpen = 0;
 
 
 
@@ -94,8 +94,8 @@ public class NewRobotConfig {
         HorzFlipServo = hwMap.get(Servo.class, "HorzFlip");
         clawLeftServo = hwMap.get(Servo.class, "clawLeft");
         clawRightServo = hwMap.get(Servo.class, "clawRight");
-        intakeServo = hwMap.get(Servo.class, "intakeServo");
-        wristServo = hwMap.get(Servo.class, "wristServo");
+        //intakeServo = hwMap.get(Servo.class, "intakeServo");
+        //wristServo = hwMap.get(Servo.class, "wristServo");
 
         //Define Claw Positions
         clawLeftClosed = 1-clawFullyClosed;
@@ -179,28 +179,16 @@ public class NewRobotConfig {
         clawRightServo.setPosition(clawRightOpen); //Set right servo to open position
     }
 
+
     //Used to start the PID
     public void PIDRun(){
         PIDControl thread1 = new PIDControl(opMode);
+
         opMode.telemetry.addLine("Starting PIDControl thread");
         thread1.start();
-
     }
 
 
-    public void clipSpecimen(){
-        PIDControl thread1 = new PIDControl(opMode);
-        //clips the specimen on high chamber
-        thread1.start();
-        thread1.targetPosition = aboveChamber; //ensure its in correct position
-        while(thread1.isBusy){
-            opMode.telemetry.addLine("Waiting for thread1");
-            opMode.telemetry.update();
-        }
-        thread1.targetPosition = belowChamber;
-        openClaw();
-        //thread1.interrupt();//add some de-buggin stuff here but not now lol
-    }
 
 
 

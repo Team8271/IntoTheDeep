@@ -3,14 +3,13 @@ package org.firstinspires.ftc.teamcode;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.Servo;
 
 @TeleOp(name="Telemetry Testing")
 public class TelemetryTesting extends LinearOpMode {
     private NewRobotConfig robot;
-        //everything in here needs scrapped,,, very bad
-    //just copy paste from teleOp and add telemetry!
 
-    private int targetPos = 0;
+
 
 
     //Main OpMode
@@ -21,7 +20,18 @@ public class TelemetryTesting extends LinearOpMode {
 
 
         telemetry.addLine("Initialized Config");
-        robot.PIDRun();
+
+        telemetry.update();
+
+
+
+        PIDControl thread1 = new PIDControl(this);
+
+
+        telemetry.addLine("Starting PIDControl thread");
+        thread1.start();
+        telemetry.addLine("SUCCESS");
+
         telemetry.update();
         int target = robot.vertMotor.getCurrentPosition();
 
@@ -29,17 +39,40 @@ public class TelemetryTesting extends LinearOpMode {
 
 
         while(opModeIsActive()) {
+            telemetry.addLine("DpadUp for up\nDpadDown for down\n");
+            telemetry.addData("active?", thread1.isAlive());
+            telemetry.addData("madehere1?", thread1.madeHere1);
+
             if(gamepad1.dpad_up){
                 target++;
             }
             if(gamepad1.dpad_down){
                 target--;
             }
+            if(target < 0){
+                target = 0;
+            }
+            thread1.targetPosition = target;
+            telemetry.addData("PID target", thread1.targetPosition);
+            telemetry.addData("PID power", thread1.motorPower);
+            telemetry.addData("kP", thread1.kP);
+            telemetry.addData("error", thread1.error);
+            telemetry.addData("kI", thread1.kI);
+            telemetry.addData("sumOfErrors", thread1.sumOfErrors);
+            telemetry.addData("kD", thread1.kD);
+            telemetry.addData("rateOfChangeOfError", thread1.rateOfChangeOfError);
             telemetry.addData("Target position", target);
             telemetry.addData("Current position", robot.vertMotor.getCurrentPosition());
             telemetry.update();
-            //5050 is top
-            //Try 4761 for above high chamber
+
         }
     }
 }
+/* New Robot
+Below High Chamber
+Above High Chamber
+At Wall
+At High Basket
+
+
+ */

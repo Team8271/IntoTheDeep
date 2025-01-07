@@ -30,19 +30,19 @@ public class Auto extends LinearOpMode {
         //Wait for driver to press START
         waitForStart();
 
-        thread1.setVerticalTargetPosition(0);
+        thread1.targetPosition = 0;
         thread1.start();
         telemetry.addLine("PID Started");
         telemetry.update();
 
         while (opModeIsActive()){
             if (gamepad1.dpad_up){ //Go to above high chamber
-                thread1.setVerticalTargetPosition(4761);
+                thread1.targetPosition = 4761;
                 telemetry.addLine("Setting target position to 4761");
                 telemetry.update();
             }
             if(gamepad1.dpad_down){ //GO to down
-                thread1.setVerticalTargetPosition(0);
+                thread1.targetPosition = 0;
             }
         }
 
