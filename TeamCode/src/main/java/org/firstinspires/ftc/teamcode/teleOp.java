@@ -5,8 +5,6 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.util.Range;
 
-import java.util.HashMap;
-
 @TeleOp(name="Jax TeleOp")
 public class teleOp extends LinearOpMode {
     private Configuration robot;
@@ -87,8 +85,8 @@ public class teleOp extends LinearOpMode {
                 double rightBackPower = axial + lateral - yawControl;
 
 
-                robot.fl.setPower(leftFrontPower * mainThrottle);
-                robot.fr.setPower(rightFrontPower * mainThrottle);
+                robot.fr.setPower(leftFrontPower * mainThrottle);
+                robot.fl.setPower(rightFrontPower * mainThrottle);
                 robot.bl.setPower(leftBackPower * mainThrottle);
                 robot.br.setPower(rightBackPower * mainThrottle);
 

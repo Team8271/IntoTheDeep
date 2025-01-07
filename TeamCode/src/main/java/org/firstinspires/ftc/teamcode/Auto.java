@@ -2,7 +2,6 @@ package org.firstinspires.ftc.teamcode;
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
-import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.util.ElapsedTime;
 import java.util.HashMap;
@@ -196,8 +195,8 @@ public class Auto extends LinearOpMode {
         telemetry.update();
         while (true){
             double lastPos = -robot.odometer.getY();
-            robot.fl.setPower(power);
             robot.fr.setPower(power);
+            robot.fl.setPower(power);
             robot.bl.setPower(power);
             robot.br.setPower(power);
             sleep(300);
@@ -240,8 +239,8 @@ public class Auto extends LinearOpMode {
         sleep(1800);
 
         //Drive to the submersible until sensor is pressed
-        robot.fl.setPower(normalPower);
         robot.fr.setPower(normalPower);
+        robot.fl.setPower(normalPower);
         robot.bl.setPower(normalPower);
         robot.br.setPower(normalPower);
         //Add telemetry
@@ -251,8 +250,8 @@ public class Auto extends LinearOpMode {
         }
 
         //back up a little
-        robot.fl.setPower(-normalPower);
         robot.fr.setPower(-normalPower);
+        robot.fl.setPower(-normalPower);
         robot.bl.setPower(-normalPower);
         robot.br.setPower(-normalPower);
         sleep(20);
@@ -278,8 +277,8 @@ public class Auto extends LinearOpMode {
         telemetry.addLine("Red and Blue open");
 
         //back up a bit
-        robot.fl.setPower(-normalPower);
         robot.fr.setPower(-normalPower);
+        robot.fl.setPower(-normalPower);
         robot.bl.setPower(-normalPower);
         robot.br.setPower(-normalPower);
         sleep(300);
@@ -308,8 +307,8 @@ public class Auto extends LinearOpMode {
         //Go forward into wall
         telemetry.addLine("Going forward");
         telemetry.update();
-        robot.fl.setPower(normalPower);
         robot.fr.setPower(normalPower);
+        robot.fl.setPower(normalPower);
         robot.bl.setPower(normalPower);
         robot.br.setPower(normalPower);
         sleep(2000);
@@ -325,8 +324,8 @@ public class Auto extends LinearOpMode {
 
         sleep(500);
         //back up a bit
-        robot.fl.setPower(-normalPower);
         robot.fr.setPower(-normalPower);
+        robot.fl.setPower(-normalPower);
         robot.bl.setPower(-normalPower);
         robot.br.setPower(-normalPower);
         sleep(300);
@@ -341,8 +340,8 @@ public class Auto extends LinearOpMode {
     }
 
     private void brakeAndReset(){
-        robot.fl.setPower(0);
         robot.fr.setPower(0);
+        robot.fl.setPower(0);
         robot.bl.setPower(0);
         robot.br.setPower(0);
         robot.odometer.resetTo(0,0,0);
@@ -352,8 +351,8 @@ public class Auto extends LinearOpMode {
     private void rotate180(){
         robot.odometer.resetTo(0,0,0);
         while(robot.odometer.getZ() > -3.07 && opModeIsActive()){
-            robot.fl.setPower(normalPower);
-            robot.fr.setPower(-normalPower);
+            robot.fr.setPower(normalPower);
+            robot.fl.setPower(-normalPower);
             robot.bl.setPower(normalPower);
             robot.br.setPower(-normalPower);
         }
@@ -372,8 +371,8 @@ public class Auto extends LinearOpMode {
             telemetry.addData("Going forward:", distance);
             telemetry.addData("Current Position:", -robot.odometer.getY());
             telemetry.update();
-            robot.fl.setPower(power);
             robot.fr.setPower(power);
+            robot.fl.setPower(power);
             robot.bl.setPower(power);
             robot.br.setPower(power);
         }
@@ -389,8 +388,8 @@ public class Auto extends LinearOpMode {
             telemetry.addData("Going reverse:", distance);
             telemetry.addData("Current Position:", robot.odometer.getY());
             telemetry.update();
-            robot.fl.setPower(-power);
             robot.fr.setPower(-power);
+            robot.fl.setPower(-power);
             robot.bl.setPower(-power);
             robot.br.setPower(-power);
         }
@@ -406,8 +405,8 @@ public class Auto extends LinearOpMode {
             telemetry.addData("Going right:", distance);
             telemetry.addData("Current Position:", robot.odometer.getY());
             telemetry.update();
-            robot.fl.setPower(power);
-            robot.fr.setPower(-power);
+            robot.fr.setPower(power);
+            robot.fl.setPower(-power);
             robot.bl.setPower(-power);
             robot.br.setPower(power);
         }
@@ -423,8 +422,8 @@ public class Auto extends LinearOpMode {
             telemetry.addData("Going left:", distance);
             telemetry.addData("Current Position:", -robot.odometer.getY());
             telemetry.update();
-            robot.fl.setPower(-power);
-            robot.fr.setPower(power);
+            robot.fr.setPower(-power);
+            robot.fl.setPower(power);
             robot.bl.setPower(power);
             robot.br.setPower(-power);
         }

@@ -3,14 +3,11 @@ package org.firstinspires.ftc.teamcode;
 import com.qualcomm.hardware.rev.RevColorSensorV3;
 import com.qualcomm.hardware.rev.RevHubOrientationOnRobot;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
-import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.IMU;
-import com.qualcomm.robotcore.hardware.NormalizedColorSensor;
 import com.qualcomm.robotcore.hardware.Servo;
-import com.qualcomm.robotcore.hardware.SwitchableLight;
 import com.qualcomm.robotcore.hardware.TouchSensor;
 
 import dev.narlyx.tweetybird.Drivers.Mecanum;
@@ -27,7 +24,7 @@ public class Configuration {
     public int vertAboveChamber = 4070, vertWall = 1635, vertBelowChamber = 3811;
 
 
-    public DcMotor fl, fr, bl, br, horizontalMotor, verticalMotor, intakeMotor;
+    public DcMotor fr, fl, bl, br, horizontalMotor, verticalMotor, intakeMotor;
 
     public Servo flipServo, redServo, blueServo, boxServo; //flipservo
 
@@ -60,13 +57,13 @@ public class Configuration {
     public void init(boolean autoConfig){
         HardwareMap hwMap=opMode.hardwareMap;
 
-        fl = hwMap.get(DcMotor.class,"FR");
-        fl.setDirection(DcMotor.Direction.REVERSE);
+        fl = hwMap.get(DcMotor.class,"FL");
+        fl.setDirection(DcMotorSimple.Direction.FORWARD);
         fl.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         fl.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 
-        fr = hwMap.get(DcMotor.class,"FL");
-        fr.setDirection(DcMotorSimple.Direction.FORWARD);
+        fr = hwMap.get(DcMotor.class,"FR");
+        fr.setDirection(DcMotor.Direction.REVERSE);
         fr.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         fr.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 
@@ -131,8 +128,8 @@ public class Configuration {
 
 
         mecanum = new Mecanum.Builder()
-                .setFrontLeftMotor(fl)
-                .setFrontRightMotor(fr)
+                .setFrontLeftMotor(fr)
+                .setFrontRightMotor(fl)
                 .setBackLeftMotor(bl)
                 .setBackRightMotor(br)
                 .build();
@@ -141,7 +138,7 @@ public class Configuration {
 
         odometer = new ThreeWheeled.Builder()
                 .setLeftEncoder(bl)
-                .setRightEncoder(fl)
+                .setRightEncoder(fr)
                 .setMiddleEncoder(br)
 
                 .setEncoderTicksPerRotation(2000)

@@ -10,7 +10,7 @@ public class PIDControl extends Thread{
     }
     private Configuration robot;
 
-
+    public boolean isBusy;
 
 
     public int targetPosition;
@@ -20,6 +20,8 @@ public class PIDControl extends Thread{
     public void setVerticalTargetPosition(int targetPosition){
         this.targetPosition = targetPosition;
     }
+
+
 
     @Override
     public void run(){
@@ -52,6 +54,8 @@ public class PIDControl extends Thread{
 
         opMode.telemetry.addData("Position", robot.verticalMotor.getCurrentPosition());
 
+
+
         while(opMode.opModeIsActive()){
             robot.verticalMotor.setTargetPosition(targetPosition);
             if(targetPosition == 0 && robot.verticalMotor.getCurrentPosition() >= 30 && !robot.verticalLimiter.isPressed()){ //if think all the way down but not
@@ -71,6 +75,13 @@ public class PIDControl extends Thread{
 
             double motorPower = kP * error + kI * sumOfErrors + kD * rateOfChangeOfError; //Calculate power
             robot.verticalMotor.setPower(motorPower); //Send power
+
+            if(motorPower > 0.2){
+                isBusy = false;
+            }
+            else{
+                isBusy = true;
+            }
 
             previousError = error; //Get the previous Error
         }

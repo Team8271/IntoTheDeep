@@ -144,6 +144,11 @@ public class NewRobotConfig {
 
         //Ensures that the Odometry is set at 0 when it starts
         odometer.resetTo(0,0,0);
+
+        //Define thread1
+        PIDControl thread1 = new PIDControl(opMode);
+
+
     }
 
     //Init TweatyBird
@@ -159,6 +164,9 @@ public class NewRobotConfig {
                 .setRotationBuffer(1)
                 .setDebuggingEnabled(true)
                 .build();
+
+
+
     }
 
     public void closeClaw(){
@@ -171,9 +179,21 @@ public class NewRobotConfig {
         clawRightServo.setPosition(clawRightOpen); //Set right servo to open position
     }
 
+
     public void clipSpecimen(){
-        if(vertMotor.)
+        PIDControl thread1 = new PIDControl(opMode);
+        //clips the specimen on high chamber
+        thread1.start();
+        thread1.targetPosition = aboveChamber; //ensure its in correct position
+        while(thread1.isBusy){
+            opMode.telemetry.addLine("Waiting for thread1");
+            opMode.telemetry.update();
+        }
+        thread1.targetPosition = belowChamber;
+        openClaw();
+        thread1.interrupt();//add some de-buggin stuff here but not now lol
     }
+
 
 
 }

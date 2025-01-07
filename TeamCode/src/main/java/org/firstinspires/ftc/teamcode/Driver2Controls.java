@@ -26,9 +26,8 @@ public class Driver2Controls extends Thread{
         robot.rightHorz.setPower(horziontalPower);
         robot.vertMotor.setPower(verticalPower);
 
-        //clips the specimen on high chamber
         if(clipSpecimen){
-            robot.clipSpecimen(); //WIP
+            robot.clipSpecimen();
         }
 
 
