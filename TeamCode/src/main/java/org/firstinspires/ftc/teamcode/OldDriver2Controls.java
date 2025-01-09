@@ -6,17 +6,19 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 //      OldDriver2Controls thread1 = new OldDriver2Controls(this);
 //      thread1.run() MUST BE AFTER WAIT FOR START
 
-public class OldDriver2Controls extends Thread{
+public class OldDriver2Controls extends Thread {
     private final LinearOpMode opMode;
-    public OldDriver2Controls(LinearOpMode opMode){
+
+    public OldDriver2Controls(LinearOpMode opMode) {
         this.opMode = opMode;
     }
+
     private Configuration robot;
 
 
-
     @Override
-    public void run(){
+    public void run() {
+
         ///Define PIDControl Thread
         //PIDControl thread1 = new PIDControl(opMode);
         //thread1.start();
@@ -30,72 +32,55 @@ public class OldDriver2Controls extends Thread{
         boolean closeClaw = opMode.gamepad2.right_trigger < 0.5;   //Close the Claw
         boolean openClaw = opMode.gamepad2.right_trigger >= 0.5;   //Open the Claw
 
+        while(opMode.opModeIsActive()){
+            ///Vertical Slide Start
 
-
-        ///Vertical Slide Start
-
-        if(robot.verticalLimiter.isPressed()){ //slide bottomed out
-            if(vertControl<0){
-                vertControl = 0;
-            }
-            robot.vertMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-            telemetry.addLine("Vertical slide bottomed out");
-        }
-        else if(robot.vertMotor.getCurrentPosition()>=robot.vertMax){ // Slide topped out
-            if(vertControl>0){
-                vertControl = 0;
-            }
-            telemetry.addLine("Vertical slide topped out");
-        }
-
-        if(vertControl != 0) { //Moving
-            if(robot.vertMotor.getMode() != DcMotor.RunMode.RUN_WITHOUT_ENCODER){
-                robot.vertMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-            }
-            robot.vertMotor.setPower(vertControl);
-            telemetry.addLine("Vertical slide moving");
-        }
-        else { //Stop and hold
-            if(robot.vertMotor.getMode() != DcMotor.RunMode.RUN_TO_POSITION){
-                int targetPosToHold = robot.vertMotor.getCurrentPosition();
-                if(targetPosToHold>robot.vertMax){
-                    targetPosToHold = robot.vertMax;
+            if (robot.verticalLimiter.isPressed()) { //slide bottomed out
+                if (vertControl < 0) {
+                    vertControl = 0;
                 }
-                robot.vertMotor.setTargetPosition(targetPosToHold);
-                robot.vertMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-                robot.vertMotor.setPower(.5);
+                robot.vertMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+                opMode.telemetry.addLine("Vertical slide bottomed out");
+            } else if (robot.vertMotor.getCurrentPosition() >= robot.vertMax) { // Slide topped out
+                if (vertControl > 0) {
+                    vertControl = 0;
+                }
+                opMode.telemetry.addLine("Vertical slide topped out");
             }
-            telemetry.addLine("Vertical slide holding...");
 
-        ///Vertical Slide End
+            if (vertControl != 0) { //Moving
+                if (robot.vertMotor.getMode() != DcMotor.RunMode.RUN_WITHOUT_ENCODER) {
+                    robot.vertMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+                }
+                robot.vertMotor.setPower(vertControl);
+                opMode.telemetry.addLine("Vertical slide moving");
+            }
+            else { //Stop and hold            /////Put an else if here when you want to make robot preset
+                if (robot.vertMotor.getMode() != DcMotor.RunMode.RUN_TO_POSITION) {
+                    int targetPosToHold = robot.vertMotor.getCurrentPosition();
+                    if (targetPosToHold > robot.vertMax) {
+                        targetPosToHold = robot.vertMax;
+                    }
+                    robot.vertMotor.setTargetPosition(targetPosToHold);
+                    robot.vertMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+                    robot.vertMotor.setPower(.5);
+                }
+                opMode.telemetry.addLine("Vertical slide holding...");
+            }
+            ///Vertical Slide End
 
+            ///Claw stuff
+            //Close the claw
+            if (closeClaw) {
+                robot.closeClaw();
+            }
 
+            //Open the claw
+            if (openClaw) {
+                robot.openClaw();
+            }
 
-
-
-
-
-
-
-
-
-
-
-
-        //Send slide power
-        robot.vertMotor.setPower(verticalPower);
-
-        //Close the claw
-        if(closeClaw){
-            robot.closeClaw();
         }
-
-        //Open the claw
-        if(openClaw){
-            robot.openClaw();
-        }
-
-
 
     }
 
