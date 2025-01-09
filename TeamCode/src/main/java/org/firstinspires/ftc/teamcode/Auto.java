@@ -30,19 +30,19 @@ public class Auto extends LinearOpMode {
         //Wait for driver to press START
         waitForStart();
 
-        thread1.targetPosition = 0;
+
         thread1.start();
         telemetry.addLine("PID Started");
         telemetry.update();
 
         while (opModeIsActive()){
             if (gamepad1.dpad_up){ //Go to above high chamber
-                thread1.targetPosition = 4761;
+                thread1.setTargetPosition(4761);
                 telemetry.addLine("Setting target position to 4761");
                 telemetry.update();
             }
             if(gamepad1.dpad_down){ //GO to down
-                thread1.targetPosition = 0;
+                thread1.setTargetPosition(0);
             }
         }
 
@@ -145,7 +145,7 @@ public class Auto extends LinearOpMode {
 
     //Clip Specimen on the High Chamber (Vertical slide needs to be vertAboveChamber!)
     public void clipSpecimen(){
-        if(robot.verticalMotor.getCurrentPosition() < robot.vertAboveChamber-200){//If not above chamber
+        if(robot.vertMotor.getCurrentPosition() < robot.vertAboveChamber-200){//If not above chamber
             telemetry.addLine("Vertical Slide position is incorrect");//calm
             telemetry.addLine("EXITING SPECIMEN CLIP!");//panik
             telemetry.addLine("SCREAMING NO NO NO NO NO NO NO NO NO"); //panik
@@ -153,8 +153,8 @@ public class Auto extends LinearOpMode {
         }
         else {
             reverse(0.5, lowPower);//Move back a little
-            robot.verticalMotor.setTargetPosition(robot.vertBelowChamber);//set target below chamber
-            robot.verticalMotor.setPower(0.4);//Set power
+            robot.vertMotor.setTargetPosition(robot.vertBelowChamber);//set target below chamber
+            robot.vertMotor.setPower(0.4);//Set power
             robot.openClaw();//release the specimen
         }
     }
@@ -183,9 +183,9 @@ public class Auto extends LinearOpMode {
 
     //!!! This is being moved to Configuration as a PID motor control
     public void setVerticalPosition(int position){
-        robot.verticalMotor.setTargetPosition(position);
-        robot.verticalMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-        robot.verticalMotor.setPower(1);
+        robot.vertMotor.setTargetPosition(position);
+        robot.vertMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        robot.vertMotor.setPower(1);
     }
 
     //Drive forward until button is pressed or odom change is little
@@ -233,9 +233,9 @@ public class Auto extends LinearOpMode {
         sleep(300);
 
         //Lift arm
-        robot.verticalMotor.setTargetPosition(6100);
-        robot.verticalMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-        robot.verticalMotor.setPower(1);
+        robot.vertMotor.setTargetPosition(6100);
+        robot.vertMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        robot.vertMotor.setPower(1);
         sleep(1800);
 
         //Drive to the submersible until sensor is pressed
@@ -260,9 +260,9 @@ public class Auto extends LinearOpMode {
 
 
         //arm down
-        robot.verticalMotor.setTargetPosition(-100);
-        robot.verticalMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-        robot.verticalMotor.setPower(1);
+        robot.vertMotor.setTargetPosition(-100);
+        robot.vertMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        robot.vertMotor.setPower(1);
 
         //reverse a half inch
         reverse(0.5, normalPower);
@@ -290,9 +290,9 @@ public class Auto extends LinearOpMode {
 
 
         //Lower arm to reset
-        robot.verticalMotor.setTargetPosition(-100);
-        robot.verticalMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-        robot.verticalMotor.setPower(1);
+        robot.vertMotor.setTargetPosition(-100);
+        robot.vertMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        robot.vertMotor.setPower(1);
 
 
         //go right 39 and whip a 180 WHOOOOHOOOO
@@ -300,9 +300,9 @@ public class Auto extends LinearOpMode {
         rotate180();
 
         //move arm to grab spec
-        robot.verticalMotor.setTargetPosition(2760);
-        robot.verticalMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-        robot.verticalMotor.setPower(1);
+        robot.vertMotor.setTargetPosition(2760);
+        robot.vertMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        robot.vertMotor.setPower(1);
 
         //Go forward into wall
         telemetry.addLine("Going forward");
@@ -319,7 +319,7 @@ public class Auto extends LinearOpMode {
         //close claw
         robot.closeClaw();
 
-        telemetry.addData("Arm pos: ", robot.verticalMotor.getCurrentPosition());
+        telemetry.addData("Arm pos: ", robot.vertMotor.getCurrentPosition());
         telemetry.update();
 
         sleep(500);
@@ -334,9 +334,9 @@ public class Auto extends LinearOpMode {
         sleep(2000);
 
         //arm up a little
-        robot.verticalMotor.setTargetPosition(3500);
-        robot.verticalMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-        robot.verticalMotor.setPower(1);
+        robot.vertMotor.setTargetPosition(3500);
+        robot.vertMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        robot.vertMotor.setPower(1);
     }
 
     private void brakeAndReset(){

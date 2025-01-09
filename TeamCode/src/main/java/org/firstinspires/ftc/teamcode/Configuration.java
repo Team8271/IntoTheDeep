@@ -24,7 +24,7 @@ public class Configuration {
     public int vertAboveChamber = 4070, vertWall = 1635, vertBelowChamber = 3811;
 
 
-    public DcMotor fr, fl, bl, br, horizontalMotor, verticalMotor, intakeMotor;
+    public DcMotor fr, fl, bl, br, horizontalMotor, vertMotor, intakeMotor;
 
     public Servo flipServo, redServo, blueServo, boxServo; //flipservo
 
@@ -84,9 +84,9 @@ public class Configuration {
         horizontalMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
 
 
-        verticalMotor = hwMap.get(DcMotor.class,"Vert");
-        verticalMotor.setDirection(DcMotor.Direction.REVERSE);
-        verticalMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        vertMotor = hwMap.get(DcMotor.class,"Vert");
+        vertMotor.setDirection(DcMotor.Direction.REVERSE);
+        vertMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
 
 
         intakeMotor = hwMap.get(DcMotor.class, "In");

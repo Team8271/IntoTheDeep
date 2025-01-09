@@ -7,7 +7,7 @@ import com.qualcomm.robotcore.hardware.Servo;
 
 @TeleOp(name="Telemetry Testing")
 public class TelemetryTesting extends LinearOpMode {
-    private NewRobotConfig robot;
+    private Configuration robot;
 
 
 
@@ -15,55 +15,54 @@ public class TelemetryTesting extends LinearOpMode {
     //Main OpMode
     @Override
     public void runOpMode() {
-        robot = new NewRobotConfig(this);
+        robot = new Configuration(this);
         robot.init(false);
 
 
         telemetry.addLine("Initialized Config");
 
-        telemetry.update();
-
-
-
-        PIDControl thread1 = new PIDControl(this);
-
-
-        telemetry.addLine("Starting PIDControl thread");
-        thread1.start();
-        telemetry.addLine("SUCCESS");
-
-        telemetry.update();
         int target = robot.vertMotor.getCurrentPosition();
 
+        robot.vertMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+
+        telemetry.update();
+
+
+
+
+        //PIDControl thread1 = new PIDControl(this);
+
+
+
         waitForStart();
+
+        telemetry.addLine("Starting PIDControl thread");
+        //thread1.start();
+        telemetry.addLine("SUCCESS");
 
 
         while(opModeIsActive()) {
             telemetry.addLine("DpadUp for up\nDpadDown for down\n");
-            telemetry.addData("active?", thread1.isAlive());
-            telemetry.addData("madehere1?", thread1.madeHere1);
+            //telemetry.addData("Alive?", thread1.isAlive());
 
             if(gamepad1.dpad_up){
-                target++;
+                target+=100;
             }
             if(gamepad1.dpad_down){
-                target--;
+                target+=100;
             }
             if(target < 0){
                 target = 0;
             }
-            thread1.targetPosition = target;
-            telemetry.addData("PID target", thread1.targetPosition);
-            telemetry.addData("PID power", thread1.motorPower);
-            telemetry.addData("kP", thread1.kP);
-            telemetry.addData("error", thread1.error);
-            telemetry.addData("kI", thread1.kI);
-            telemetry.addData("sumOfErrors", thread1.sumOfErrors);
-            telemetry.addData("kD", thread1.kD);
-            telemetry.addData("rateOfChangeOfError", thread1.rateOfChangeOfError);
+            //thread1.setTargetPosition(target);
+            robot.vertMotor.setTargetPosition(target);
+            robot.vertMotor.setPower(0.5);
+
             telemetry.addData("Target position", target);
             telemetry.addData("Current position", robot.vertMotor.getCurrentPosition());
             telemetry.update();
+
+
 
         }
     }

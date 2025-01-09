@@ -15,7 +15,6 @@ public class teleOp extends LinearOpMode {
     public void runOpMode() {
         robot = new Configuration(this);
         robot.init(false);
-        PIDControl thread1 = new PIDControl(this);
 
 
         telemetry.addLine("Initialized");
@@ -24,9 +23,7 @@ public class teleOp extends LinearOpMode {
 
         telemetry.clearAll();
 
-        //
-        // thread1.setVerticalTargetPosition(0);
-        //thread1.start();
+
         while (opModeIsActive()){
                 //Driver 1
                 double axialControl = -gamepad1.left_stick_y;
@@ -144,7 +141,7 @@ public class teleOp extends LinearOpMode {
                 telemetry.addLine();
 
                 // Intake
-                if (robot.verticalMotor.getCurrentPosition()<=15 && //Retracted
+                if (robot.vertMotor.getCurrentPosition()<=15 && //Retracted
                         robot.horizontalMotor.getCurrentPosition()<=15) {
                     robot.flipServo.setPosition(.9);
                     robot.intakeMotor.setPower(0);
@@ -173,17 +170,17 @@ public class teleOp extends LinearOpMode {
                 telemetry.addLine();
 
                 //Vertical Slide
-                telemetry.addData("Vertical Slide Position",robot.verticalMotor.getCurrentPosition());
+                telemetry.addData("Vertical Slide Position",robot.vertMotor.getCurrentPosition());
                 telemetry.addData("Vertical Slide Limiter",robot.verticalLimiter.isPressed());
 
                 if(robot.verticalLimiter.isPressed()){ //slide bottomed out
                     if(vertControl<0){
                         vertControl = 0;
                     }
-                    robot.verticalMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+                    robot.vertMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
                     telemetry.addLine("Vertical slide bottomed out");
                 }
-                else if(robot.verticalMotor.getCurrentPosition()>=robot.vertMax){ // Slide topped out
+                else if(robot.vertMotor.getCurrentPosition()>=robot.vertMax){ // Slide topped out
                     if(vertControl>0){
                         vertControl = 0;
                     }
@@ -191,37 +188,37 @@ public class teleOp extends LinearOpMode {
                 }
 
                 if(vertControl != 0) { //Moving
-                    if(robot.verticalMotor.getMode() != DcMotor.RunMode.RUN_WITHOUT_ENCODER){
-                        robot.verticalMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+                    if(robot.vertMotor.getMode() != DcMotor.RunMode.RUN_WITHOUT_ENCODER){
+                        robot.vertMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
                     }
-                    robot.verticalMotor.setPower(vertControl);
+                    robot.vertMotor.setPower(vertControl);
                     telemetry.addLine("Vertical slide moving");
                 }
                 else { //Stop and hold
-                    if(robot.verticalMotor.getMode() != DcMotor.RunMode.RUN_TO_POSITION){
-                        int targetPosToHold = robot.verticalMotor.getCurrentPosition();
+                    if(robot.vertMotor.getMode() != DcMotor.RunMode.RUN_TO_POSITION){
+                        int targetPosToHold = robot.vertMotor.getCurrentPosition();
                         if(targetPosToHold>robot.vertMax){
                             targetPosToHold = robot.vertMax;
                         }
-                        robot.verticalMotor.setTargetPosition(targetPosToHold);
-                        robot.verticalMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-                        robot.verticalMotor.setPower(.5);
+                        robot.vertMotor.setTargetPosition(targetPosToHold);
+                        robot.vertMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+                        robot.vertMotor.setPower(.5);
                     }
                     telemetry.addLine("Vertical slide holding...");
 
                     if(gamepad2.dpad_down && !robot.verticalLimiter.isPressed()){
-                        robot.verticalMotor.setTargetPosition(0);
-                        robot.verticalMotor.setPower(0.6);
+                        robot.vertMotor.setTargetPosition(0);
+                        robot.vertMotor.setPower(0.6);
                     }
 
                     if(gamepad2.dpad_right){
-                        robot.verticalMotor.setTargetPosition(robot.vertWall);
-                        robot.verticalMotor.setPower(0.6);
+                        robot.vertMotor.setTargetPosition(robot.vertWall);
+                        robot.vertMotor.setPower(0.6);
                     }
 
                     if(gamepad2.dpad_up){
-                        robot.verticalMotor.setTargetPosition(robot.vertAboveChamber);
-                        robot.verticalMotor.setPower(0.6);
+                        robot.vertMotor.setTargetPosition(robot.vertAboveChamber);
+                        robot.vertMotor.setPower(0.6);
                     }
                 }
 
@@ -229,7 +226,7 @@ public class teleOp extends LinearOpMode {
 
 
                 //Box
-                if(boxControl && robot.verticalMotor.getCurrentPosition()>=100){
+                if(boxControl && robot.vertMotor.getCurrentPosition()>=100){
                     robot.boxServo.setPosition(-.99);
                     telemetry.addLine("Box flipped");
                 }

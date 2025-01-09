@@ -40,11 +40,11 @@ public class Driver2Controls extends Thread{
 
         //Bring Vertical slide to wall grabbing position
         if(vertToWall){
-            thread1.targetPosition = robot.wallHeight;
+            thread1.setTargetPosition(robot.wallHeight);
         }
 
         if(vertToHighBasket){
-            thread1.targetPosition = robot.highBasket;
+            thread1.setTargetPosition(robot.highBasket);
         }
 
         //Close the claw
@@ -68,12 +68,12 @@ public class Driver2Controls extends Thread{
         if(!thread1.isAlive()){
             thread1.start();
         }
-        thread1.targetPosition = robot.aboveChamber; //ensure its in correct position
+        thread1.setTargetPosition(robot.aboveChamber); //ensure its in correct position
         while(thread1.isBusy){
             opMode.telemetry.addLine("Waiting for thread1");
             opMode.telemetry.update();
         }
-        thread1.targetPosition = robot.belowChamber;
+        thread1.setTargetPosition(robot.belowChamber);
         robot.openClaw();
         //thread1.interrupt();//add some de-buggin stuff here but not now lol
     }
