@@ -169,7 +169,8 @@ public class teleOp extends LinearOpMode {
                 }
                 telemetry.addLine();
 
-                //Vertical Slide
+
+                ///Vertical Slide
                 telemetry.addData("Vertical Slide Position",robot.vertMotor.getCurrentPosition());
                 telemetry.addData("Vertical Slide Limiter",robot.verticalLimiter.isPressed());
 
