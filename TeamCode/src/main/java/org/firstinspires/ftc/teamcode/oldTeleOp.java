@@ -1,9 +1,10 @@
 package org.firstinspires.ftc.teamcode;
 
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
-
+@Disabled
 @TeleOp(name="Old Robot TeleOp")
 public class oldTeleOp extends LinearOpMode {
     private Configuration robot;
@@ -14,14 +15,14 @@ public class oldTeleOp extends LinearOpMode {
     public void runOpMode() {
         robot = new Configuration(this);
         robot.init(false);
-        //OldDriver2Controls thread1 = new OldDriver2Controls(this);
+        OldDriver2Controls thread1 = new OldDriver2Controls(this);
 
         telemetry.addLine("Robot Initialized");
         telemetry.update();
 
         waitForStart();
 
-        //thread1.start();
+        thread1.start();
         while(opModeIsActive()){
             telemetry.addLine("Ooh baby when you talk like that");
             telemetry.update();

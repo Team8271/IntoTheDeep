@@ -141,9 +141,9 @@ public class teleOp extends LinearOpMode {
                 telemetry.addLine();
 
                 // Intake
-                if (robot.vertMotor.getCurrentPosition()<=15 && //Retracted
+                if (robot.vertMotor.getCurrentPosition()<=15 && robot.vertMotor.getCurrentPosition() >=0 &&//Retracted
                         robot.horizontalMotor.getCurrentPosition()<=15) {
-                    robot.flipServo.setPosition(.9);
+                    robot.flipServo.setPosition(.6); //was .9 for delivery to the box mechanism
                     robot.intakeMotor.setPower(0);
                     if(reverseIntake){//reverseIntake?-1:1 was here
                         robot.intakeMotor.setPower(-0.8);
@@ -161,7 +161,7 @@ public class teleOp extends LinearOpMode {
                 }
                 else { //Gray zone
                     robot.flipServo.setPosition(.6);
-                    robot.intakeMotor.setPower(0); //reverseIntake?-1:.5   //aslo 0.5 power
+                    robot.intakeMotor.setPower(0); //reverseIntake?-1:.5   //also 0.5 power
                     if(reverseIntake){//reverseIntake?-1:1 was here
                         robot.intakeMotor.setPower(-0.8);
                     }
@@ -181,12 +181,13 @@ public class teleOp extends LinearOpMode {
                     robot.vertMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
                     telemetry.addLine("Vertical slide bottomed out");
                 }
+                /*
                 else if(robot.vertMotor.getCurrentPosition()>=robot.vertMax){ // Slide topped out
                     if(vertControl>0){
                         vertControl = 0;
                     }
                     telemetry.addLine("Vertical slide topped out");
-                }
+                }*/
 
                 if(vertControl != 0) { //Moving
                     if(robot.vertMotor.getMode() != DcMotor.RunMode.RUN_WITHOUT_ENCODER){
@@ -194,19 +195,21 @@ public class teleOp extends LinearOpMode {
                     }
                     robot.vertMotor.setPower(vertControl);
                     telemetry.addLine("Vertical slide moving");
+
                 }
-                else { //Stop and hold
+                else { //Stop and hold NO INPUT
                     if(robot.vertMotor.getMode() != DcMotor.RunMode.RUN_TO_POSITION){
                         int targetPosToHold = robot.vertMotor.getCurrentPosition();
-                        if(targetPosToHold>robot.vertMax){
+                        /*if(targetPosToHold>robot.vertMax){
                             targetPosToHold = robot.vertMax;
-                        }
+                        }*/
                         robot.vertMotor.setTargetPosition(targetPosToHold);
                         robot.vertMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
                         robot.vertMotor.setPower(.5);
                     }
                     telemetry.addLine("Vertical slide holding...");
-
+/*
+                    //If button while thingy thing
                     if(gamepad2.dpad_down && !robot.verticalLimiter.isPressed()){
                         robot.vertMotor.setTargetPosition(0);
                         robot.vertMotor.setPower(0.6);
@@ -221,6 +224,7 @@ public class teleOp extends LinearOpMode {
                         robot.vertMotor.setTargetPosition(robot.vertAboveChamber);
                         robot.vertMotor.setPower(0.6);
                     }
+*/
                 }
 
                 telemetry.addLine();

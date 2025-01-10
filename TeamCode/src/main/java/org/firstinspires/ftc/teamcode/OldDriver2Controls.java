@@ -8,17 +8,16 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 
 public class OldDriver2Controls extends Thread {
     private final LinearOpMode opMode;
-
     public OldDriver2Controls(LinearOpMode opMode) {
         this.opMode = opMode;
     }
-
     private Configuration robot;
 
 
     @Override
     public void run() {
 
+        robot.init(false);
         ///Define PIDControl Thread
         //PIDControl thread1 = new PIDControl(opMode);
         //thread1.start();
