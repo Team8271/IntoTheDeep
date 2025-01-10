@@ -140,17 +140,29 @@ public class teleOp extends LinearOpMode {
 
                 telemetry.addLine();
 
-                // Intake
+                /// Intake
+
+
+
                 if (robot.vertMotor.getCurrentPosition()<=15 && robot.vertMotor.getCurrentPosition() >=0 &&//Retracted
                         robot.horizontalMotor.getCurrentPosition()<=15) {
-                    robot.flipServo.setPosition(.6); //was .9 for delivery to the box mechanism
+
+                    //Set in pickup mode
+                    if(gamepad2.dpad_down){
+                        robot.flipServo.setPosition(.9);
+
+                    }
+
+                    //was .6 for middle pos on flipServo
                     robot.intakeMotor.setPower(0);
                     if(reverseIntake){//reverseIntake?-1:1 was here
                         robot.intakeMotor.setPower(-0.8);
-
                     }
+
                     telemetry.addLine("Intake retracted");
                 }
+
+
                 else if(robot.horizontalMotor.getCurrentPosition()>=robot.intakeOnDistance){ // Extended
                     robot.flipServo.setPosition(0.07);
                     robot.intakeMotor.setPower(1);//reverseIntake?-1:1 was here

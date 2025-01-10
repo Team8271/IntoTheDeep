@@ -20,7 +20,7 @@ public class Configuration {
 
     //Global Variables
     public int vertMax = 5050, horzMax = 400;
-    public int intakeOnDistance = 150;
+    public int intakeOnDistance = 270;
     public int vertAboveChamber = 4070, vertWall = 1635, vertBelowChamber = 3811;
 
 
