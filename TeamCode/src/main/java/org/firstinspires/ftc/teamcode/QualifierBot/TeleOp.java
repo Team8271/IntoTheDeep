@@ -4,6 +4,7 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.util.Range;
 
+//Weird because name is also TeleOp
 @com.qualcomm.robotcore.eventloop.opmode.TeleOp(name="Jax TeleOp")
 public class TeleOp extends LinearOpMode {
     private Configuration robot;

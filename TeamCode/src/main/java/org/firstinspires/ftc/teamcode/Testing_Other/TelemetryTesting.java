@@ -1,11 +1,12 @@
 package org.firstinspires.ftc.teamcode.Testing_Other;
 
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
 
 import org.firstinspires.ftc.teamcode.QualifierBot.Configuration;
-
+@Disabled
 @TeleOp(name="Telemetry Testing")
 public class TelemetryTesting extends LinearOpMode {
     private Configuration robot;

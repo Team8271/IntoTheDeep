@@ -1,9 +1,10 @@
 package org.firstinspires.ftc.teamcode.TweetyBirdExample;
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 
-
+@Disabled
 @Autonomous(name="Auto Example")
 public class AutoExample extends LinearOpMode {
     private ConfigurationExample robot;

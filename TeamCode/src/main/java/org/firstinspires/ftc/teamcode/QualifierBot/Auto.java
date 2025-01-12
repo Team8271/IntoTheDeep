@@ -17,7 +17,6 @@ public class Auto extends LinearOpMode {
 
 
 
-
     double lowPower = 0.2;
     double normalPower = 0.4;
     double highPower = 0.6;
