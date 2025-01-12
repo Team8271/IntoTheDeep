@@ -1,7 +1,9 @@
-package org.firstinspires.ftc.teamcode;
+package org.firstinspires.ftc.teamcode.StateBot;
 
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
+
+import org.firstinspires.ftc.teamcode.QualifierBot.Configuration;
 
 //        PIDControl thread1 = new PIDControl(this);
 //        YOU MUST START THE THREAD AFTER WAIT FOR START!(thread1.start)

@@ -1,7 +1,9 @@
-package org.firstinspires.ftc.teamcode;
+package org.firstinspires.ftc.teamcode.Testing_Other;
 
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
+
+import org.firstinspires.ftc.teamcode.QualifierBot.Configuration;
 
 //      OldDriver2Controls thread1 = new OldDriver2Controls(this);
 //      thread1.run() MUST BE AFTER WAIT FOR START

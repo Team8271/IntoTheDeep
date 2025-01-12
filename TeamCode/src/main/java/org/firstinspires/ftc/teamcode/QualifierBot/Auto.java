@@ -1,9 +1,12 @@
-package org.firstinspires.ftc.teamcode;
+package org.firstinspires.ftc.teamcode.QualifierBot;
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.util.ElapsedTime;
+
+import org.firstinspires.ftc.teamcode.StateBot.PIDControl;
+
 import java.util.HashMap;
 
 @Autonomous (name="Jax Auto") //add preselectTeleOp="Jax TeleOp" to turn preselect on
@@ -25,7 +28,6 @@ public class Auto extends LinearOpMode {
         robot = new Configuration(this);
         robot.init(true);
         PIDControl thread1 = new PIDControl(this);
-
 
         //Wait for driver to press START
         waitForStart();
