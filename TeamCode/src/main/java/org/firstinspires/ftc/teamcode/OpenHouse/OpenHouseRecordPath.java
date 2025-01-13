@@ -45,9 +45,12 @@ public class OpenHouseRecordPath extends LinearOpMode {
                 debounce = true;
                 posNumber++;
                 //do what you want here
-                double x = Math.round(robot.odometer.getX() * 10.0)/10.0;
-                double y = Math.round(robot.odometer.getY() * 10.0)/10.0;
-                double z = Math.round(robot.odometer.getZ() * 10.0)/10.0;
+
+                double x = Math.rint(robot.odometer.getX());
+                double y = Math.rint(robot.odometer.getY());
+                double z = Math.rint(robot.odometer.getZ());
+
+
                 String position = posNumber + ": " + x + ", " + y + ", " + z; //1: x, y, z
                 positionList.add(position);
             }
