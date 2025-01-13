@@ -20,7 +20,9 @@ public class OpenHouseRecordPath extends LinearOpMode {
     @Override
     public void runOpMode(){
         robot = new OpenHouseConfig(this);
-        robot.init();
+        robot.init(false);
+
+        robot.odometer.resetTo(0,0,0);
 
         telemetry.addLine("Initialized\n\n" +
                 "Set bot up in desired starting position\n" +
@@ -31,7 +33,7 @@ public class OpenHouseRecordPath extends LinearOpMode {
 
         while(opModeIsActive()){
             ///Driver Controls
-            double axialControl = gamepad1.left_stick_y;
+            double axialControl = -gamepad1.left_stick_y;
             double lateralControl = gamepad1.left_stick_x;
             double yawControl = gamepad1.right_stick_x;
             double mainThrottle = .2+(gamepad1.right_trigger*.6);
@@ -50,9 +52,13 @@ public class OpenHouseRecordPath extends LinearOpMode {
                 positionList.add(position);
             }
 
+            if(!savePosition&&debounce){
+                debounce = false;
+            }
 
 
-            ///Drivetrain
+
+            ///Drivetrain Start
             double axial = axialControl;
             double lateral = lateralControl;
 
@@ -63,13 +69,14 @@ public class OpenHouseRecordPath extends LinearOpMode {
             lateral = Math.sin(targetRadians)*gamepadHypot;
             axial = Math.cos(targetRadians)*gamepadHypot;
 
-            double leftFrontPower = axial + lateral + yawControl;
-            double rightFrontPower = axial - lateral - yawControl;
+            double rightFrontPower = axial + lateral + yawControl;
+            double leftFrontPower = axial - lateral - yawControl;
             double leftBackPower = axial - lateral + yawControl;
             double rightBackPower = axial + lateral - yawControl;
 
-            robot.fr.setPower(leftFrontPower * mainThrottle);
-            robot.fl.setPower(rightFrontPower * mainThrottle);
+
+            robot.fl.setPower(leftFrontPower * mainThrottle);
+            robot.fr.setPower(rightFrontPower * mainThrottle);
             robot.bl.setPower(leftBackPower * mainThrottle);
             robot.br.setPower(rightBackPower * mainThrottle);
 

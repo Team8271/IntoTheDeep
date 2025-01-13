@@ -14,7 +14,7 @@ public class OpenHouseTeleOp extends LinearOpMode {
     @Override
     public void runOpMode(){
         robot = new OpenHouseConfig(this);
-        robot.init();
+        robot.init(false);
 
         telemetry.addLine("Initialized");
         telemetry.update();
@@ -23,9 +23,9 @@ public class OpenHouseTeleOp extends LinearOpMode {
 
         while(opModeIsActive()){
             ///Driver 1
-            double axialControl = gamepad1.left_stick_y;
-            double lateralControl = gamepad1.left_stick_x;
-            double yawControl = gamepad1.right_stick_x;
+            double axialControl = -gamepad1.left_stick_y;
+            double lateralControl = gamepad1.left_stick_x; //left stick x
+            double yawControl = gamepad1.right_stick_x;    //right stick x
             double mainThrottle = .2+(gamepad1.right_trigger*.8);
             boolean resetFCD = gamepad1.dpad_up;
 
@@ -47,14 +47,14 @@ public class OpenHouseTeleOp extends LinearOpMode {
             lateral = Math.sin(targetRadians)*gamepadHypot;
             axial = Math.cos(targetRadians)*gamepadHypot;
 
-            double leftFrontPower = axial + lateral + yawControl;
-            double rightFrontPower = axial - lateral - yawControl;
+            double rightFrontPower = axial + lateral + yawControl;
+            double leftFrontPower = axial - lateral - yawControl;
             double leftBackPower = axial - lateral + yawControl;
             double rightBackPower = axial + lateral - yawControl;
 
 
-            robot.fr.setPower(leftFrontPower * mainThrottle);
-            robot.fl.setPower(rightFrontPower * mainThrottle);
+            robot.fl.setPower(leftFrontPower * mainThrottle);
+            robot.fr.setPower(rightFrontPower * mainThrottle);
             robot.bl.setPower(leftBackPower * mainThrottle);
             robot.br.setPower(rightBackPower * mainThrottle);
 

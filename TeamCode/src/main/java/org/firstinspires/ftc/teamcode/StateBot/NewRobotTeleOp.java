@@ -55,20 +55,22 @@ public class NewRobotTeleOp extends LinearOpMode {
             lateral = Math.sin(targetRadians)*gamepadHypot;
             axial = Math.cos(targetRadians)*gamepadHypot;
 
-            double leftFrontPower = axial + lateral + yawControl;
-            double rightFrontPower = axial - lateral - yawControl;
+            double rightFrontPower = axial + lateral + yawControl;
+            double leftFrontPower = axial - lateral - yawControl;
             double leftBackPower = axial - lateral + yawControl;
             double rightBackPower = axial + lateral - yawControl;
+
+
+            robot.fl.setPower(leftFrontPower * mainThrottle);
+            robot.fr.setPower(rightFrontPower * mainThrottle);
+            robot.bl.setPower(leftBackPower * mainThrottle);
+            robot.br.setPower(rightBackPower * mainThrottle);
 
             if(resetFCD){
                 robot.odometer.resetTo(0,0,0);
             }
 
-
-            robot.fr.setPower(leftFrontPower * mainThrottle);
-            robot.fl.setPower(rightFrontPower * mainThrottle);
-            robot.bl.setPower(leftBackPower * mainThrottle);
-            robot.br.setPower(rightBackPower * mainThrottle);
+            
 
             //Send slide power
             robot.leftHorz.setPower(horziontalPower);

@@ -138,7 +138,7 @@ public class NewRobotConfig {
                 .setFlipRightEncoder(flipRightEncoder) //true for auto       false
                 .setFlipMiddleEncoder(flipMiddleEncoder) //false for auto    false for teleop
 
-                .setSideEncoderDistance(12.75)
+                .setSideEncoderDistance(12.50)
                 .setMiddleEncoderOffset(9.75)
                 .build();
 

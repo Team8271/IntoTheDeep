@@ -29,9 +29,13 @@ public class OpenHouseConfig {
     public Mecanum mecanum;
     public TweetyBird tweetyBird;
 
+    boolean flipLeftEncoder;
+    boolean flipRightEncoder;
+    boolean flipMiddleEncoder;
+
     public OpenHouseConfig(LinearOpMode opMode){this.opMode=opMode;}
 
-    public void init(){
+    public void init(boolean autoConfig){
         HardwareMap hwMap=opMode.hardwareMap;
 
         fl = hwMap.get(DcMotor.class,"FL");
@@ -76,6 +80,18 @@ public class OpenHouseConfig {
         blueServo = hwMap.get(Servo.class, "Blue");
         boxServo = hwMap.get(Servo.class, "Box");
 
+
+        if(autoConfig){
+            flipLeftEncoder = false;
+            flipRightEncoder = true;
+            flipMiddleEncoder = false;
+        }
+        else{
+            flipLeftEncoder = true;
+            flipRightEncoder = false;
+            flipMiddleEncoder = false;
+        }
+
         mecanum = new Mecanum.Builder()
                 .setFrontLeftMotor(fr)
                 .setFrontRightMotor(fl)
@@ -94,9 +110,9 @@ public class OpenHouseConfig {
                 .setEncoderWheelRadius(0.944882)
 
                 //Change the true/false values to correct directions
-                .setFlipLeftEncoder(false)
-                .setFlipRightEncoder(true)
-                .setFlipMiddleEncoder(false)
+                .setFlipLeftEncoder(flipLeftEncoder)
+                .setFlipRightEncoder(flipRightEncoder)
+                .setFlipMiddleEncoder(flipMiddleEncoder)
 
                 .setSideEncoderDistance(12.75)
                 .setMiddleEncoderOffset(9.75)

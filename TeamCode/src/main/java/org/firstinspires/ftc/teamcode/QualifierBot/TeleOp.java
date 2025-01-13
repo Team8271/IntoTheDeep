@@ -48,14 +48,23 @@ public class TeleOp extends LinearOpMode {
 
 
 
-                //Drivetrain
-                double axial = axialControl;
-                double lateral = lateralControl;
+
 
                 if (resetFCD){
                     robot.odometer.resetTo(0,0,0);
                 }
 
+
+
+
+                telemetry.addData("getX", robot.odometer.getX());
+                telemetry.addData("getY", robot.odometer.getY());
+                telemetry.addData("getZ", robot.odometer.getZ());
+
+
+                ///Drivetrain Start
+                double axial = axialControl;
+                double lateral = lateralControl;
 
                 double gamepadRadians = Math.atan2(lateralControl, axialControl);
                 double gamepadHypot = Range.clip(Math.hypot(lateralControl, axialControl), 0, 1);
@@ -64,26 +73,14 @@ public class TeleOp extends LinearOpMode {
                 lateral = Math.sin(targetRadians)*gamepadHypot;
                 axial = Math.cos(targetRadians)*gamepadHypot;
 
-                telemetry.addData("getX", robot.odometer.getX());
-                telemetry.addData("getY", robot.odometer.getY());
-                telemetry.addData("getZ", robot.odometer.getZ());
-
-
-                telemetry.addData("gamepadRadians",String.valueOf(gamepadRadians));
-                telemetry.addData("gamepadHypot",String.valueOf(gamepadHypot));
-                telemetry.addData("robotRadians",String.valueOf(robotRadians));
-                telemetry.addData("targetRadians",String.valueOf(targetRadians));
-
-
-
-                double leftFrontPower = axial + lateral + yawControl;
-                double rightFrontPower = axial - lateral - yawControl;
+                double rightFrontPower = axial + lateral + yawControl;
+                double leftFrontPower = axial - lateral - yawControl;
                 double leftBackPower = axial - lateral + yawControl;
                 double rightBackPower = axial + lateral - yawControl;
 
 
-                robot.fr.setPower(leftFrontPower * mainThrottle);
-                robot.fl.setPower(rightFrontPower * mainThrottle);
+                robot.fl.setPower(leftFrontPower * mainThrottle);
+                robot.fr.setPower(rightFrontPower * mainThrottle);
                 robot.bl.setPower(leftBackPower * mainThrottle);
                 robot.br.setPower(rightBackPower * mainThrottle);
 

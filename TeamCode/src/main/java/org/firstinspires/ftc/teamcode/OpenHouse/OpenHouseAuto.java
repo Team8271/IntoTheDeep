@@ -1,9 +1,10 @@
 package org.firstinspires.ftc.teamcode.OpenHouse;
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
-
+@Disabled
 @Autonomous(name="Auto - Open House") //add preselectTeleOp="Jax TeleOp" to turn preselect on
 public class OpenHouseAuto extends LinearOpMode {
     private OpenHouseConfig robot;
@@ -14,7 +15,7 @@ public class OpenHouseAuto extends LinearOpMode {
     public void runOpMode(){
         ///Start of Initialization
         robot = new OpenHouseConfig(this);
-        robot.init();
+        robot.init(true);
         robot.initTweatyBird();
 
         //Set vertMotor into runToPosition Mode
@@ -32,7 +33,7 @@ public class OpenHouseAuto extends LinearOpMode {
         robot.closeClaw();
         sleep(500); //Wait half a second for claw to close
         robot.vertMotor.setTargetPosition(robot.vertAboveChamber); //Start moving vert above chamber
-        moveTo(); //Move in-front of Chambers (Claw Clearance)
+        //moveTo(); //Move in-front of Chambers (Claw Clearance)
         waitForMove();
 
         //while vertMotor is more than ten away from target
@@ -40,7 +41,7 @@ public class OpenHouseAuto extends LinearOpMode {
             sleep(100); //Wait for vertMotor
         }
 
-        moveTo(); //Move into clipping position
+        //moveTo(); //Move into clipping position
         waitForMove();
 
         //Set vertical motor beneath the chamber to clip
@@ -53,7 +54,7 @@ public class OpenHouseAuto extends LinearOpMode {
         robot.openClaw();
         sleep(500);
 
-        moveTo(); //pickup here
+        //moveTo(); //pickup here
         //Bring vertMotor down until vertLim is pressed (reset inaccurate values)
 
 
