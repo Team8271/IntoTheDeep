@@ -126,7 +126,7 @@ public class OpenHouseConfig {
             vertMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         }
         vertMotor.setPower(-0.6);
-        while(!vertLimiter.isPressed()){//May cause problems
+        while(!vertLimiter.isPressed() && opMode.opModeIsActive()){//May cause problems
             opMode.sleep(100); //wait for vertLimiter
         }
         vertMotor.setPower(0);

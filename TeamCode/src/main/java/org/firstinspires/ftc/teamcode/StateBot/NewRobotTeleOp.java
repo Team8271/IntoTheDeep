@@ -4,8 +4,9 @@ import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.util.ElapsedTime;
-@Disabled
-@TeleOp(name="New Robot TeleOp")
+import com.qualcomm.robotcore.util.Range;
+
+@TeleOp(name="State Bot TeleOp")
 public class NewRobotTeleOp extends LinearOpMode {
     private NewRobotConfig robot;
 
@@ -26,10 +27,11 @@ public class NewRobotTeleOp extends LinearOpMode {
 
         while (opModeIsActive()) {
             //Driver 1
-            double axial = -gamepad1.left_stick_y;
-            double lateral = gamepad1.left_stick_x;
-            double yaw = gamepad1.right_stick_x;
+            double axialControl = -gamepad1.left_stick_y;
+            double lateralControl = gamepad1.left_stick_x;
+            double yawControl = gamepad1.right_stick_x;
             double mainThrottle = .2 + (gamepad1.right_trigger * 0.8);
+            boolean resetFCD = gamepad1.dpad_up;
 
             //Driver 2
             double verticalPower = gamepad2.left_stick_y;
@@ -42,15 +44,29 @@ public class NewRobotTeleOp extends LinearOpMode {
             boolean openClaw = gamepad2.right_trigger >= 0.5;   //Open the Claw
 
 
-            //Calculate wheel power
-            double leftFrontPower = axial + lateral + yaw;
-            double rightFrontPower = axial - lateral - yaw;
-            double leftBackPower = axial - lateral + yaw;
-            double rightBackPower = axial + lateral - yaw;
+            ///Drivetrain Start
+            double axial = axialControl;
+            double lateral = lateralControl;
 
-            //Send wheel power with throttle multiplier
-            robot.fl.setPower(leftFrontPower * mainThrottle);
-            robot.fr.setPower(rightFrontPower * mainThrottle);
+            double gamepadRadians = Math.atan2(lateralControl, axialControl);
+            double gamepadHypot = Range.clip(Math.hypot(lateralControl, axialControl), 0, 1);
+            double robotRadians = robot.odometer.getZ();
+            double targetRadians = gamepadRadians + robotRadians;
+            lateral = Math.sin(targetRadians)*gamepadHypot;
+            axial = Math.cos(targetRadians)*gamepadHypot;
+
+            double leftFrontPower = axial + lateral + yawControl;
+            double rightFrontPower = axial - lateral - yawControl;
+            double leftBackPower = axial - lateral + yawControl;
+            double rightBackPower = axial + lateral - yawControl;
+
+            if(resetFCD){
+                robot.odometer.resetTo(0,0,0);
+            }
+
+
+            robot.fr.setPower(leftFrontPower * mainThrottle);
+            robot.fl.setPower(rightFrontPower * mainThrottle);
             robot.bl.setPower(leftBackPower * mainThrottle);
             robot.br.setPower(rightBackPower * mainThrottle);
 
