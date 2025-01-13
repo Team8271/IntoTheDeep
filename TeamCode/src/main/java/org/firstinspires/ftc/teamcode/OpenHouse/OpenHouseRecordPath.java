@@ -84,6 +84,8 @@ public class OpenHouseRecordPath extends LinearOpMode {
 
             String currentPosition = x + ", " + y + ", " + z;
             telemetry.addLine("Current Position: " + currentPosition);
+
+            telemetry.update();
         }
 
     }
