@@ -16,7 +16,7 @@ public class oldTeleOp extends LinearOpMode {
     @Override
     public void runOpMode() {
         robot = new Configuration(this);
-        robot.init(false);
+        robot.init();
         OldDriver2Controls thread1 = new OldDriver2Controls(this);
 
         telemetry.addLine("Robot Initialized");

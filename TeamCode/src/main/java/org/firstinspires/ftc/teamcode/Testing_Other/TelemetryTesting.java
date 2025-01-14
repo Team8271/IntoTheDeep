@@ -18,7 +18,7 @@ public class TelemetryTesting extends LinearOpMode {
     @Override
     public void runOpMode() {
         robot = new Configuration(this);
-        robot.init(false);
+        robot.init();
 
 
         telemetry.addLine("Initialized Config");

@@ -164,7 +164,7 @@ public class TeleOp extends LinearOpMode {
                     robot.flipServo.setPosition(.6);
                     robot.intakeMotor.setPower(0);
                     if(reverseIntake){
-                        robot.intakeMotor.setPower(-.8);
+                        robot.intakeMotor.setPower(-1);
                     }
                     telemetry.addLine("Intake Gray Zone");
                 }

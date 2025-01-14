@@ -19,7 +19,7 @@ public class OldDriver2Controls extends Thread {
     @Override
     public void run() {
 
-        robot.init(false);
+        robot.init();
         ///Define PIDControl Thread
         //PIDControl thread1 = new PIDControl(opMode);
         //thread1.start();

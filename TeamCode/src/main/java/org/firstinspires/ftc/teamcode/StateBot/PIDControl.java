@@ -31,7 +31,7 @@ public class PIDControl extends Thread{
     public void run(){
 
         Configuration robot = new Configuration(opMode);
-        robot.init(false);
+        robot.init();
 
         targetPosition = robot.vertMotor.getCurrentPosition();
 
