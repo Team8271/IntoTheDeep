@@ -14,7 +14,7 @@ public class TeleOp extends LinearOpMode {
     @Override
     public void runOpMode() {
         robot = new Configuration(this);
-        robot.init(true);
+        robot.init();
 
 
         telemetry.addLine("Initialized");
@@ -69,7 +69,7 @@ public class TeleOp extends LinearOpMode {
 
                 double gamepadRadians = Math.atan2(lateralControl, axialControl);
                 double gamepadHypot = Range.clip(Math.hypot(lateralControl, axialControl), 0, 1);
-                double robotRadians = robot.odometer.getZ();
+                double robotRadians = -robot.odometer.getZ();
                 double targetRadians = gamepadRadians + robotRadians;
                 lateral = Math.sin(targetRadians)*gamepadHypot;
                 axial = Math.cos(targetRadians)*gamepadHypot;

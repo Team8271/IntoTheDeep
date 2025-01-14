@@ -23,10 +23,13 @@ public class Configuration {
     public int intakeOnDistance = 250;
     public int vertAboveChamber = 4070, vertWall = 1635, vertBelowChamber = 3811;
 
+    double clawClosedValue = 0.67; //Larger # = More Closed (0-1)
+    double clawOpenValue = 0.4; //Smaller # = More Open (0-1)
+
 
     public DcMotor fr, fl, bl, br, horzMotor, vertMotor, intakeMotor;
 
-    public Servo flipServo, redServo, blueServo, boxServo; //flipservo
+    public Servo flipServo, redServo, blueServo, boxServo;
 
     public TouchSensor verticalLimiter, horizontalLimiter, frontSensor;
 
@@ -34,9 +37,6 @@ public class Configuration {
 
     public RevColorSensorV3 blonker;
 
-    boolean flipLeftEncoder;
-    boolean flipRightEncoder;
-    boolean flipMiddleEncoder;
 
     //The light on color sensor is controlled via a switch on the device
 
@@ -54,7 +54,7 @@ public class Configuration {
     }
 
 
-    public void init(boolean autoConfig){
+    public void init(){
         HardwareMap hwMap=opMode.hardwareMap;
 
         fl = hwMap.get(DcMotor.class,"FL");
@@ -105,16 +105,6 @@ public class Configuration {
         blonker = hwMap.get(RevColorSensorV3.class, "sensor_color");
 
 
-        if(autoConfig){
-            flipLeftEncoder = false;
-            flipRightEncoder = true;
-            flipMiddleEncoder = false;
-        }
-        else{
-            flipLeftEncoder = true;
-            flipRightEncoder = false;
-            flipMiddleEncoder = false;
-        }
 
 
         imu = hwMap.get(IMU.class, "imu");
@@ -145,9 +135,9 @@ public class Configuration {
                 .setEncoderWheelRadius(0.944882)
 
                 //Change the true/false values to correct directions
-                .setFlipLeftEncoder(flipLeftEncoder)  //false for auto     true
-                .setFlipRightEncoder(flipRightEncoder) //true for auto       false
-                .setFlipMiddleEncoder(flipMiddleEncoder) //false for auto    false for teleop
+                .setFlipLeftEncoder(false)  //false for auto
+                .setFlipRightEncoder(true) //true for auto
+                .setFlipMiddleEncoder(false) //false for auto
 
                 .setSideEncoderDistance(12.75)
                 .setMiddleEncoderOffset(9.75)
@@ -156,15 +146,20 @@ public class Configuration {
         odometer.resetTo(0,0,0);
     }
 
-    public void closeClaw() {
-        redServo.setPosition(0.67);//Bigger more close (Right servo)
-        blueServo.setPosition(0.33); //less more close (Left servo)
-        //telemetry.addLine("Red and Blue closed");
+    public void closeClaw(){
+        double redServoClosed = clawClosedValue;
+        double blueServoClosed = 1-clawClosedValue;
+        redServo.setPosition(redServoClosed);
+        blueServo.setPosition(blueServoClosed);
+        opMode.telemetry.addLine("Claw Closed");
     }
 
     public void openClaw(){
-        redServo.setPosition(0.4);
-        blueServo.setPosition(0.6);
+        double redServoOpen = clawOpenValue;
+        double blueServoOpen = 1-clawOpenValue;
+        redServo.setPosition(redServoOpen);
+        blueServo.setPosition(blueServoOpen);
+        opMode.telemetry.addLine("Claw Opened");
     }
 
 
