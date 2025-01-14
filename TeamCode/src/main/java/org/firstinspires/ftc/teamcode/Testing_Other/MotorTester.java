@@ -6,19 +6,20 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 
 
+import org.firstinspires.ftc.teamcode.OpenHouse.OpenHouseConfig;
 import org.firstinspires.ftc.teamcode.QualifierBot.Configuration;
 
 import java.lang.reflect.Field;
 import java.util.ArrayList;
 
 @TeleOp(name = "Motor Tester", group = "z")
-@Disabled //Do not forget to remove this line to make it active
+ //Do not forget to remove this line to make it active
 public class MotorTester extends LinearOpMode {
 
     /**
      * HardwareMap Reference
      */
-    private Configuration robot = null;
+    private OpenHouseConfig robot = null;
 
     /**
      * Opmode Start
@@ -26,8 +27,8 @@ public class MotorTester extends LinearOpMode {
     @Override
     public void runOpMode() {
         //Initialize
-        robot = new Configuration(this);
-        robot.init(false);//change me
+        robot = new OpenHouseConfig(this);
+        robot.init(true);//change me
 
         //Don't clear
         telemetry.setAutoClear(false);

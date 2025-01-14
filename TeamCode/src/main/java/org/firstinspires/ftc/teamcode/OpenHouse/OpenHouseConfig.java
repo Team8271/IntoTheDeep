@@ -39,12 +39,12 @@ public class OpenHouseConfig {
         HardwareMap hwMap=opMode.hardwareMap;
 
         fl = hwMap.get(DcMotor.class,"FL");
-        fl.setDirection(DcMotorSimple.Direction.FORWARD);
+        fl.setDirection(DcMotorSimple.Direction.REVERSE);
         fl.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         fl.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 
         fr = hwMap.get(DcMotor.class,"FR");
-        fr.setDirection(DcMotor.Direction.REVERSE);
+        fr.setDirection(DcMotor.Direction.FORWARD);
         fr.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         fr.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 

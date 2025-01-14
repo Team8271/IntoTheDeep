@@ -30,35 +30,12 @@ public class OpenHouseAuto extends LinearOpMode {
         waitForStart(); //Wait for driver to press Start
 
 
+        //z should be in degrees
 
         ///Start of real stuff
         //Grab and raise arm here
-        moveTo(0,0,0);
+        moveTo(10,0,0);
         waitForMove();
-
-        moveTo(-23,22,0);
-        waitForMove();
-        moveTo(-23,51,0);
-        waitForMove();
-        moveTo(-34,52,0);
-        waitForMove();
-        moveTo(-38,11,0);
-        waitForMove();
-        moveTo(-34,54,0);
-        waitForMove();
-        moveTo(-44,54,0);
-        waitForMove();
-        moveTo(-47,10,0);
-        waitForMove();
-        moveTo(-43,54,0);
-        waitForMove();
-        moveTo(-50,54,0);
-        waitForMove();
-        moveTo(-53,12,0);
-        waitForMove();
-        moveTo(-63,42,2);
-        waitForMove();
-        sleep(1000);
         telemetry.addLine("End of program");
         telemetry.update();
         sleep(2000);
@@ -68,8 +45,8 @@ public class OpenHouseAuto extends LinearOpMode {
 
     }
 
-    public void moveTo(int x, int y, int z){
-        robot.tweetyBird.sendTargetPosition(y,x,z);
+    public void moveTo(double x, double y, double z){
+        robot.tweetyBird.sendTargetPosition(x,y,Math.toRadians(z));
     }
     public void waitForMove(){
         robot.tweetyBird.waitWhileBusy();
