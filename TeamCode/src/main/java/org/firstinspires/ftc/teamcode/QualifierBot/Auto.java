@@ -26,26 +26,15 @@ public class Auto extends LinearOpMode {
     public void runOpMode() {
         robot = new Configuration(this);
         robot.init(true);
-        PIDControl thread1 = new PIDControl(this);
 
         //Wait for driver to press START
         waitForStart();
 
 
-        thread1.start();
         telemetry.addLine("PID Started");
         telemetry.update();
 
-        while (opModeIsActive()){
-            if (gamepad1.dpad_up){ //Go to above high chamber
-                thread1.setTargetPosition(4761);
-                telemetry.addLine("Setting target position to 4761");
-                telemetry.update();
-            }
-            if(gamepad1.dpad_down){ //GO to down
-                thread1.setTargetPosition(0);
-            }
-        }
+        runAuto1();
 
 
 

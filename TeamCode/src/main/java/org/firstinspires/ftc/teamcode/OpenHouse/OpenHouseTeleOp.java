@@ -36,6 +36,13 @@ public class OpenHouseTeleOp extends LinearOpMode {
             boolean reverseIntake = gamepad2.right_trigger >.25;
             boolean intakeTransferMode = gamepad2.dpad_down;
 
+            if(gamepad2.a){
+                robot.closeClaw();
+            }
+            else if(gamepad2.b){
+                robot.openClaw();
+            }
+
             ///Drivetrain Start
             double axial = axialControl;
             double lateral = lateralControl;
@@ -129,7 +136,7 @@ public class OpenHouseTeleOp extends LinearOpMode {
                 telemetry.addLine("Intake Gray Zone");
             }
 
-            ///Vertical Motor Start
+        ///Vertical Motor Start
         if(robot.vertLimiter.isPressed()){ //Slide at bottom
             vertControl = 0;
             robot.vertMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);

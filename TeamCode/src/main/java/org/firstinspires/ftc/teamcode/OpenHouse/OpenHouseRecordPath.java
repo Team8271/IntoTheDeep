@@ -4,6 +4,7 @@ import android.system.Os;
 
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
+import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.util.Range;
 
 import java.util.ArrayList;
@@ -38,7 +39,17 @@ public class OpenHouseRecordPath extends LinearOpMode {
             double yawControl = gamepad1.right_stick_x;
             double mainThrottle = .2+(gamepad1.right_trigger*.6);
             boolean savePosition = gamepad1.a;
-            boolean removeLastPosition = gamepad1.b;
+
+            //Driver 2
+            double vertControl = gamepad2.left_stick_y;
+
+            if(gamepad2.a){
+                robot.closeClaw();
+            }
+            else if(gamepad2.b){
+                robot.openClaw();
+            }
+
 
             //Save a Position
             if(savePosition&&!debounce){
@@ -46,8 +57,8 @@ public class OpenHouseRecordPath extends LinearOpMode {
                 posNumber++;
                 //do what you want here
 
-                double x = Math.rint(robot.odometer.getX());
-                double y = Math.rint(robot.odometer.getY());
+                double x = Math.rint(robot.odometer.getY());
+                double y = Math.rint(robot.odometer.getX());
                 double z = Math.rint(robot.odometer.getZ());
 
 
@@ -94,6 +105,31 @@ public class OpenHouseRecordPath extends LinearOpMode {
 
             String currentPosition = x + ", " + y + ", " + z;
             telemetry.addLine("Current Position: " + currentPosition);
+
+            ///Vertical Motor Start
+            if(robot.vertLimiter.isPressed()){ //Slide at bottom
+                vertControl = 0;
+                robot.vertMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+                telemetry.addLine("Vert Bottomed Out");
+            }
+            //An else if can go here if you want a limit to the slides max
+
+            if(vertControl != 0){ //Moving
+                if(robot.vertMotor.getMode() != DcMotor.RunMode.RUN_WITHOUT_ENCODER){
+                    robot.vertMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+                }
+                robot.vertMotor.setPower(vertControl);
+                telemetry.addLine("Vertical Slide Moving");
+            }
+            else{ //No input (Stop and Hold)
+                if(robot.vertMotor.getMode() != DcMotor.RunMode.RUN_TO_POSITION){
+                    int targetPosToHold = robot.vertMotor.getCurrentPosition();
+                    robot.vertMotor.setTargetPosition(targetPosToHold);
+                    robot.vertMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+                    robot.vertMotor.setPower(.5);
+                }
+                telemetry.addLine("VertMotor Moving");
+            }
 
             telemetry.update();
         }

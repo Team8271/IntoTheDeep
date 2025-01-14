@@ -20,11 +20,11 @@ public class Configuration {
 
     //Global Variables
     public int vertMax = 5050, horzMax = 400;
-    public int intakeOnDistance = 270;
+    public int intakeOnDistance = 250;
     public int vertAboveChamber = 4070, vertWall = 1635, vertBelowChamber = 3811;
 
 
-    public DcMotor fr, fl, bl, br, horizontalMotor, vertMotor, intakeMotor;
+    public DcMotor fr, fl, bl, br, horzMotor, vertMotor, intakeMotor;
 
     public Servo flipServo, redServo, blueServo, boxServo; //flipservo
 
@@ -78,10 +78,10 @@ public class Configuration {
         br.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 
 
-        horizontalMotor = hwMap.get(DcMotor.class,"Horz");
-        horizontalMotor.setDirection(DcMotor.Direction.FORWARD);
-        horizontalMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        horizontalMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        horzMotor = hwMap.get(DcMotor.class,"Horz");
+        horzMotor.setDirection(DcMotor.Direction.FORWARD);
+        horzMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        horzMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
 
 
         vertMotor = hwMap.get(DcMotor.class,"Vert");
@@ -128,8 +128,8 @@ public class Configuration {
 
 
         mecanum = new Mecanum.Builder()
-                .setFrontLeftMotor(fr)
-                .setFrontRightMotor(fl)
+                .setFrontLeftMotor(fl)
+                .setFrontRightMotor(fr)
                 .setBackLeftMotor(bl)
                 .setBackRightMotor(br)
                 .build();
@@ -157,14 +157,14 @@ public class Configuration {
     }
 
     public void closeClaw() {
-        redServo.setPosition(0.625);//Bigger more close (Right servo)
-        blueServo.setPosition(0.325); //less more close (Left servo)
+        redServo.setPosition(0.67);//Bigger more close (Right servo)
+        blueServo.setPosition(0.33); //less more close (Left servo)
         //telemetry.addLine("Red and Blue closed");
     }
 
     public void openClaw(){
-        redServo.setPosition(0.5);
-        blueServo.setPosition(0.5);
+        redServo.setPosition(0.4);
+        blueServo.setPosition(0.6);
     }
 
 

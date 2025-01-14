@@ -30,7 +30,7 @@ public class NewRobotTeleOp extends LinearOpMode {
             double axialControl = -gamepad1.left_stick_y;
             double lateralControl = gamepad1.left_stick_x;
             double yawControl = gamepad1.right_stick_x;
-            double mainThrottle = .2 + (gamepad1.right_trigger * 0.8);
+            double mainThrottle = .2+(gamepad1.right_trigger*0.8);
             boolean resetFCD = gamepad1.dpad_up;
 
             //Driver 2
@@ -42,6 +42,8 @@ public class NewRobotTeleOp extends LinearOpMode {
             boolean goToHighBasket = gamepad2.y;                //Go to High Basket
             boolean closeClaw = gamepad2.right_trigger < 0.5;   //Close the Claw
             boolean openClaw = gamepad2.right_trigger >= 0.5;   //Open the Claw
+
+
 
 
             ///Drivetrain Start
@@ -59,12 +61,6 @@ public class NewRobotTeleOp extends LinearOpMode {
             double leftFrontPower = axial - lateral - yawControl;
             double leftBackPower = axial - lateral + yawControl;
             double rightBackPower = axial + lateral - yawControl;
-
-
-            robot.fl.setPower(leftFrontPower * mainThrottle);
-            robot.fr.setPower(rightFrontPower * mainThrottle);
-            robot.bl.setPower(leftBackPower * mainThrottle);
-            robot.br.setPower(rightBackPower * mainThrottle);
 
             if(resetFCD){
                 robot.odometer.resetTo(0,0,0);

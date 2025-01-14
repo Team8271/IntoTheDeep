@@ -37,6 +37,7 @@ public class TeleOp extends LinearOpMode {
                 double vertControl = -gamepad2.left_stick_y;
                 boolean boxControl = gamepad2.left_trigger >.25;
                 boolean reverseIntake = gamepad2.right_trigger>.25;
+                boolean intakeTransferMode = gamepad2.dpad_down;
 
 
                 if(gamepad2.a){
@@ -91,17 +92,17 @@ public class TeleOp extends LinearOpMode {
 
 
                 //Horizontal Slide
-                telemetry.addData("Horizontal Slide Pos",robot.horizontalMotor.getCurrentPosition());
+                telemetry.addData("Horizontal Slide Pos",robot.horzMotor.getCurrentPosition());
                 telemetry.addData("Horizontal Slide Limiter",robot.horizontalLimiter.isPressed());
 
                 if(robot.horizontalLimiter.isPressed()) { // Slide bottomed out
                     if (horzControl<0) {
                         horzControl = 0;
                     }
-                    robot.horizontalMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+                    robot.horzMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
                     telemetry.addLine("Horizontal slide bottomed out!");
                 }
-                else if(robot.horizontalMotor.getCurrentPosition()>=robot.horzMax) { // Slide topped out
+                else if(robot.horzMotor.getCurrentPosition()>=robot.horzMax) { // Slide topped out
                     if(horzControl>0){
                         horzControl = 0;
                     }
@@ -109,74 +110,65 @@ public class TeleOp extends LinearOpMode {
 
 
                 if(horzControl != 0){ //Moving
-                    if(robot.horizontalMotor.getMode() != DcMotor.RunMode.RUN_WITHOUT_ENCODER){
-                        robot.horizontalMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+                    if(robot.horzMotor.getMode() != DcMotor.RunMode.RUN_WITHOUT_ENCODER){
+                        robot.horzMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
                     }
                     if(horzControl < 0){
-                        robot.horizontalMotor.setPower(horzControl*.4);
+                        robot.horzMotor.setPower(horzControl*.4);
                     }
                     else{
-                        robot.horizontalMotor.setPower(horzControl);
+                        robot.horzMotor.setPower(horzControl);
                     }
                     telemetry.addLine("Horizontal Slide moving..");
                     telemetry.addData("horzControl:", horzControl);
 
                 }
                 else { //stop and hold
-                    if(robot.horizontalMotor.getMode() != DcMotor.RunMode.RUN_TO_POSITION){
-                        int targetPosToHold = robot.horizontalMotor.getCurrentPosition();
+                    if(robot.horzMotor.getMode() != DcMotor.RunMode.RUN_TO_POSITION){
+                        int targetPosToHold = robot.horzMotor.getCurrentPosition();
                         if (targetPosToHold>robot.horzMax){
                             targetPosToHold = 0;
                         }
-                        robot.horizontalMotor.setTargetPosition(targetPosToHold);
-                        robot.horizontalMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-                        robot.horizontalMotor.setPower(0.5);
+                        robot.horzMotor.setTargetPosition(targetPosToHold);
+                        robot.horzMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+                        robot.horzMotor.setPower(0.5);
                     }
                     telemetry.addLine("Horizontal Slide holding..");
                 }
 
                 telemetry.addLine();
 
-                /// Intake
-
-
-
-                if (robot.vertMotor.getCurrentPosition()<=15 && robot.vertMotor.getCurrentPosition() >=0 &&//Retracted
-                        robot.horizontalMotor.getCurrentPosition()<=15) {
-
-                    //Set in pickup mode
-                    if(gamepad2.dpad_down){
+                ///Intake Start
+                //If everything is retracted for boxTransfer
+                if(robot.vertMotor.getCurrentPosition()<=15 &&
+                        robot.vertMotor.getCurrentPosition() >=0 &&
+                        robot.horzMotor.getCurrentPosition()<=15){
+                    if(intakeTransferMode){
                         robot.flipServo.setPosition(.9);
-
                     }
-
-                    //was .6 for middle pos on flipServo
                     robot.intakeMotor.setPower(0);
-                    if(reverseIntake){//reverseIntake?-1:1 was here
-                        robot.intakeMotor.setPower(-0.8);
+                    if(reverseIntake){
+                        robot.intakeMotor.setPower(-.8);
                     }
-
-                    telemetry.addLine("Intake retracted");
+                    telemetry.addLine("Intake Retracted");
                 }
-
-
-                else if(robot.horizontalMotor.getCurrentPosition()>=robot.intakeOnDistance){ // Extended
+                //Where the intake goes down into collect mode
+                else if(robot.horzMotor.getCurrentPosition()>= robot.intakeOnDistance){
                     robot.flipServo.setPosition(0.07);
-                    robot.intakeMotor.setPower(1);//reverseIntake?-1:1 was here
-                    if(reverseIntake){//reverseIntake?-1:1 was here
-                        robot.intakeMotor.setPower(-0.8);
+                    robot.intakeMotor.setPower(1);
+                    if(reverseIntake){
+                        robot.intakeMotor.setPower(-.8);
                     }
-                    telemetry.addLine("Intake Extended");
+                    telemetry.addLine("Intake in Collect Mode");
                 }
-                else { //Gray zone
+                else{ //Gray Zone, not retracted or extended
                     robot.flipServo.setPosition(.6);
-                    robot.intakeMotor.setPower(0); //reverseIntake?-1:.5   //also 0.5 power
-                    if(reverseIntake){//reverseIntake?-1:1 was here
-                        robot.intakeMotor.setPower(-0.8);
+                    robot.intakeMotor.setPower(0);
+                    if(reverseIntake){
+                        robot.intakeMotor.setPower(-.8);
                     }
-                    telemetry.addLine("Intake waiting");
+                    telemetry.addLine("Intake Gray Zone");
                 }
-                telemetry.addLine();
 
 
                 ///Vertical Slide

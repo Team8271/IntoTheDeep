@@ -18,8 +18,8 @@ public class OpenHouseConfig {
     public int vertAboveChamber = 4070, vertWall = 1635,
             vertBelowChamber = 3811, intakeOnDistance = 270,
             horzMax = 400;
-    double clawClosedValue = 0.625; //Larger # = More Closed (0-1)
-    double clawOpenValue = 0.5; //Smaller # = More Open (0-1)
+    double clawClosedValue = 0.67; //Larger # = More Closed (0-1)
+    double clawOpenValue = 0.4; //Smaller # = More Open (0-1)
 
     public DcMotor fl, fr, bl, br, horzMotor, vertMotor, intakeMotor;
     public Servo flipServo, redServo, blueServo, boxServo;
