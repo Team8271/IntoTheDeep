@@ -50,7 +50,11 @@ public class Auto extends LinearOpMode {
 
         //tweetyAuto();
     }
+    private void degree(int degree){
+        return Math.toRadians(degree);
+    }
 
+    //Claw takes about a second to close, maybe put them premptivly
     private void helenaAuto(){
         vertMotorLoop vertToBottom = new vertMotorLoop(this);
 
@@ -76,45 +80,50 @@ public class Auto extends LinearOpMode {
         robot.tweetyBird.waitWhileBusy();
         robot.tweetyBird.sendTargetPosition(37,6,0); //Push sample in observation
         robot.tweetyBird.waitWhileBusy();
-        robot.tweetyBird.sendTargetPosition();
-
-        /*robot.tweetyBird.sendTargetPosition(37,48,0); //Move left and above sample
+        robot.tweetyBird.sendTargetPosition(37,12,degree(180));
+        robot.vertMotor.setTargetPosition(robot.vertWall); //Bring vertMotor to wall grab height
         robot.tweetyBird.waitWhileBusy();
-        robot.tweetyBird.sendTargetPosition(); //Move above the sample
+        sleep(1000); //Let human element remove sample
+        robot.tweetyBird.sendTargetPosition(37,2,degree(180)); //Go to grab specimen
         robot.tweetyBird.waitWhileBusy();
-        robot.tweetyBird.sendTargetPosition(); //Push sample into observation
-        robot.tweetyBird.waitWhileBusy();
-        robot.tweetyBird.sendTargetPosition(); //Exit observation and align for specimen grab
-        robot.vertMotor.setTargetPosition(robot.vertWall); //Raise vertMotor for wall grab
-        robot.tweetyBird.waitWhileBusy();
-        //wait for the vertMotor to raise
-        robot.tweetyBird.sendTargetPosition(); //Go into wall for grab 
-        robot.tweetyBird.waitWhileBusy();
-        robot.closeClaw(); //Close the clawServos
-        sleep(500); //Wait for clawServos to close
+        robot.closeClaw(); //Grab Specimen
+        sleep(1000); //Wait or claw to close
         robot.vertMotor.setTargetPosition(robot.vertWall+200);
-        //wait for vertMotor to raise
-        //Maybe reset with vertLimiter
-        robot.tweetyBird.sendTargetPosition(); //Align with submersible
+        robot.tweetyBird.sendTargetPosition(37,10,degree(180)); //Move away from wall
         robot.tweetyBird.waitWhileBusy();
-        robot.vertMotor.setTargetPosition(robot.vertAboveChamber); //Raise vertMotor above chamber
-        //wait for vertMotor
-        robot.tweetyBird.sendTargetPosition(); //Drive to front of chambers
+        robot.tweetyBird.sendTargetPosition(-8,10,0); //Move to Submersible
+        robot.vertMotor.setTargetPosition(robot.vertAboveChamber); //Raise vertMotor to clip
         robot.tweetyBird.waitWhileBusy();
-        robot.vertMotor.setTargetPosition(robot.vertBelowChamber); //Clip the Specimen
-        sleep(1000); //Wait for vertMotor
-        robot.openClaw(); //Release the Specimen
-        sleep(500); //Wait for clawServos
-        //bring vertMotor to reset
-        robot.tweetyBird.sendTargetPosition(); //Move to clear truss of submersible
+        robot.tweetyBird.sendTargetPosition(-8,29,0); //Move up to submersible
         robot.tweetyBird.waitWhileBusy();
-        robot.tweetyBird.sendTargetPosition(); //Move to align with observation specimen
-        robot.vertMotor.setTargetPosition(robot.vertWall); //Move vertMotor to align with specimen
+        robot.vertMotor.setTargetPosition(robot.vertBelowChamber); //Clip specimen
+        robot.openClaw();
+        sleep(600);
+        vertToBottom.start();
+        robot.tweetyBird.sendTargetPosition(0,25,0); //Move to clear trusses
         robot.tweetyBird.waitWhileBusy();
-        robot.tweetyBird.sendTargetPosition(); //Move to grab specimen
+        robot.tweetyBird.sendTargetPosition(37,20,degree(180)); //Align with observation
+        robot.vertMotor.setTargetPosition(robot.vertWall); //Move vertMotor to wall
         robot.tweetyBird.waitWhileBusy();
+        robot.tweetyBird.sendTargetPosition(37,2,degree(180)); //Go to grab Specimen
+        robot.tweetyBird.waitWhileBusy();
+        robot.closeClaw(); //Close the claw
+        sleep(600);
+        robot.vertMotor.setTargetPosition(robot.vertWall+200); //Remove specimen from wall
+        robot.tweetyBird.sendTargetPosition(37,20,degree(180)); //move off of wall
+        robot.tweetyBird.waitWhileBusy();
+        vertToBottom.start(); //Bring vertMotor to reset
+        robot.tweetyBird.sendTargetPosition(-10,20,0); //Align with submersible
+        robot.tweetyBird.waitWhileBusy();
+        robot.vertMotor.setTargetPosition(robot.vertAboveChamber); //Raise vertMotor
+        robot.tweetyBird.sendTargetPosition(-10,29,0); //Move to submersible
+        robot.tweetyBird.waitWhileBusy();
+        robot.vertMotor.setTargetPosition(robot.vertBelowChamber); //Clip the specimen
+        robot.openClaw(); //open claw
+        
 
-        */
+        
+
         
         
 
