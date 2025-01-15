@@ -27,6 +27,8 @@ public class Auto extends LinearOpMode {
         robot = new Configuration(this);
         robot.init();
         robot.initTweatyBird();
+
+
         robot.vertMotor.setTargetPosition(robot.vertMotor.getCurrentPosition());
         robot.vertMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
         robot.vertMotor.setPower(0.8);
@@ -50,6 +52,9 @@ public class Auto extends LinearOpMode {
     }
 
     private void helenaAuto(){
+        vertMotorLoop vertToBottom = new vertMotorLoop(this);
+
+
         robot.closeClaw();
         sleep(1000); //wait for clawServos
         robot.vertMotor.setTargetPosition(robot.vertAboveChamber); //Start moving vertMotor up
@@ -60,18 +65,20 @@ public class Auto extends LinearOpMode {
         sleep(1000); //Wait for vertMotor
         robot.openClaw(); //Release the Specimen
         sleep(1000); //Wait for clawServos
-        //RUN VERTMOTOR DOWN UNTIL TOUCHSENSOR =TRUE
-        /*robot.tweetyBird.sendTargetPosition(); //Move to clear truss of submersible
+        vertToBottom.start();//Lowers the vert to reset
+        robot.tweetyBird.sendTargetPosition(-6,25,0); //Move to clear truss of submersible
         robot.tweetyBird.waitWhileBusy();
-        robot.tweetyBird.sendTargetPosition(); //Move to the left of sample
+        robot.tweetyBird.sendTargetPosition(27,25,0); //Move to the left of sample
         robot.tweetyBird.waitWhileBusy();
-        robot.tweetyBird.sendTargetPosition(); //Move to the left of sample and above
+        robot.tweetyBird.sendTargetPosition(27,48,0); //Move to the left of sample and above
         robot.tweetyBird.waitWhileBusy();
-        robot.tweetyBird.sendTargetPosition(); //Move above the sample
+        robot.tweetyBird.sendTargetPosition(37,48,0); //Move above the sample
         robot.tweetyBird.waitWhileBusy();
-        robot.tweetyBird.sendTargetPosition(); //Push sample in observation
+        robot.tweetyBird.sendTargetPosition(37,6,0); //Push sample in observation
         robot.tweetyBird.waitWhileBusy();
-        robot.tweetyBird.sendTargetPosition(); //Move left and above sample
+        robot.tweetyBird.sendTargetPosition();
+
+        /*robot.tweetyBird.sendTargetPosition(37,48,0); //Move left and above sample
         robot.tweetyBird.waitWhileBusy();
         robot.tweetyBird.sendTargetPosition(); //Move above the sample
         robot.tweetyBird.waitWhileBusy();
