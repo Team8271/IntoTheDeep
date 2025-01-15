@@ -27,15 +27,21 @@ public class Auto extends LinearOpMode {
         robot = new Configuration(this);
         robot.init();
         robot.initTweatyBird();
+        robot.vertMotor.setTargetPosition(robot.vertMotor.getCurrentPosition());
+        robot.vertMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        robot.vertMotor.setPower(0.8);
+
+        telemetry.addLine("Initialized");
+        String position = robot.odometer.getX() + ", " + robot.odometer.getY() + ", " + robot.odometer.getZ();
+        telemetry.addData("Current Pos:", position);
+        telemetry.update();
 
         //Wait for driver to press START
         waitForStart();
 
 
-        telemetry.addLine("PID Started");
-        telemetry.update();
 
-        runAuto1();
+        helenaAuto();
 
 
 
@@ -45,16 +51,17 @@ public class Auto extends LinearOpMode {
 
     private void helenaAuto(){
         robot.closeClaw();
-        sleep(500); //wait for clawServos
+        sleep(1000); //wait for clawServos
         robot.vertMotor.setTargetPosition(robot.vertAboveChamber); //Start moving vertMotor up
         sleep(1000); //Wait for vertMotor
-        robot.tweetyBird.sendTargetPosition(); //Go infront of chambers
+        robot.tweetyBird.sendTargetPosition(-6,29,0); //Go infront of chambers
         robot.tweetyBird.waitWhileBusy(); //Wait until robot reaches front of chambers
         robot.vertMotor.setTargetPosition(robot.vertBelowChamber); //Clip the Specimen
         sleep(1000); //Wait for vertMotor
         robot.openClaw(); //Release the Specimen
-        sleep(500); //Wait for clawServos
-        robot.tweetyBird.sendTargetPosition(); //Move to clear truss of submersible
+        sleep(1000); //Wait for clawServos
+        //RUN VERTMOTOR DOWN UNTIL TOUCHSENSOR =TRUE
+        /*robot.tweetyBird.sendTargetPosition(); //Move to clear truss of submersible
         robot.tweetyBird.waitWhileBusy();
         robot.tweetyBird.sendTargetPosition(); //Move to the left of sample
         robot.tweetyBird.waitWhileBusy();
@@ -100,7 +107,7 @@ public class Auto extends LinearOpMode {
         robot.tweetyBird.sendTargetPosition(); //Move to grab specimen
         robot.tweetyBird.waitWhileBusy();
 
-        
+        */
         
         
 

@@ -21,7 +21,7 @@ public class Configuration {
     //Global Variables
     public int vertMax = 5050, horzMax = 400;
     public int intakeOnDistance = 250;
-    public int vertAboveChamber = 4070, vertWall = 1635, vertBelowChamber = 3811;
+    public int vertAboveChamber = 4153, vertWall = 1635, vertBelowChamber = 3300;
 
     double clawClosedValue = 0.67; //Larger # = More Closed (0-1)
     double clawOpenValue = 0.4; //Smaller # = More Open (0-1)
@@ -86,7 +86,7 @@ public class Configuration {
 
         vertMotor = hwMap.get(DcMotor.class,"Vert");
         vertMotor.setDirection(DcMotor.Direction.REVERSE);
-        vertMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        vertMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
 
 
         intakeMotor = hwMap.get(DcMotor.class, "In");
