@@ -21,7 +21,7 @@ public class Configuration {
     //Global Variables
     public int vertMax = 5050, horzMax = 400;
     public int intakeOnDistance = 250;
-    public int vertAboveChamber = 4153, vertWall = 1635, vertBelowChamber = 3200;
+    public int vertAboveChamber = 4153, vertWall = 1258, vertBelowChamber = 3200;
 
     double clawClosedValue = 0.67; //Larger # = More Closed (0-1)
     double clawOpenValue = 0.4; //Smaller # = More Open (0-1)
@@ -107,6 +107,12 @@ public class Configuration {
 
 
 
+        /*
+        need to not init imu
+        need to init box servo on auto
+        need dpad down to always bring intake for high basket
+         */
+        //Dont run this
         imu = hwMap.get(IMU.class, "imu");
         IMU.Parameters parameters = new IMU.Parameters(
                 new RevHubOrientationOnRobot( //Mes swith me
@@ -170,11 +176,11 @@ public class Configuration {
                 .setDistanceBuffer(1) //inches
                 .setDriver(mecanum)
                 .setLinearOpMode(opMode)
-                .setMaximumSpeed(0.8)
-                .setMinimumSpeed(0.2)
+                .setMaximumSpeed(1)
+                .setMinimumSpeed(0.3)
                 .setOdometer(odometer)
-                .setRotationBuffer(1)
-                .setDebuggingEnabled(true)
+                .setRotationBuffer(5)
+                .setDebuggingEnabled(false)
                 .build();
     }
 

@@ -1,5 +1,6 @@
 package org.firstinspires.ftc.teamcode.OpenHouse;
 
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
@@ -7,6 +8,7 @@ import com.qualcomm.robotcore.util.Range;
 
 import org.firstinspires.ftc.teamcode.QualifierBot.Configuration;
 
+@Disabled
 @TeleOp(name="TeleOp - Open House")
 public class OpenHouseTeleOp extends LinearOpMode {
     private OpenHouseConfig robot;

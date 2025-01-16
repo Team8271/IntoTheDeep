@@ -2,6 +2,7 @@ package org.firstinspires.ftc.teamcode.OpenHouse;
 
 import android.system.Os;
 
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
@@ -9,7 +10,7 @@ import com.qualcomm.robotcore.util.Range;
 
 import java.util.ArrayList;
 
-
+@Disabled
 @TeleOp(name="Record Path")
 public class OpenHouseRecordPath extends LinearOpMode {
     private OpenHouseConfig robot;
