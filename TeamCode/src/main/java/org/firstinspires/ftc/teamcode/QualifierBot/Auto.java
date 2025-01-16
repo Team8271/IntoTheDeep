@@ -55,7 +55,7 @@ public class Auto extends LinearOpMode {
     }
 
 
-
+    //Remove wait and it curve thing
 
     //Claw takes about a second to close, maybe put them preemptively
     private void helenaAutoChamber(){
