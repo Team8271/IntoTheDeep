@@ -47,9 +47,9 @@ public class Auto extends LinearOpMode {
 
         telemetry.clear();
 
-
-
         helenaAutoChamber();
+
+
 
 
 
@@ -67,7 +67,7 @@ public class Auto extends LinearOpMode {
         vertMotorLoop vertToBottom = new vertMotorLoop(this,robot);
 
         robot.closeClaw();
-        robot.boxServo.setPosition(1);
+        robot.boxServo.setPosition(0);
         robot.flipServo.setPosition(.6);
         sleep(1000); //Wait for claw servo
         robot.vertMotor.setTargetPosition(robot.vertAboveChamber); //Start moving vertMotor up

@@ -21,7 +21,7 @@ public class Configuration {
     //Global Variables
     public int vertMax = 5050, horzMax = 400;
     public int intakeOnDistance = 250;
-    public int vertAboveChamber = 4153, vertWall = 1258, vertBelowChamber = 3200;
+    public int vertAboveChamber = 4153, vertWall = 1258, vertBelowChamber = 3100;
 
     double clawClosedValue = 0.67; //Larger # = More Closed (0-1)
     double clawOpenValue = 0.4; //Smaller # = More Open (0-1)
