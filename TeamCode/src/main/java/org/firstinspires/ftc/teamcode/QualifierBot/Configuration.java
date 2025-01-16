@@ -33,7 +33,6 @@ public class Configuration {
 
     public TouchSensor verticalLimiter, horizontalLimiter, frontSensor;
 
-    public IMU imu;
 
     public RevColorSensorV3 blonker;
 
@@ -108,19 +107,10 @@ public class Configuration {
 
 
         /*
-        need to not init imu
-        need to init box servo on auto
+        need to not init imu :checkmark:
+        need to init box servo on auto :checkmark:
         need dpad down to always bring intake for high basket
          */
-        //Dont run this
-        imu = hwMap.get(IMU.class, "imu");
-        IMU.Parameters parameters = new IMU.Parameters(
-                new RevHubOrientationOnRobot( //Mes swith me
-                        RevHubOrientationOnRobot.LogoFacingDirection.DOWN,
-                        RevHubOrientationOnRobot.UsbFacingDirection.FORWARD
-                )
-        );
-        imu.initialize(parameters);
 
 
         mecanum = new Mecanum.Builder()
