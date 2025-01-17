@@ -72,18 +72,34 @@ public class Auto extends LinearOpMode {
         vertResetAndWall.start();//Lowers the vert to reset then sets to wall height
 
         //Start of moving to first sample
-        robot.tweetyBird.sendTargetPosition(-8,15,0); //Clear Submersible before rotation
+        //robot.tweetyBird.sendTargetPosition(-8,15,0); //Clear Submersible before rotation
         robot.tweetyBird.sendTargetPosition(27,20,-180); //Move to clear truss of submersible
         robot.tweetyBird.waitWhileBusy();
-        robot.tweetyBird.sendTargetPosition(27,48,-180); //Move to the left of sample and above
-        //wait was here
-        robot.tweetyBird.sendTargetPosition(38,48,-180); //Move above the sample
+        robot.tweetyBird.sendTargetPosition(27,44,-180); //Move to the left of sample and above
+        robot.tweetyBird.waitWhileBusy();
+        robot.tweetyBird.sendTargetPosition(38,44,-180); //Move above the sample
         robot.tweetyBird.waitWhileBusy(); //Wait for robot to be above sample completely
 
 
         //Pushing first sample into Observation and grab 2nd Specimen
-        robot.tweetyBird.sendTargetPosition(38,-4,-180); //Push sample in observation and go to grab position
+        robot.tweetyBird.sendTargetPosition(38,0,-180); //Push sample in observation and go to grab position
         robot.tweetyBird.waitWhileBusy();
+        //Move into the wall:
+        robot.tweetyBird.close();
+        robot.fl.setPower(0.2);
+        robot.fr.setPower(0.2);
+        robot.bl.setPower(0.2);
+        robot.br.setPower(0.2);
+
+        sleep(500);
+
+        robot.fl.setPower(0);
+        robot.fr.setPower(0);
+        robot.bl.setPower(0);
+        robot.br.setPower(0);
+
+
+
         robot.closeClaw(); //Close claw
         sleep(600); //Wait for claw to close
         robot.vertMotor.setTargetPosition(robot.vertWall+400);
@@ -91,6 +107,7 @@ public class Auto extends LinearOpMode {
 
         //Moving to Submersible to clip 2nd Specimen
         robot.vertMotor.setTargetPosition(robot.vertAboveChamber); //Position vertMotor to clip
+        robot.initTweatyBird(); //Start TweetyBird
         robot.tweetyBird.sendTargetPosition(38, 15,-180); //Back off wall so don't hit it when rotating
         robot.tweetyBird.waitWhileBusy();
         robot.tweetyBird.sendTargetPosition(-10,25,0); //Move in-front of submersible
