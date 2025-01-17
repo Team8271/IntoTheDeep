@@ -6,7 +6,6 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 
 
-import org.firstinspires.ftc.teamcode.OpenHouse.OpenHouseConfig;
 import org.firstinspires.ftc.teamcode.QualifierBot.Configuration;
 
 import java.lang.reflect.Field;
@@ -19,7 +18,7 @@ public class MotorTester extends LinearOpMode {
     /**
      * HardwareMap Reference
      */
-    private OpenHouseConfig robot = null;
+    private Configuration robot = null;
 
     /**
      * Opmode Start
@@ -27,8 +26,8 @@ public class MotorTester extends LinearOpMode {
     @Override
     public void runOpMode() {
         //Initialize
-        robot = new OpenHouseConfig(this);
-        robot.init(true);//change me
+        robot = new Configuration(this);
+        robot.init();//change me
 
         //Don't clear
         telemetry.setAutoClear(false);
