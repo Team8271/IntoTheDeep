@@ -9,17 +9,11 @@ import org.firstinspires.ftc.teamcode.StateBot.PIDControl;
 
 import java.util.HashMap;
 
-@Autonomous (name="Jax Auto") //add preselectTeleOp="Jax TeleOp" to turn preselect on
+@Autonomous (name="Jax Auto", preselectTeleOp="Jax TeleOp")
 public class Auto extends LinearOpMode {
     private Configuration robot;
 
-    boolean swapDirection = false;
 
-
-
-    double lowPower = 0.2;
-    double normalPower = 0.4;
-    double highPower = 0.6;
     private final ElapsedTime runtime = new ElapsedTime();
 
     @Override
@@ -27,6 +21,10 @@ public class Auto extends LinearOpMode {
         robot = new Configuration(this);
         robot.init();
         robot.initTweatyBird();
+
+        //Clipping preloaded specimen
+        robot.closeClaw();//close claw
+
 
 
 
@@ -49,11 +47,7 @@ public class Auto extends LinearOpMode {
 
         helenaAutoChamber();
 
-
-
-
-
-
+        
     }
 
 
@@ -67,10 +61,14 @@ public class Auto extends LinearOpMode {
 
 
         //Clipping preloaded specimen
-        robot.closeClaw();//close claw
+        //robot.closeClaw();//close claw
+        //robot.boxServo.setPosition(0); //Move boxServo out of way
+        //robot.flipServo.setPosition(.6);
+        //sleep(1000); //wait for clawServos
         robot.boxServo.setPosition(0); //Move boxServo out of way
         robot.flipServo.setPosition(.6);
-        sleep(1000); //wait for clawServos
+
+
         robot.vertMotor.setTargetPosition(robot.vertAboveChamber); //Start moving vertMotor up
         sleep(1000); //Wait for vertMotor
         robot.tweetyBird.sendTargetPosition(-8,30,0); //Go in-front of chambers

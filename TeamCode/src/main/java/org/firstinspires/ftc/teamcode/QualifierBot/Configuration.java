@@ -169,7 +169,7 @@ public class Configuration {
                 .setMaximumSpeed(1)
                 .setMinimumSpeed(0.3)
                 .setOdometer(odometer)
-                .setRotationBuffer(5)
+                .setRotationBuffer(3)
                 .setDebuggingEnabled(false)
                 .build();
     }
