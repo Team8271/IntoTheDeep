@@ -21,7 +21,7 @@ public class Configuration {
     //Global Variables
     public int vertMax = 5050, horzMax = 400;
     public int intakeOnDistance = 250;
-    public int vertAboveChamber = 4153, vertWall = 1258, vertBelowChamber = 3200;
+    public int vertAboveChamber = 4153, vertWall = 1258, vertBelowChamber = 3100;
 
     double clawClosedValue = 0.67; //Larger # = More Closed (0-1)
     double clawOpenValue = 0.4; //Smaller # = More Open (0-1)
@@ -33,7 +33,6 @@ public class Configuration {
 
     public TouchSensor verticalLimiter, horizontalLimiter, frontSensor;
 
-    public IMU imu;
 
     public RevColorSensorV3 blonker;
 
@@ -108,19 +107,10 @@ public class Configuration {
 
 
         /*
-        need to not init imu
-        need to init box servo on auto
+        need to not init imu :checkmark:
+        need to init box servo on auto :checkmark:
         need dpad down to always bring intake for high basket
          */
-        //Dont run this
-        imu = hwMap.get(IMU.class, "imu");
-        IMU.Parameters parameters = new IMU.Parameters(
-                new RevHubOrientationOnRobot( //Mes swith me
-                        RevHubOrientationOnRobot.LogoFacingDirection.DOWN,
-                        RevHubOrientationOnRobot.UsbFacingDirection.FORWARD
-                )
-        );
-        imu.initialize(parameters);
 
 
         mecanum = new Mecanum.Builder()
@@ -179,7 +169,7 @@ public class Configuration {
                 .setMaximumSpeed(1)
                 .setMinimumSpeed(0.3)
                 .setOdometer(odometer)
-                .setRotationBuffer(5)
+                .setRotationBuffer(3)
                 .setDebuggingEnabled(false)
                 .build();
     }

@@ -5,7 +5,7 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.util.ElapsedTime;
 import com.qualcomm.robotcore.util.Range;
-
+@Disabled
 @TeleOp(name="State Bot TeleOp")
 public class NewRobotTeleOp extends LinearOpMode {
     private NewRobotConfig robot;
