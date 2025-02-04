@@ -5,10 +5,7 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.util.Range;
 
-/*
- * Intake motor auto run again
- */
-
+//Set intake motor to auto run when intake is down unless reverse intake
 
 @TeleOp(name="Main TeleOp")
 public class MainTeleOp extends LinearOpMode {
@@ -119,13 +116,14 @@ public class MainTeleOp extends LinearOpMode {
                 debounce = false;
             }
 
-            telemetry.addData("Debounce", debounce);
             //Claw stuff
             if(clawClosed){
-                robot.closeClaw();
+                robot.closeClaw(false);
+                telemetry.addLine("Claw: Closed");
             }
             else{
                 robot.openClaw();
+                telemetry.addLine("Claw: Open");
             }
 
             ///Horizontal Slide Start

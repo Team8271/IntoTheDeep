@@ -1,5 +1,7 @@
 package org.firstinspires.ftc.teamcode;
 
+import androidx.annotation.NonNull;
+
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
@@ -182,13 +184,48 @@ public class Config {
                 .build();
     }
 
-    public void closeClaw(){
+    public void closeClaw(boolean waitForClose){
         clawLeft.setPosition(clawLeftClosed); //Set left servo to close position
         clawRight.setPosition(clawRightClosed); //Set right servo to close position
+        if(waitForClose){
+            opMode.sleep(500);
+        }
     }
 
     public void openClaw(){
         clawLeft.setPosition(clawLeftOpen); //Set left servo to open position
         clawRight.setPosition(clawRightOpen); //Set right servo to open position
+    }
+
+    public void setSlidePosition(DcMotor slide, int target, double power){
+        slide.setTargetPosition(target);
+        if(slide.getMode() != DcMotor.RunMode.RUN_TO_POSITION){
+            slide.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        }
+        slide.setPower(power);
+    }
+    public void moveUntilSensor(@NonNull TouchSensor sensor, double speed){
+        //Set all wheels to move at speed
+        fr.setPower(speed);
+        br.setPower(speed);
+        fl.setPower(speed);
+        fr.setPower(speed);
+        opMode.telemetry.addLine("Waiting for " + sensor);
+        opMode.telemetry.update();
+        while(!sensor.isPressed()){
+            opMode.sleep(100); //Waiting
+        }
+
+        //This part pushes the bot into the plane more. Ensure bot isn't at angle to wall
+        fr.setPower(.6);
+        br.setPower(.6);
+        fl.setPower(.6);
+        fr.setPower(.6);
+        opMode.sleep(300);
+        //Stop all wheels
+        fr.setPower(0);
+        br.setPower(0);
+        fl.setPower(0);
+        fr.setPower(0);
     }
 }
