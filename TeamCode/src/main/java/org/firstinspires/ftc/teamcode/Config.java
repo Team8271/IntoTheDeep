@@ -42,7 +42,7 @@ public class Config {
             clawClosedValue         = 0.30, //Smaller # = More Closed (0-1) (left claw)
             clawOpenValue           = 0.5,  //Larger # = More Open (0-1)  (left claw)
             slowSpeed               = 0.3,
-            fastSpeed               = 0.8;
+            fastSpeed               = 0.4;
 
     public int          aboveChamber            = 1665,
             belowChamber            = 1200,
@@ -158,6 +158,10 @@ public class Config {
                 .build();
 
         odometer.resetTo(0,0,0);
+
+
+
+
 
 
         //Claw stuff and maths
