@@ -188,12 +188,10 @@ public class Config {
                 .build();
     }
 
-    public void closeClaw(boolean waitForClose){
+    public void closeClaw(){
         clawLeft.setPosition(clawLeftClosed); //Set left servo to close position
         clawRight.setPosition(clawRightClosed); //Set right servo to close position
-        if(waitForClose){
-            opMode.sleep(500);
-        }
+
     }
 
     public void openClaw(){
