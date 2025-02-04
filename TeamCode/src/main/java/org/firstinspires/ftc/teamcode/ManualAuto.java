@@ -11,6 +11,7 @@ public class ManualAuto extends LinearOpMode {
     public void runOpMode(){
         robot = new Config(this);
         robot.init();
+        telemetry.setAutoClear(false);
 
         robot.closeClaw();
 
@@ -19,14 +20,35 @@ public class ManualAuto extends LinearOpMode {
 
         waitForStart(); // - - - - - - - - - - - - - - - - - Wait for START
 
+        telemetry.addLine("Started");
+        telemetry.update();
+
         robot.boxServo.setPosition(robot.boxStoragePosition); //Set box servo out of the way
 
+        //Sleeping between each to show stopping point per move
+        moveTo(0,5,0);
+        sleep(1000);
+        moveTo(0,-5,0);
+        sleep(1000);
+        moveTo(-5,-5,0);
+        sleep(1000);
+        moveTo(5,-5,0);
+        sleep(1000);
+        moveTo(5,-5,180);
+        sleep(1000);
+        moveTo(0,0,0);
 
+        telemetry.addLine("End of Testing");
+        telemetry.update();
+
+        //Keep telemetry on the screen
+        sleep(100000);
     }
 
+    //This uses a linear slowdown; may switch to quadratic for better slowdown
     //I'm so tired right now, if this doesn't work you can implement similar logic to your teleop
     //Basically the same thing don't know why I didn't do it
-    public void moveTo(double targetX, double targetY, double targetZ){
+    public void moveTo(double targetX, double targetY, double targetDegreeZ){
         double xAxisPower; //Positive moves right
         double yAxisPower; //Positive moves up
         double zAxisPower; //Positive rotates right
@@ -82,7 +104,7 @@ public class ManualAuto extends LinearOpMode {
             }
 
             ///Moving on the Z-axis
-            double zDistanceFromTarget = Math.abs(currentZ-targetZ);
+            double zDistanceFromTarget = Math.abs(currentZ-Math.toRadians(targetDegreeZ));
             if(zDistanceFromTarget <= slowDownDistance){
                 zPower = zDistanceFromTarget/10;
             }
@@ -90,7 +112,7 @@ public class ManualAuto extends LinearOpMode {
                 zPower = maxSpeed;
             }
 
-            if(currentZ >= targetZ){ //Robot needs to rotate counterclockwise
+            if(currentZ >= Math.toRadians(targetDegreeZ)){ //Robot needs to rotate counterclockwise
                 zAxisPower = -zPower;
             }
             else{   //if(currentZ < targetZ){ //Robot needs to rotate clockwise
@@ -128,6 +150,8 @@ public class ManualAuto extends LinearOpMode {
                 robot.bl.setPower(0);
                 robot.br.setPower(0);
                 targetReached = true;
+                telemetry.addLine("Successfully moved to " + targetX + ", " + targetY + ", " + targetDegreeZ);
+                telemetry.update();
             }
 
         }

@@ -1,14 +1,3 @@
-Possible incorrectness:
-    Assuming that wheel power for right is:
-        fl = -power
-        fr = power
-        bl = power
-        br = -power
-        left side spins inward
-        right side spins outward
-        this is opposite for left
-        if incorrect then flip signs for xAxisPower when adding
-
 Movement equations
     xAxisPower is right/left power        (negative positive)
     yAxisPower is forward/reverse power   (positive negative)
@@ -33,11 +22,10 @@ Movement equations
         br = -zAxisPower
 
     Bring these all together
-
-    fl = yAxisPower -xAxisPower +zAxisPower
-    fr = yAxisPower +xAxisPower -zAxisPower
-    bl = yAxisPower +xAxisPower +zAxisPower
-    br = yAxisPower -xAxisPower -zAxisPower
+        fl = yAxisPower -xAxisPower +zAxisPower
+        fr = yAxisPower +xAxisPower -zAxisPower
+        bl = yAxisPower +xAxisPower +zAxisPower
+        br = yAxisPower -xAxisPower -zAxisPower
 
 
 
