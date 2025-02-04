@@ -4,7 +4,7 @@ import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.util.Range;
 
-@Autonomous(name="Manual Auto")
+@Autonomous(name="Manual Auto", preselectTeleOp = "Main TeleOp")
 public class ManualAuto extends LinearOpMode {
     Config robot;
     @Override
