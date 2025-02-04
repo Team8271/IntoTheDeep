@@ -123,6 +123,13 @@ public class ManualAuto extends LinearOpMode {
 
 
             //Calculate power for each wheel
+            /* Old one
+            double flPower = yAxisPower -xAxisPower +zAxisPower;
+            double frPower = yAxisPower +xAxisPower -zAxisPower;
+            double blPower = yAxisPower +xAxisPower +zAxisPower;
+            double brPower = yAxisPower -xAxisPower -zAxisPower;
+            */
+
             double flPower = yAxisPower -xAxisPower +zAxisPower;
             double frPower = yAxisPower +xAxisPower -zAxisPower;
             double blPower = yAxisPower +xAxisPower +zAxisPower;
