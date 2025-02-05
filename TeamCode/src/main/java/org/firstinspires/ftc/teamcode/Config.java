@@ -110,7 +110,7 @@ public class Config {
 
         //Defining the Intake Motor
         intakeMotor = hwMap.get(DcMotor.class,"IntakeMotor");
-        intakeMotor.setDirection(DcMotorSimple.Direction.FORWARD);
+        intakeMotor.setDirection(DcMotorSimple.Direction.REVERSE);
         intakeMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         intakeMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 
