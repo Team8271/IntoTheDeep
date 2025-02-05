@@ -8,7 +8,7 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.TouchSensor;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
-@Autonomous(name="Secondary Auto (In Development)")
+@Autonomous(name="Secondary Auto (Clip 3, Park)")
 public class SecondaryAuto extends LinearOpMode {
     public ElapsedTime runTime;
     Config robot;
@@ -92,7 +92,7 @@ public class SecondaryAuto extends LinearOpMode {
         robot.tweetyBird.clearWaypoints();
         robot.tweetyBird.disengage();
         moveUntilSensor(robot.frontTouch, 0.4);
-        setSlidePosition(robot.vertSlide, robot.belowChamber,0.3);
+        setSlidePosition(robot.vertSlide, robot.belowChamber,0.4);
         sleep(1000);
         robot.openClaw(); //Open the claw
 
@@ -108,7 +108,8 @@ public class SecondaryAuto extends LinearOpMode {
         robot.tweetyBird.disengage();
         moveUntilSensor(robot.topTouch, 0.4);
         closeClaw(); //Grab specimen
-        setSlidePosition(robot.vertSlide, robot.wallHeight+400,0.4);
+        setSlidePosition(robot.vertSlide, robot.wallHeight+500,0.8);
+        sleep(500);
     }
 
     public void closeClaw(){
@@ -121,7 +122,7 @@ public class SecondaryAuto extends LinearOpMode {
     public void moveTo(double x, double y, double z){
         robot.tweetyBird.addWaypoint(x,y,z);
     }
-    public void setSlidePosition(DcMotor slide, int target, double power){
+    public void setSlidePosition(@NonNull DcMotor slide, int target, double power){
         slide.setTargetPosition(target);
         if(slide.getMode() != DcMotor.RunMode.RUN_TO_POSITION){
             slide.setMode(DcMotor.RunMode.RUN_TO_POSITION);
