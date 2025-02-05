@@ -8,8 +8,8 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.TouchSensor;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
-@Autonomous(name="Tweety Auto")
-public class TweetyAuto extends LinearOpMode {
+@Autonomous(name="Secondary Auto (In Development)")
+public class SecondaryAuto extends LinearOpMode {
     public ElapsedTime runTime;
     Config robot;
     @Override
@@ -52,28 +52,14 @@ public class TweetyAuto extends LinearOpMode {
         ///Pushing samples into observation
         robot.tweetyBird.engage();
         waitForMove();
-        moveTo(-6,21,0); //Move back from submersible
-        moveTo(28,22,0); //Move to left/below sample 1
+        moveTo(-6,18,0); //Move back from submersible
+        moveTo(28,18,-180); //Move to left/below sample 1
         waitForMove();
-        moveTo(29,49,0); //Move to left/above sample 1
+        moveTo(29,49,-180); //Move to left/above sample 1
         waitForMove();
-        moveTo(40,50,0); //Move to above sample 1
+        moveTo(40,50,-180); //Move to above sample 1
         waitForMove();
-        moveTo(37,11,0); //Push sample 1 into observation
-        /*Push 2nd
-        moveTo(40,50,0); //Move left/above sample 2
-        waitForMove();
-        moveTo(49,50,0); //Move above sample 2
-        waitForMove();
-        moveTo(46,11,0); //Push sample 2 into observation
-*/
-
-        ///Grab and 2nd specimen
-        moveTo(34,18,0); //Exit observation
-        waitForMove();
-        moveTo(34,16,-180); //Rotate 180
-        waitForMove();
-        moveTo(34,0,-180);
+        moveTo(37,11,-180); //Push sample 1 into observation
         waitForMove();
         robot.tweetyBird.clearWaypoints();
         robot.tweetyBird.disengage();
