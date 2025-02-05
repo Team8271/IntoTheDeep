@@ -13,7 +13,7 @@ public class ManualAuto extends LinearOpMode {
         robot.init();
         telemetry.setAutoClear(false);
 
-        robot.closeClaw(false);
+        robot.closeClaw();
 
         telemetry.addLine("Initialized");
         telemetry.update();

@@ -180,7 +180,7 @@ public class Config {
                 .setDistanceBuffer(1) //inches
                 .setDriver(mecanum)
                 .setLinearOpMode(opMode)
-                .setMaximumSpeed(0.8)
+                .setMaximumSpeed(0.7)
                 .setMinimumSpeed(0.3)
                 .setOdometer(odometer)
                 .setRotationBuffer(4)

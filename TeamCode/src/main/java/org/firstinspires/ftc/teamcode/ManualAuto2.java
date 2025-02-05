@@ -16,7 +16,7 @@ public class ManualAuto2 extends LinearOpMode {
         robot = new Config(this);
         robot.init();
 
-        robot.closeClaw(false);
+        robot.closeClaw();
         telemetry.addLine("Initialized");
         telemetry.update();
 
@@ -84,7 +84,7 @@ public class ManualAuto2 extends LinearOpMode {
 
         //Graby graby the second one ya know?
         moveUntilSensor(robot.topTouch, 0.3);
-        robot.closeClaw(true);
+        robot.closeClaw();
 
         //Move to chambers
         robot.odometer.resetTo(0,0,0);

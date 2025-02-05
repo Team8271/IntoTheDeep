@@ -119,7 +119,7 @@ public class MainTeleOp extends LinearOpMode {
 
             //Claw stuff
             if(clawClosed){
-                robot.closeClaw(false);
+                robot.closeClaw();
                 telemetry.addLine("Claw: Closed");
             }
             else{
