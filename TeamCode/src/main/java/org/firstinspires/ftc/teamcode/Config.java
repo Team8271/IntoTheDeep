@@ -181,7 +181,7 @@ public class Config {
                 .setDriver(mecanum)
                 .setLinearOpMode(opMode)
                 .setMaximumSpeed(0.7)
-                .setMinimumSpeed(0.5)
+                .setMinimumSpeed(0.4)
                 .setOdometer(odometer)
                 .setRotationBuffer(4)
                 .setDebuggingEnabled(false)
