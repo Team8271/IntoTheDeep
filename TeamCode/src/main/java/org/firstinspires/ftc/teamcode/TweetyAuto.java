@@ -73,11 +73,13 @@ public class TweetyAuto extends LinearOpMode {
         waitForMove();
         moveTo(34,16,-180); //Rotate 180
         waitForMove();
+        moveTo(34,0,-180);
+        waitForMove();
         robot.tweetyBird.clearWaypoints();
         robot.tweetyBird.disengage();
-        moveUntilSensor(robot.topTouch,0.3); //Top touch isn't touchin (More power?)
+        moveUntilSensor(robot.topTouch,0.4); //Top touch isn't touchin (More power?)
         closeClaw(); //Grab 2nd specimen
-        setSlidePosition(robot.vertSlide, robot.wallHeight+400,0.4);
+        setSlidePosition(robot.vertSlide, robot.wallHeight+400,0.8);
 
 
         //flies backward
@@ -103,7 +105,7 @@ public class TweetyAuto extends LinearOpMode {
         waitForMove();
         robot.tweetyBird.clearWaypoints();
         robot.tweetyBird.disengage();
-        moveUntilSensor(robot.frontTouch, 0.3);
+        moveUntilSensor(robot.frontTouch, 0.4);
         setSlidePosition(robot.vertSlide, robot.belowChamber,0.3);
         sleep(1000);
         robot.openClaw(); //Open the claw
@@ -114,11 +116,11 @@ public class TweetyAuto extends LinearOpMode {
         moveTo(-8,25,0); //Back off of submersible
         waitForMove();
         setSlidePosition(robot.vertSlide, robot.wallHeight, 0.3);
-        moveTo(33-offset,0,-180); //Move to observation with rotation
+        moveTo(33,0,-180); //Move to observation with rotation
         waitForMove();
         robot.tweetyBird.clearWaypoints();
         robot.tweetyBird.disengage();
-        moveUntilSensor(robot.topTouch, 0.3);
+        moveUntilSensor(robot.topTouch, 0.4);
         closeClaw(); //Grab specimen
         setSlidePosition(robot.vertSlide, robot.wallHeight+400,0.4);
     }
@@ -151,7 +153,7 @@ public class TweetyAuto extends LinearOpMode {
         setAllWheelPower(.4);
         sleep(400);
         setAllWheelPower(0);*/
-        setAllWheelPower(0.4);
+        setAllWheelPower(speed);
         sleep(700);
         setAllWheelPower(0);
 
