@@ -42,7 +42,7 @@ public class MainTeleOp extends LinearOpMode {
 
 
             telemetry.addData("Vertical Position", robot.vertSlide.getCurrentPosition());
-            String pos = Math.round(robot.odometer.getX()) + ", " + Math.round(robot.odometer.getY()) + ", " + Math.round(robot.odometer.getZ());
+            String pos = Math.round(robot.odometer.getX()) + ", " + Math.round(robot.odometer.getY()) + ", " + Math.round(Math.toDegrees(robot.odometer.getZ()));
             telemetry.addLine(pos);
 
 
