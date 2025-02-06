@@ -42,10 +42,10 @@ public class ThirdAuto extends LinearOpMode {
         robot.tweetyBird.clearWaypoints();
         robot.tweetyBird.disengage();
 
-        moveUntilSensor(robot.frontTouch, 0.2); //Move into submersible
+        moveUntilSensor(robot.frontTouch, 0.4); //Move into submersible
 
-        setSlidePosition(robot.vertSlide, robot.wallHeight,0.3); //Clip specimen
-        sleep(1000);
+        setSlidePosition(robot.vertSlide, robot.wallHeight,0.4); //Clip specimen
+        sleep(700);
         robot.openClaw(); //Open claw
 
 
@@ -56,23 +56,23 @@ public class ThirdAuto extends LinearOpMode {
         moveTo(-6,18,0); //Move back from submersible
         moveTo(28,18,0); //Move to left/below sample 1
         waitForMove();
-        moveTo(29,49,0); //Move to left/above sample 1
+        moveTo(29,45,0); //Move to left/above sample 1
         waitForMove();
-        moveTo(40,50,0); //Move to above sample 1
+        moveTo(40,45,0); //Move to above sample 1
         waitForMove();
         moveTo(37,11,0); //Push sample 1 into observation
-        moveTo(40,50,0); //Move left/above sample 2
+        moveTo(40,45,-180); //Move left/above sample 2
+        //waitForMove();
+        moveTo(49,45,-180); //Move above sample 2
         waitForMove();
-        moveTo(49,50,-180); //Move above sample 2
-        waitForMove();
-        moveTo(46,0,-180); //Push sample 2 into observation
+        moveTo(46,5,-180); //Push sample 2 into observation
+        moveTo(46,5,-180);
         waitForMove();
         robot.tweetyBird.clearWaypoints();
         robot.tweetyBird.disengage();
-        moveUntilSensor(robot.topTouch,0.4); //Top touch isn't touchin (More power?)
+        moveUntilSensor(robot.topTouch,0.4); //Top touch isn't touch-in (More power?)
         closeClaw(); //Grab 2nd specimen
         setSlidePosition(robot.vertSlide, robot.wallHeight+400,0.8);
-
 
 
         clipCycle(-2); //2nd
@@ -91,15 +91,15 @@ public class ThirdAuto extends LinearOpMode {
         telemetry.addLine(robot.odometer.getX() + ", " + robot.odometer.getY() + ", " + robot.odometer.getZ());
         telemetry.update();
 
-        moveTo(34,15,-180); //Back out of observation
-        waitForMove(); //Added to prevent backing into other team observation?? Might work
+        moveTo(30,15,-180); //Back out of observation
+        //waitForMove();
         setSlidePosition(robot.vertSlide, robot.aboveChamber,0.4);
         moveTo(-8+offset,15,0); //Rotate and move to submersible
         waitForMove();
         robot.tweetyBird.clearWaypoints();
         robot.tweetyBird.disengage();
-        moveUntilSensor(robot.frontTouch, 0.4);
-        setSlidePosition(robot.vertSlide, robot.belowChamber,0.4);
+        moveUntilSensor(robot.frontTouch, 0.5);
+        setSlidePosition(robot.vertSlide, robot.belowChamber,0.5);
         sleep(1000);
         robot.openClaw(); //Open the claw
 
@@ -119,6 +119,7 @@ public class ThirdAuto extends LinearOpMode {
         setSlidePosition(robot.vertSlide, robot.wallHeight+500,0.8);
         sleep(500);
     }
+
 
     public void closeClaw(){
         robot.closeClaw();
@@ -160,8 +161,6 @@ public class ThirdAuto extends LinearOpMode {
         robot.br.setPower(power);
     }
 
-
-//        setSlidePosition(robot.vertMotor, robot.aboveBasket, 0.5)
 
     public void bucketAuto(){
         robot.boxServo.setPosition(robot.boxStoragePosition); //Set box servo

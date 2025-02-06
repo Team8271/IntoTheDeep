@@ -55,9 +55,9 @@ public class SecondaryAuto extends LinearOpMode {
         moveTo(-6,18,0); //Move back from submersible
         moveTo(28,18,-180); //Move to left/below sample 1
         waitForMove();
-        moveTo(29,49,-180); //Move to left/above sample 1
+        moveTo(29,45,-180); //Move to left/above sample 1
         waitForMove();
-        moveTo(40,50,-180); //Move to above sample 1
+        moveTo(40,45,-180); //Move to above sample 1
         waitForMove();
         moveTo(37,11,-180); //Push sample 1 into observation
         waitForMove();
@@ -70,9 +70,38 @@ public class SecondaryAuto extends LinearOpMode {
 
         //flies backward
         clipCycle(0); //2nd
-        clipCycle(-2); //3rd
-        clipCycle(-4); //4th
+        //clipCycle(-2); //3rd
+        //clipCycle(-4); //4th
         //clipCycle(-6); //5th
+
+        //Sitting in observation and grabbed specimen
+        robot.tweetyBird.engage();
+        telemetry.addLine(robot.odometer.getX() + ", " + robot.odometer.getY() + ", " + robot.odometer.getZ());
+        telemetry.update();
+
+        moveTo(34,15,-180); //Back out of observation
+        waitForMove(); //Added to prevent backing into other team observation?? Might work
+        setSlidePosition(robot.vertSlide, robot.aboveChamber,0.4);
+        moveTo(-10,15,0); //Rotate and move to submersible
+        waitForMove();
+        robot.tweetyBird.clearWaypoints();
+        robot.tweetyBird.disengage();
+        moveUntilSensor(robot.frontTouch, 0.4);
+        setSlidePosition(robot.vertSlide, robot.belowChamber,0.4);
+        sleep(1000);
+        robot.openClaw(); //Open the claw
+
+
+        //Robot is sitting against submersible with specimen clipped and claw open
+        robot.tweetyBird.engage();
+        moveTo(-10,25,0); //Back off of submersible
+        waitForMove();
+        setSlidePosition(robot.vertSlide, robot.wallHeight, 0.3);
+        moveTo(33,0,0); //Move to observation with no rotation
+        waitForMove();
+        robot.tweetyBird.clearWaypoints();
+        robot.tweetyBird.disengage();
+
 
 
         robot.tweetyBird.close();
