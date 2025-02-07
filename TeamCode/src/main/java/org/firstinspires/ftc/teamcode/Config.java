@@ -46,7 +46,7 @@ public class Config {
 
     public int          aboveChamber            = 1665,
             belowChamber            = 1200,
-            wallHeight              = 260,
+            wallHeight              = 280,
             highBasket              = 0,    //This value is not currently used
             horizontalMax           = 450,
             verticalMax             = 3300,

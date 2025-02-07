@@ -8,8 +8,8 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.TouchSensor;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
-@Autonomous(name="Secondary Auto (Clip 3, Park)")
-public class SecondaryAuto extends LinearOpMode {
+@Autonomous(name="Clip Three Park Dev")
+public class ClipThreeParkDev extends LinearOpMode {
     public ElapsedTime runTime;
     Config robot;
     @Override
@@ -36,11 +36,14 @@ public class SecondaryAuto extends LinearOpMode {
 
 
         ///Clip preload
-        //robot.tweetyBird.engage();
+        robot.tweetyBird.engage();
         tweetyBirdMoveTo(-6,29,0);
         waitForMove();
         robot.tweetyBird.clearWaypoints();
         robot.tweetyBird.disengage();
+
+        telemetry.addLine("TweetyBird disengaged");
+        telemetry.update();
 
         moveUntilSensor(robot.frontTouch, 0.2); //Move into submersible
 
@@ -63,7 +66,7 @@ public class SecondaryAuto extends LinearOpMode {
         waitForMove();
         robot.tweetyBird.clearWaypoints();
         robot.tweetyBird.disengage();
-        moveUntilSensor(robot.topTouch,0.4); //Top touch isn't touchin (More power?)
+        moveUntilSensor(robot.topTouch,0.4); //Top touch isn't touch-in (More power?)
         closeClaw(); //Grab 2nd specimen
         setSlidePosition(robot.vertSlide, robot.wallHeight+400,0.8);
 
@@ -112,12 +115,16 @@ public class SecondaryAuto extends LinearOpMode {
         double targetX = robot.tweetyBird.getCurrentWaypoint().getX();
         double targetY = robot.tweetyBird.getCurrentWaypoint().getY();
         double targetZ = robot.tweetyBird.getCurrentWaypoint().getZ();
+        telemetry.addLine(targetX + ", " + targetY + ", " + targetZ);
+
         sleep(100); //Wait for tweety a second
         //If tweetyBird is ignoring me try to fix it
-        if(targetX != x || targetY != y || targetZ != z){ //Target ain't target
+        if(targetX != x || targetY != y || targetZ != z && opModeIsActive()){ //Target ain't target
+            telemetry.addLine("Resetting Tweety Position");
             robot.tweetyBird.clearWaypoints();
             tweetyBirdMoveTo(x,y,z); //Try again
         }
+        telemetry.update();
     }
 
     //Start in position after grabbing clip

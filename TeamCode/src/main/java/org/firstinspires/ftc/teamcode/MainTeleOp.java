@@ -269,15 +269,13 @@ public class MainTeleOp extends LinearOpMode {
             }
 
 
-
-
             ///Box Control
             //Should make box go a little slower
             if(boxControl){
                 robot.boxServo.setPosition(robot.boxDumpPosition);
                 if(robot.boxServo.getPosition() > robot.boxDumpPosition){
                     robot.boxServo.setPosition(robot.boxServo.getPosition() -2);
-                    robot.boxServo.setPosition(robot.boxServo.getPosition() + 1);
+                    sleep(200);
                 }
             }
             else{
