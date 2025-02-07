@@ -37,7 +37,7 @@ public class SecondaryAuto extends LinearOpMode {
 
         ///Clip preload
         //robot.tweetyBird.engage();
-        moveTo(-6,29,0);
+        tweetyBirdMoveTo(-6,29,0);
         waitForMove();
         robot.tweetyBird.clearWaypoints();
         robot.tweetyBird.disengage();
@@ -52,14 +52,14 @@ public class SecondaryAuto extends LinearOpMode {
         ///Pushing samples into observation
         robot.tweetyBird.engage();
         waitForMove();
-        moveTo(-6,18,0); //Move back from submersible
-        moveTo(28,18,-180); //Move to left/below sample 1
+        tweetyBirdMoveTo(-6,18,0); //Move back from submersible
+        tweetyBirdMoveTo(28,18,-180); //Move to left/below sample 1
         waitForMove();
-        moveTo(29,43,-180); //Move to left/above sample 1
+        tweetyBirdMoveTo(29,43,-180); //Move to left/above sample 1
         waitForMove();
-        moveTo(40,43,-180); //Move to above sample 1
+        tweetyBirdMoveTo(40,43,-180); //Move to above sample 1
         waitForMove();
-        moveTo(37,11,-180); //Push sample 1 into observation
+        tweetyBirdMoveTo(37,11,-180); //Push sample 1 into observation
         waitForMove();
         robot.tweetyBird.clearWaypoints();
         robot.tweetyBird.disengage();
@@ -79,10 +79,10 @@ public class SecondaryAuto extends LinearOpMode {
         telemetry.addLine(robot.odometer.getX() + ", " + robot.odometer.getY() + ", " + robot.odometer.getZ());
         telemetry.update();
 
-        moveTo(34,15,-180); //Back out of observation
+        tweetyBirdMoveTo(34,15,-180); //Back out of observation
         waitForMove(); //Added to prevent backing into other team observation?? Might work
         setSlidePosition(robot.vertSlide, robot.aboveChamber,0.4);
-        moveTo(-10,15,0); //Rotate and move to submersible
+        tweetyBirdMoveTo(-10,15,0); //Rotate and move to submersible
         waitForMove();
         robot.tweetyBird.clearWaypoints();
         robot.tweetyBird.disengage();
@@ -94,10 +94,10 @@ public class SecondaryAuto extends LinearOpMode {
 
         //Robot is sitting against submersible with specimen clipped and claw open
         robot.tweetyBird.engage();
-        moveTo(-10,25,0); //Back off of submersible
+        tweetyBirdMoveTo(-10,25,0); //Back off of submersible
         waitForMove();
         setSlidePosition(robot.vertSlide, robot.wallHeight, 0.3);
-        moveTo(33,0,0); //Move to observation with no rotation
+        tweetyBirdMoveTo(33,0,0); //Move to observation with no rotation
         waitForMove();
         robot.tweetyBird.clearWaypoints();
         robot.tweetyBird.disengage();
@@ -127,10 +127,10 @@ public class SecondaryAuto extends LinearOpMode {
         telemetry.addLine(robot.odometer.getX() + ", " + robot.odometer.getY() + ", " + robot.odometer.getZ());
         telemetry.update();
 
-        moveTo(34,15,-180); //Back out of observation
+        tweetyBirdMoveTo(34,15,-180); //Back out of observation
         waitForMove(); //Added to prevent backing into other team observation?? Might work
         setSlidePosition(robot.vertSlide, robot.aboveChamber,0.4);
-        moveTo(-8+offset,15,0); //Rotate and move to submersible
+        tweetyBirdMoveTo(-8+offset,15,0); //Rotate and move to submersible
         waitForMove();
         robot.tweetyBird.clearWaypoints();
         robot.tweetyBird.disengage();
@@ -142,10 +142,10 @@ public class SecondaryAuto extends LinearOpMode {
 
         //Robot is sitting against submersible with specimen clipped and claw open
         robot.tweetyBird.engage();
-        moveTo(-8,25,0); //Back off of submersible
+        tweetyBirdMoveTo(-8,25,0); //Back off of submersible
         waitForMove();
         setSlidePosition(robot.vertSlide, robot.wallHeight, 0.3);
-        moveTo(33,0,-180); //Move to observation with rotation
+        tweetyBirdMoveTo(33,0,-180); //Move to observation with rotation
         waitForMove();
         robot.tweetyBird.clearWaypoints();
         robot.tweetyBird.disengage();

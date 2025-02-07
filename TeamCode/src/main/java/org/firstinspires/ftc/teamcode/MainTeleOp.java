@@ -268,9 +268,17 @@ public class MainTeleOp extends LinearOpMode {
                 telemetry.addLine("Vertical Slide Holding");
             }
 
+
+
+
             ///Box Control
+            //Should make box go a little slower
             if(boxControl){
                 robot.boxServo.setPosition(robot.boxDumpPosition);
+                if(robot.boxServo.getPosition() > robot.boxDumpPosition){
+                    robot.boxServo.setPosition(robot.boxServo.getPosition() -2);
+                    robot.boxServo.setPosition(robot.boxServo.getPosition() + 1);
+                }
             }
             else{
                 robot.boxServo.setPosition(robot.boxTransferPosition);
