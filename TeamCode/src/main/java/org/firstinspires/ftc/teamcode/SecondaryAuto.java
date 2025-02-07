@@ -36,7 +36,7 @@ public class SecondaryAuto extends LinearOpMode {
 
 
         ///Clip preload
-        robot.tweetyBird.engage();
+        //robot.tweetyBird.engage();
         moveTo(-6,29,0);
         waitForMove();
         robot.tweetyBird.clearWaypoints();
@@ -55,9 +55,9 @@ public class SecondaryAuto extends LinearOpMode {
         moveTo(-6,18,0); //Move back from submersible
         moveTo(28,18,-180); //Move to left/below sample 1
         waitForMove();
-        moveTo(29,45,-180); //Move to left/above sample 1
+        moveTo(29,43,-180); //Move to left/above sample 1
         waitForMove();
-        moveTo(40,45,-180); //Move to above sample 1
+        moveTo(40,43,-180); //Move to above sample 1
         waitForMove();
         moveTo(37,11,-180); //Push sample 1 into observation
         waitForMove();
@@ -106,6 +106,20 @@ public class SecondaryAuto extends LinearOpMode {
 
         robot.tweetyBird.close();
     }
+    //Stupid work around for tweety skipping waypoints
+    public void tweetyBirdMoveTo(double x, double y, double z){
+        robot.tweetyBird.addWaypoint(x,y,z);
+        double targetX = robot.tweetyBird.getCurrentWaypoint().getX();
+        double targetY = robot.tweetyBird.getCurrentWaypoint().getY();
+        double targetZ = robot.tweetyBird.getCurrentWaypoint().getZ();
+        sleep(100); //Wait for tweety a second
+        //If tweetyBird is ignoring me try to fix it
+        if(targetX != x || targetY != y || targetZ != z){ //Target ain't target
+            robot.tweetyBird.clearWaypoints();
+            tweetyBirdMoveTo(x,y,z); //Try again
+        }
+    }
+
     //Start in position after grabbing clip
     public void clipCycle(double offset){
         //Sitting in observation and grabbed specimen
