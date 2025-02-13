@@ -184,7 +184,7 @@ public class Config {
                 .setMinimumSpeed(0.4)
                 .setOdometer(odometer)
                 .setRotationBuffer(4)
-                .setDebuggingEnabled(false)
+                .setLoggingEnabled(true)
                 .build();
     }
 

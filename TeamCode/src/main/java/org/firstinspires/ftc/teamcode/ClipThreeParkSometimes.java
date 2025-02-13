@@ -42,6 +42,7 @@ public class ClipThreeParkSometimes extends LinearOpMode {
         moveTo(-6,29,0);
         waitForMove();
         robot.tweetyBird.clearWaypoints();
+        robot.tweetyBird.skipWaypoint();
         robot.tweetyBird.disengage();
 
         moveUntilSensor(robot.frontTouch, 0.2); //Move into submersible
@@ -53,17 +54,34 @@ public class ClipThreeParkSometimes extends LinearOpMode {
 
         ///Pushing samples into observation
         robot.tweetyBird.engage();
+        robot.tweetyBird.skipWaypoint();
         waitForMove();
         moveTo(-6,18,0); //Move back from submersible
+        moveTo(-6,18,0); //Move back from submersible
+        moveTo(-6,18,0); //Move back from submersible
+
         moveTo(28,18,-180); //Move to left/below sample 1
+        moveTo(28,18,-180); //Move to left/below sample 1
+        moveTo(28,18,-180); //Move to left/below sample 1
+
         waitForMove();
         moveTo(29,42,-180); //Move to left/above sample 1
+        moveTo(29,42,-180); //Move to left/above sample 1
+        moveTo(29,42,-180); //Move to left/above sample 1
+
         waitForMove();
         moveTo(40,42,-180); //Move to above sample 1
+        moveTo(40,42,-180); //Move to above sample 1
+        moveTo(40,42,-180); //Move to above sample 1
+
         waitForMove();
         moveTo(37,11,-180); //Push sample 1 into observation
+        moveTo(37,11,-180); //Push sample 1 into observation
+        moveTo(37,11,-180); //Push sample 1 into observation
+
         waitForMove();
         robot.tweetyBird.clearWaypoints();
+        robot.tweetyBird.skipWaypoint();
         robot.tweetyBird.disengage();
         moveUntilSensor(robot.topTouch,0.4); //Top touch isn't touchin (More power?)
         closeClaw(); //Grab 2nd specimen
@@ -78,6 +96,7 @@ public class ClipThreeParkSometimes extends LinearOpMode {
 
         //Sitting in observation and grabbed specimen
         robot.tweetyBird.engage();
+        robot.tweetyBird.skipWaypoint();
         telemetry.addLine(robot.odometer.getX() + ", " + robot.odometer.getY() + ", " + robot.odometer.getZ());
         telemetry.update();
 
@@ -87,6 +106,7 @@ public class ClipThreeParkSometimes extends LinearOpMode {
         moveTo(-10,15,0); //Rotate and move to submersible
         waitForMove();
         robot.tweetyBird.clearWaypoints();
+        robot.tweetyBird.skipWaypoint();
         robot.tweetyBird.disengage();
         moveUntilSensor(robot.frontTouch, 0.4);
         setSlidePosition(robot.vertSlide, robot.belowChamber,0.4);
@@ -96,12 +116,14 @@ public class ClipThreeParkSometimes extends LinearOpMode {
 
         //Robot is sitting against submersible with specimen clipped and claw open
         robot.tweetyBird.engage();
+        robot.tweetyBird.skipWaypoint();
         moveTo(-10,25,0); //Back off of submersible
         waitForMove();
         setSlidePosition(robot.vertSlide, robot.wallHeight, 0.3);
         moveTo(33,0,0); //Move to observation with no rotation
         waitForMove();
         robot.tweetyBird.clearWaypoints();
+        robot.tweetyBird.skipWaypoint();
         robot.tweetyBird.disengage();
 
 
@@ -126,6 +148,7 @@ public class ClipThreeParkSometimes extends LinearOpMode {
     public void clipCycle(double offset){
         //Sitting in observation and grabbed specimen
         robot.tweetyBird.engage();
+        robot.tweetyBird.skipWaypoint();
         telemetry.addLine(robot.odometer.getX() + ", " + robot.odometer.getY() + ", " + robot.odometer.getZ());
         telemetry.update();
 
@@ -135,6 +158,7 @@ public class ClipThreeParkSometimes extends LinearOpMode {
         moveTo(-8+offset,15,0); //Rotate and move to submersible
         waitForMove();
         robot.tweetyBird.clearWaypoints();
+        robot.tweetyBird.skipWaypoint();
         robot.tweetyBird.disengage();
         moveUntilSensor(robot.frontTouch, 0.4);
         setSlidePosition(robot.vertSlide, robot.belowChamber,0.4);
@@ -144,12 +168,14 @@ public class ClipThreeParkSometimes extends LinearOpMode {
 
         //Robot is sitting against submersible with specimen clipped and claw open
         robot.tweetyBird.engage();
+        robot.tweetyBird.skipWaypoint();
         moveTo(-8,25,0); //Back off of submersible
         waitForMove();
         setSlidePosition(robot.vertSlide, robot.wallHeight, 0.3);
         moveTo(33,0,-180); //Move to observation with rotation
         waitForMove();
         robot.tweetyBird.clearWaypoints();
+        robot.tweetyBird.skipWaypoint();
         robot.tweetyBird.disengage();
         moveUntilSensor(robot.topTouch, 0.4);
         closeClaw(); //Grab specimen
