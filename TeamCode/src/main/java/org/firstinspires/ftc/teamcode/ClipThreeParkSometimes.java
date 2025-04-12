@@ -130,19 +130,6 @@ public class ClipThreeParkSometimes extends LinearOpMode {
 
         robot.tweetyBird.close();
     }
-    //Stupid work around for tweety skipping waypoints
-    public void tweetyBirdMoveTo(double x, double y, double z){
-        robot.tweetyBird.addWaypoint(x,y,z);
-        double targetX = robot.tweetyBird.getCurrentWaypoint().getX();
-        double targetY = robot.tweetyBird.getCurrentWaypoint().getY();
-        double targetZ = robot.tweetyBird.getCurrentWaypoint().getZ();
-        sleep(100); //Wait for tweety a second
-        //If tweetyBird is ignoring me try to fix it
-        if(targetX != x || targetY != y || targetZ != z){ //Target ain't target
-            robot.tweetyBird.clearWaypoints();
-            tweetyBirdMoveTo(x,y,z); //Try again
-        }
-    }
 
     //Start in position after grabbing clip
     public void clipCycle(double offset){
