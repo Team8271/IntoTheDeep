@@ -33,7 +33,7 @@ public class Config {
                         boxTransferPosition    = 0.07,
                         boxStoragePosition     = 0.2,
                         clawClosedValue        = 0.30, // smaller # = More Closed (0-1) (left claw)
-                        clawOpenValue          = 0.5,  // larger # = More Open (0-1)  (left claw)
+                        clawOpenValue          = 0.5;  // larger # = More Open (0-1)  (left claw)
 
 
     public int  liftAboveChamber    = 1665,
