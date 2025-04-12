@@ -21,6 +21,9 @@ public class Config {
     public Servo intakeFlip, clawLeft, clawRight, boxServo;
     public TouchSensor robotFrontBottomSensor, robotFrontTopSensor, liftBottomSensor, slideSensor;
     private double clawLeftOpen, clawRightOpen, clawLeftClosed, clawRightClosed; // claw values
+    public RobotClaw claw; // claw class
+    public RobotLift lift; // lift class
+    public RobotSlide slide; // slide class
     public ThreeWheeled odometer;   // odometer pods
     public Mecanum mecanum;         // mecanum wheels
     public TweetyBird tweetyBird;   // tweetyBird
@@ -121,11 +124,16 @@ public class Config {
         clawLeftClosed  = clawClosedValue;
         clawRightClosed = 1-clawClosedValue;
 
-        /// Define touch sensors
+        /// Define Touch Sensors
         robotFrontBottomSensor = hwMap.get(TouchSensor.class,"FrontTouch");
         robotFrontTopSensor = hwMap.get(TouchSensor.class,"TopTouch");
         liftBottomSensor = hwMap.get(TouchSensor.class,"MagnetTouch");
         slideSensor = hwMap.get(TouchSensor.class,"HorzTouch");
+
+        /// Define Classes for OpMode Use
+        RobotClaw claw = new RobotClaw(clawLeft,clawRight);
+        RobotLift lift = new RobotLift(liftMotor);
+        RobotSlide slide = new RobotSlide();
 
         // built drive
         mecanum = new Mecanum.Builder()
@@ -174,7 +182,15 @@ public class Config {
     }
 
     /// Class that contains actions for claw.
-    public class Claw{
+    public class RobotClaw {
+        Servo clawLeft, clawRight;
+
+        // constructor
+        private RobotClaw(Servo clawLeft, Servo clawRight){
+            this.clawLeft = clawLeft;
+            this.clawRight = clawRight;
+        }
+
         /// Close the claw.
         public void close(){
             clawLeft.setPosition(clawLeftClosed);
@@ -188,31 +204,99 @@ public class Config {
     }
 
     /// Class that contains actions for lift.
-    public class Lift{
+    public class RobotLift {
+        DcMotor liftMotor;
+
+        // constructor
+        private RobotLift(DcMotor liftMotor){this.liftMotor = liftMotor;}
+
         /// Move lift to given position.
         /// @param target desired position
         /// @param power motor power
         public void runToPosition(int target, double power){
-            liftMotor.setTargetPosition(target);
-            if(liftMotor.getMode() != DcMotor.RunMode.RUN_TO_POSITION){
-                liftMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+            motorRunToPosition(liftMotor, target, power);
+        }
+
+        /// Return lift position in ticks
+        public int getPosition(){
+            return liftMotor.getCurrentPosition();
+        }
+
+        /// Set ZPB for lift
+        /// @param ZPB Behavior
+        public void setZPB(DcMotor.ZeroPowerBehavior ZPB){
+            if(liftMotor.getZeroPowerBehavior() != ZPB){
+                liftMotor.setZeroPowerBehavior(ZPB);
             }
+        }
+
+        /// Set RunMode for lift
+        /// @param runMode desired runMode
+        public void setRunMode(DcMotor.RunMode runMode){
+            if(liftMotor.getMode() != runMode){
+                liftMotor.setMode(runMode);
+            }
+        }
+
+        /// Set power for lift
+        /// @param power desired power
+        public void setPower(double power){
             liftMotor.setPower(power);
         }
     }
 
     /// Class that contains actions for slide.
-    public class Slide{
+    public class RobotSlide {
+        DcMotor activeSlide;
+
+        // constructor
+        public RobotSlide(DcMotor activeSlide){this.activeSlide = activeSlide;}
+
         /// Move slide to given position.
         /// @param target desired position
         /// @param power motor power
         public void runToPosition(int target, double power){
-            activeSlide.setTargetPosition(target);
-            if(activeSlide.getMode() != DcMotor.RunMode.RUN_TO_POSITION){
-                activeSlide.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+            motorRunToPosition(activeSlide, target, power);
+        }
+
+        /// Return slide position in ticks
+        public int getPosition(){
+            return activeSlide.getCurrentPosition();
+        }
+
+        /// Set ZPB for slide
+        /// @param ZPB Behavior
+        public void setZPB(DcMotor.ZeroPowerBehavior ZPB){
+            if(activeSlide.getZeroPowerBehavior() != ZPB){
+                activeSlide.setZeroPowerBehavior(ZPB);
             }
+        }
+
+        /// Set RunMode for slide
+        /// @param runMode desired runMode
+        public void setRunMode(DcMotor.RunMode runMode){
+            if(activeSlide.getMode() != runMode){
+                activeSlide.setMode(runMode);
+            }
+        }
+
+        /// Set power for slide
+        /// @param power desired power
+        public void setPower(double power){
             activeSlide.setPower(power);
         }
+    }
+
+    /// Uses DcMotor RunMode RUN_TO_POSITION to move motor
+    /// @param motor motor to move
+    /// @param target target position (in ticks)
+    /// @param power power for motor
+    private static void motorRunToPosition(DcMotor motor, int target, double power){
+        motor.setTargetPosition(target);
+        if(motor.getMode() != DcMotor.RunMode.RUN_TO_POSITION){
+            motor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        }
+        motor.setPower(power);
     }
 
 }
