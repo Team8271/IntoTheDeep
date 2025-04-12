@@ -5,7 +5,8 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.util.Range;
 
-//Set intake motor to auto run when intake is down unless reverse intake
+// import classes for components
+import org.firstinspires.ftc.teamcode.Config.*;
 
 @TeleOp(name="Main TeleOp")
 public class MainTeleOp extends LinearOpMode {
@@ -14,22 +15,20 @@ public class MainTeleOp extends LinearOpMode {
         Config robot = new Config(this);
         robot.init();
 
-        //stuff
+        // used for toggle buttons
         boolean debounce = false;
         boolean clawClosed = false;
-        boolean verticalMacro = false;
+        boolean slideMacroActive = false;
         boolean intakeOverride = false;
         boolean intakeTransferMode = false;
 
+        // classes from Config
+        RobotClaw claw = robot.claw;
+        RobotLift lift = robot.lift;
+        RobotSlide slide = robot.slide;
 
-        int positionToHold = robot.vertSlide.getCurrentPosition();
-        //Set slides to RUN_WITHOUT_ENCODER
-        if(robot.leftSlide.getMode() != DcMotor.RunMode.RUN_WITHOUT_ENCODER){
-            robot.leftSlide.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-        }
-        if(robot.rightSlide.getMode() != DcMotor.RunMode.RUN_WITHOUT_ENCODER){
-            robot.rightSlide.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-        }
+        // lift hold in position
+        int positionToHold = -99;
 
         telemetry.addLine("Initialized");
         telemetry.update();
@@ -40,25 +39,20 @@ public class MainTeleOp extends LinearOpMode {
 
         while(opModeIsActive()){
 
+            /// Driver One Controls
+            double axialControl = -gamepad1.left_stick_y;  // y axis
+            double lateralControl = gamepad1.left_stick_x; // x axis
+            double yawControl = gamepad1.right_stick_x;    // z axis
+            double mainThrottle = .2+(gamepad1.right_trigger*0.8); // throttle
+            boolean resetFCD = gamepad1.dpad_up; // z axis reset
 
-            telemetry.addData("Vertical Position", robot.vertSlide.getCurrentPosition());
-            String pos = Math.round(robot.odometer.getX()) + ", " + Math.round(robot.odometer.getY()) + ", " + Math.round(Math.toDegrees(robot.odometer.getZ()));
-            telemetry.addLine(pos);
-
-
-            ///Driver One Controls
-            double axialControl = -gamepad1.left_stick_y;
-            double lateralControl = gamepad1.left_stick_x;
-            double yawControl = gamepad1.right_stick_x;
-            double mainThrottle = .2+(gamepad1.right_trigger*0.8);
-            boolean resetFCD = gamepad1.dpad_up;
-
-            //FCD Reset
+            // FCD reset
             if(resetFCD){
                 robot.odometer.resetTo(0,0,0);
             }
 
-            //DriveTrain Start
+            // drive train start
+            // calculate power for field centric movement
             double gamepadRadians = Math.atan2(lateralControl, axialControl);
             double gamepadHypot = Range.clip(Math.hypot(lateralControl, axialControl), 0, 1);
             double robotRadians = -robot.odometer.getZ();
@@ -71,17 +65,21 @@ public class MainTeleOp extends LinearOpMode {
             double leftBackPower = axial - lateral + yawControl;
             double rightBackPower = axial + lateral - yawControl;
 
+            // send calculated power to wheels
             robot.fl.setPower(leftFrontPower * mainThrottle);
             robot.fr.setPower(rightFrontPower * mainThrottle);
             robot.bl.setPower(leftBackPower * mainThrottle);
             robot.br.setPower(rightBackPower * mainThrottle);
 
+            // display robot position on field
+            String pos = Math.round(robot.odometer.getX()) + ", " + Math.round(robot.odometer.getY()) + ", " + Math.round(Math.toDegrees(robot.odometer.getZ()));
+            telemetry.addLine(pos);
 
 
-            ///Driver Two Controls
-            double horzControl = gamepad2.right_stick_x;
-            double vertControl = -gamepad2.left_stick_y;
-            boolean boxControl = gamepad2.left_trigger > .25;
+            /// Driver Two Controls
+            double slideInput = gamepad2.right_stick_x;
+            double liftInput = -gamepad2.left_stick_y;
+            boolean boxInput = gamepad2.left_trigger > .25;
             boolean clawToggleButton = gamepad2.a;
 
             boolean intakeNegativeInput = gamepad2.right_bumper;
@@ -93,185 +91,160 @@ public class MainTeleOp extends LinearOpMode {
             boolean belowChamberButton = gamepad2.dpad_right || gamepad2.dpad_left;
             boolean wallButton = gamepad2.dpad_down;
 
-
-
-
-            ///Toggles Start
-            //Claw Controls
+            /// Toggle Button Logic
+            // claw toggle
             if(clawToggleButton && !debounce){
                 debounce = true; //Debounce for toggle function
                 clawClosed = !clawClosed; //Toggle claw
             }
-            //Intake raise
+            // intake override
             if(raiseIntake && !debounce){
                 intakeOverride = !intakeOverride;
                 debounce = true; //Debounce for toggle function
             }
-            //Intake Transfer
+            // intake transfer
             if(intakeTransfer && !debounce){
                 intakeTransferMode = !intakeTransferMode;
                 debounce = true;
             }
-            //Reset debounce
+            // reset debounce for toggle functionality
             if(!clawToggleButton && !raiseIntake && !intakeTransferMode && debounce){
                 debounce = false;
             }
 
-            //Claw stuff
+            /// Claw
             if(clawClosed){
-                robot.closeClaw();
+                claw.close();
                 telemetry.addLine("Claw: Closed");
             }
             else{
-                robot.openClaw();
+                claw.open();
                 telemetry.addLine("Claw: Open");
             }
 
-            ///Horizontal Slide Start
-            //Setting Brake and Float based on position
-            if(robot.slideWithEncoder.getCurrentPosition() <= robot.brakeDistance
-                    && robot.slideWithEncoder.getZeroPowerBehavior() != DcMotor.ZeroPowerBehavior.BRAKE){
-                robot.slideWithEncoder.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+            /// Slide
+            // set ZPB based on slide position
+            if(slide.getPosition() <= robot.slideBrakeDistance){ // in braking zone
+                slide.setZPB(DcMotor.ZeroPowerBehavior.BRAKE);
             }
-            else if(robot.slideWithEncoder.getZeroPowerBehavior() != DcMotor.ZeroPowerBehavior.FLOAT){
-                robot.slideWithEncoder.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
+            else{ // non braking zone
+                slide.setZPB(DcMotor.ZeroPowerBehavior.FLOAT);
             }
 
-
-            //Slide fully extended
-            if(robot.slideWithEncoder.getCurrentPosition() >= robot.horizontalMax){
-                telemetry.addLine("Horizontal fully extended");
-                if(horzControl <= 0){ //Negative input
-                    robot.slideWithEncoder.setPower(horzControl);
+            // slide fully retracted
+            if(robot.slideSensor.isPressed()){
+                telemetry.addLine("Slide Fully Retracted!");
+                if(slide.getPosition() != 0){
+                    slide.setRunMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+                }
+                if(slideInput >= 0){ // positive controller input
+                    slide.setPower(slideInput);
                 }
             }
-
-            //Slide fully retracted
-            else if(robot.horzTouch.isPressed()){
-                telemetry.addLine("Horizontal fully retracted");
-                if(robot.slideWithEncoder.getCurrentPosition() != 0){
-                    robot.slideWithEncoder.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-                    robot.slideWithEncoder.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-                }
-                if(horzControl >= 0){ //Positive input
-                    robot.slideWithEncoder.setPower(horzControl);
+            // slide fully extended
+            else if(slide.getPosition() >= robot.slideMaxDistance){
+                telemetry.addLine("Slide Fully Extended!");
+                if(slideInput <= 0){ // negative controller input
+                    slide.setRunMode(DcMotor.RunMode.RUN_USING_ENCODER);
+                    slide.setPower(slideInput);
                 }
             }
-
             //Slide gray zone
             else{
-                telemetry.addLine("Horizontal gray zone");
-                robot.slideWithEncoder.setPower(horzControl);
+                telemetry.addLine("Slide Gray Zone.");
+                slide.setPower(slideInput);
             }
 
 
             ///Intake Start
-            if(intakeOverride){
+            boolean intakeCollecting = false;
+            if(intakeOverride){ // override mode
                 robot.intakeFlip.setPosition(robot.intakeUpPosition);
             }
-            else if(robot.slideWithEncoder.getCurrentPosition() >= robot.intakeOnDistance){
+            else if(slide.getPosition() >= robot.intakeOnDistance){ // auto collect mode
+                intakeCollecting = true;
                 robot.intakeFlip.setPosition(robot.intakeCollectPosition);
                 robot.intakeMotor.setPower(robot.intakePower);
             }
-            else if(intakeTransferMode || robot.slideWithEncoder.getCurrentPosition() <= 50){
+            else if(intakeTransferMode || slide.getPosition() <= 50){ // transfer
                 robot.intakeFlip.setPosition(robot.intakeTransferPosition);
             }
-            else{
+            else{ // gray zone
                 robot.intakeFlip.setPosition(robot.intakeUpPosition);
             }
 
-
-            if(intakePositiveInput){
+            if(intakePositiveInput){ // controller intake forward
                 robot.intakeMotor.setPower(robot.intakePower);
             }
-            else if(intakeNegativeInput){
+            else if(intakeNegativeInput){ // controller intake reverse
                 robot.intakeMotor.setPower(-robot.intakePower);
             }
-            else{
+            else if(!intakeCollecting){ // turn off intake
                 robot.intakeMotor.setPower(0);
             }
 
 
-            ///Vertical Slide Start
-            //Macro stuff
+            /// Slide
+            // slide macros
             if(aboveChamberButton){
-                verticalMacro = true;
-                robot.vertSlide.setTargetPosition(robot.aboveChamber);
-                if(robot.vertSlide.getMode() != DcMotor.RunMode.RUN_TO_POSITION){
-                    robot.vertSlide.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-                }
-                robot.vertSlide.setPower(0.8);
+                slideMacroActive = true;
+                lift.runToPosition(robot.liftAboveChamber,0.8);
             }
             if(belowChamberButton){
-                verticalMacro = true;
-                robot.vertSlide.setTargetPosition(robot.belowChamber);
-                if(robot.vertSlide.getMode() != DcMotor.RunMode.RUN_TO_POSITION){
-                    robot.vertSlide.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-                }
-                robot.vertSlide.setPower(0.4);
+                slideMacroActive = true;
+                lift.runToPosition(robot.liftBelowChamber,0.4);
             }
             if(wallButton){
-                verticalMacro = true;
-                robot.vertSlide.setTargetPosition(robot.wallHeight);
-                if(robot.vertSlide.getMode() != DcMotor.RunMode.RUN_TO_POSITION){
-                    robot.vertSlide.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-                }
-                robot.vertSlide.setPower(0.8);
+                slideMacroActive = true;
+                lift.runToPosition(robot.liftWallHeight,0.8);
             }
 
 
-
-
-            //Slide Topped Out
-            if(robot.vertSlide.getCurrentPosition() >= robot.verticalMax){
-                if(vertControl > 0){
-                    vertControl = 0; //If wrong direction then no input (Goes to Stop and Hold)
+            // slide topped out
+            if(lift.getPosition() >= robot.liftMaxHeight){
+                if(liftInput > 0){ // don't allow lift to be raised further
+                    liftInput = 0;
                 }
-                telemetry.addLine("Vertical Slide Topped Out");
-
+                telemetry.addLine("Slide Topped Out!");
             }
 
-            //Slide Bottomed Out
-            if(robot.magnetTouch.isPressed()){
-                robot.vertSlide.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-                if(vertControl < 0){
-                    vertControl = 0; //If wrong direction then no input (Goes to Stop and Hold)
-                    robot.vertSlide.setPower(0);
+            // slide bottomed out
+            if(robot.liftBottomSensor.isPressed()){
+                if(lift.getPosition() != 0){
+                    lift.setRunMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
                 }
-                telemetry.addLine("Vertical Slide Bottomed Out");
+                if(liftInput < 0){ // don't allow lift to be lowered further
+                    liftInput = 0;
+                    robot.liftMotor.setPower(0);
+                }
+                telemetry.addLine("Lift Bottomed Out!");
             }
 
-            //There is input and allowed to move freely
-            if(vertControl != 0){
-                verticalMacro = false;
-                if(robot.vertSlide.getMode() != DcMotor.RunMode.RUN_WITHOUT_ENCODER){
-                    robot.vertSlide.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+            // applying input to lift
+            if(liftInput != 0){
+                slideMacroActive = false; // stop lift macros
+                lift.setRunMode(DcMotor.RunMode.RUN_USING_ENCODER);
+                if(liftInput > 0){ // raising the lift
+                    lift.setPower(liftInput);
                 }
-                if(vertControl > 0){ //Going up
-                    robot.vertSlide.setPower(vertControl);
+                else{ // lowering the lift
+                    lift.setPower(liftInput/2);
                 }
-                else{ //Going down
-                    robot.vertSlide.setPower(vertControl / 2);
-                }
-                robot.vertSlide.setPower(vertControl);
-                positionToHold = robot.vertSlide.getCurrentPosition(); //Set hold pos
+                positionToHold = lift.getPosition(); // used to hold when no input
             }
 
 
-            //No input  (STOP AND HOLD)
-            if(vertControl == 0 && !verticalMacro && !robot.magnetTouch.isPressed()){
-                robot.vertSlide.setTargetPosition(positionToHold);
-                if(robot.vertSlide.getMode() != DcMotor.RunMode.RUN_TO_POSITION){
-                    robot.vertSlide.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-                }
-                robot.vertSlide.setPower(0.5);
-                telemetry.addLine("Vertical Slide Holding");
+            // no input for lift and macro isn't running (Stop and Hold)
+            if(liftInput == 0 && !slideMacroActive && !robot.liftBottomSensor.isPressed()){
+                if(positionToHold == -99){positionToHold= lift.getPosition();}
+
+                lift.runToPosition(positionToHold,0.5);
+                telemetry.addLine("Slide Holding.");
             }
 
 
-            ///Box Control
-            //Should make box go a little slower
-            if(boxControl){
+            /// Box Control
+            if(boxInput){
                 robot.boxServo.setPosition(robot.boxDumpPosition);
                 if(robot.boxServo.getPosition() > robot.boxDumpPosition){
                     robot.boxServo.setPosition(robot.boxServo.getPosition() -2);
@@ -282,6 +255,7 @@ public class MainTeleOp extends LinearOpMode {
                 robot.boxServo.setPosition(robot.boxTransferPosition);
             }
 
+            // update telemetry
             telemetry.update();
 
         }
