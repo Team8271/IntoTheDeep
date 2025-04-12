@@ -133,7 +133,7 @@ public class Config {
         /// Define Classes for OpMode Use
         RobotClaw claw = new RobotClaw(clawLeft,clawRight);
         RobotLift lift = new RobotLift(liftMotor);
-        RobotSlide slide = new RobotSlide();
+        RobotSlide slide = new RobotSlide(activeSlide);
 
         // built drive
         mecanum = new Mecanum.Builder()
