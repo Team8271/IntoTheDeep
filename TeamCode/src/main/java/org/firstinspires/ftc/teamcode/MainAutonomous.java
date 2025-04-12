@@ -1,5 +1,3 @@
-///This is the old Secondary TeleOp before hotel night edit
-
 package org.firstinspires.ftc.teamcode;
 
 import androidx.annotation.NonNull;
@@ -10,8 +8,11 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.TouchSensor;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
-@Autonomous(name="Clip Three Park Sometimes")
-public class ClipThreeParkSometimes extends LinearOpMode {
+
+/// Previously known as 'Clip Three Park Sometimes'. Renamed for clarity.
+/// THIS AUTO PROGRAM STILL HAS ISSUE WITH SKIPPING WAYPOINTS!
+@Autonomous(name="Main Autonomous")
+public class MainAutonomous extends LinearOpMode {
     public ElapsedTime runTime;
     Config robot;
     @Override
