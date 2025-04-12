@@ -27,4 +27,11 @@ android {
     namespace = 'com.qualcomm.ftcrobotcontroller'
 }
 
+tasks.withType(JavaCompile) {
+    options.compilerArgs += [
+            "-Xlint:-options",       // suppress obsolete source/target warnings
+            "-Xlint:-deprecation"    // suppress deprecation warnings (optional)
+    ]
+}
+
 apply from: '../build.dependencies.gradle'
