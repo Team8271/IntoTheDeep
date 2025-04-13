@@ -5,9 +5,7 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.util.Range;
 
-// import classes for components
-import org.firstinspires.ftc.teamcode.Config.*;
-
+@SuppressWarnings("static-access")
 @TeleOp(name="Main TeleOp")
 public class MainTeleOp extends LinearOpMode {
     @Override
@@ -23,9 +21,12 @@ public class MainTeleOp extends LinearOpMode {
         boolean intakeTransferMode = false;
 
         // classes from Config
-        RobotClaw claw = robot.claw;
-        RobotLift lift = robot.lift;
-        RobotSlide slide = robot.slide;
+        Config.RobotClaw claw = robot.claw;
+        Config.RobotLift lift = robot.lift;
+        Config.RobotSlide slide = robot.slide;
+        Config.RobotBox box = robot.box;
+        Config.RobotWrist wrist = robot.wrist;
+        Config.RobotIntake intake = robot.intake;
 
         // lift hold in position
         int positionToHold = -99;
@@ -82,14 +83,14 @@ public class MainTeleOp extends LinearOpMode {
             boolean boxInput = gamepad2.left_trigger > .25;
             boolean clawToggleButton = gamepad2.a;
 
-            boolean intakeNegativeInput = gamepad2.right_bumper;
-            boolean intakePositiveInput = gamepad2.right_trigger > .25;
-            boolean raiseIntake = gamepad2.y;
-            boolean intakeTransfer = gamepad2.x;
+            boolean intakeOutInput = gamepad2.right_bumper;
+            boolean intakeInInput = gamepad2.right_trigger > .25;
+            boolean intakeOverrideInput = gamepad2.y;
+            boolean intakeTransferInput = gamepad2.x;
 
-            boolean aboveChamberButton = gamepad2.dpad_up;
-            boolean belowChamberButton = gamepad2.dpad_right || gamepad2.dpad_left;
-            boolean wallButton = gamepad2.dpad_down;
+            boolean aboveChamberInput = gamepad2.dpad_up;
+            boolean belowChamberInput = gamepad2.dpad_right || gamepad2.dpad_left;
+            boolean wallInput = gamepad2.dpad_down;
 
             /// Toggle Button Logic
             // claw toggle
@@ -98,17 +99,17 @@ public class MainTeleOp extends LinearOpMode {
                 clawClosed = !clawClosed; //Toggle claw
             }
             // intake override
-            if(raiseIntake && !debounce){
+            if(intakeOverrideInput && !debounce){
                 intakeOverride = !intakeOverride;
                 debounce = true; //Debounce for toggle function
             }
             // intake transfer
-            if(intakeTransfer && !debounce){
+            if(intakeTransferInput && !debounce){
                 intakeTransferMode = !intakeTransferMode;
                 debounce = true;
             }
             // reset debounce for toggle functionality
-            if(!clawToggleButton && !raiseIntake && !intakeTransferMode && debounce){
+            if(!clawToggleButton && !intakeOverrideInput && !intakeTransferMode && debounce){
                 debounce = false;
             }
 
@@ -124,7 +125,7 @@ public class MainTeleOp extends LinearOpMode {
 
             /// Slide
             // set ZPB based on slide position
-            if(slide.getPosition() <= robot.slideBrakeDistance){ // in braking zone
+            if(slide.getPosition() <= robot.slideBrakePos){ // in braking zone
                 slide.setZPB(DcMotor.ZeroPowerBehavior.BRAKE);
             }
             else{ // non braking zone
@@ -142,7 +143,7 @@ public class MainTeleOp extends LinearOpMode {
                 }
             }
             // slide fully extended
-            else if(slide.getPosition() >= robot.slideMaxDistance){
+            else if(slide.getPosition() >= robot.slideMaxPos){
                 telemetry.addLine("Slide Fully Extended!");
                 if(slideInput <= 0){ // negative controller input
                     slide.setRunMode(DcMotor.RunMode.RUN_USING_ENCODER);
@@ -157,67 +158,66 @@ public class MainTeleOp extends LinearOpMode {
 
 
             ///Intake Start
-            boolean intakeCollecting = false;
+            boolean intakeAutoOn = false;
             if(intakeOverride){ // override mode
-                robot.intakeFlip.setPosition(robot.intakeUpPosition);
+                wrist.up();
             }
-            else if(slide.getPosition() >= robot.intakeOnDistance){ // auto collect mode
-                intakeCollecting = true;
-                robot.intakeFlip.setPosition(robot.intakeCollectPosition);
-                robot.intakeMotor.setPower(robot.intakePower);
+            else if(slide.getPosition() >= robot.intakeOnPos){ // auto collect mode
+                intakeAutoOn = true;
+                wrist.collect();
+                intake.in();
             }
             else if(intakeTransferMode || slide.getPosition() <= 50){ // transfer
-                robot.intakeFlip.setPosition(robot.intakeTransferPosition);
+                wrist.transfer();
             }
             else{ // gray zone
-                robot.intakeFlip.setPosition(robot.intakeUpPosition);
+                wrist.up();
             }
 
-            if(intakePositiveInput){ // controller intake forward
-                robot.intakeMotor.setPower(robot.intakePower);
+            if(intakeInInput){ // controller intake forward
+                intake.in();
             }
-            else if(intakeNegativeInput){ // controller intake reverse
-                robot.intakeMotor.setPower(-robot.intakePower);
+            else if(intakeOutInput){ // controller intake reverse
+                intake.out();
             }
-            else if(!intakeCollecting){ // turn off intake
-                robot.intakeMotor.setPower(0);
+            else if(!intakeAutoOn){ // turn off intake
+                intake.stop();
             }
 
 
-            /// Slide
-            // slide macros
-            if(aboveChamberButton){
+            /// Lift
+            // lift macros
+            if(aboveChamberInput){
                 slideMacroActive = true;
-                lift.runToPosition(robot.liftAboveChamber,0.8);
+                lift.aboveChamber();
             }
-            if(belowChamberButton){
+            if(belowChamberInput){
                 slideMacroActive = true;
-                lift.runToPosition(robot.liftBelowChamber,0.4);
+                lift.belowChamber();
             }
-            if(wallButton){
+            if(wallInput){
                 slideMacroActive = true;
-                lift.runToPosition(robot.liftWallHeight,0.8);
+                lift.wall();
             }
 
-
-            // slide topped out
-            if(lift.getPosition() >= robot.liftMaxHeight){
-                if(liftInput > 0){ // don't allow lift to be raised further
-                    liftInput = 0;
-                }
-                telemetry.addLine("Slide Topped Out!");
-            }
-
-            // slide bottomed out
+            // lift bottomed out
             if(robot.liftBottomSensor.isPressed()){
                 if(lift.getPosition() != 0){
                     lift.setRunMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
                 }
                 if(liftInput < 0){ // don't allow lift to be lowered further
                     liftInput = 0;
-                    robot.liftMotor.setPower(0);
+                    lift.setPower(0);
                 }
                 telemetry.addLine("Lift Bottomed Out!");
+            }
+
+            // lift topped out
+            else if(lift.getPosition() >= robot.liftLimitPos){
+                if(liftInput > 0){ // don't allow lift to be raised further
+                    liftInput = 0;
+                }
+                telemetry.addLine("Slide Topped Out!");
             }
 
             // applying input to lift
@@ -236,7 +236,7 @@ public class MainTeleOp extends LinearOpMode {
 
             // no input for lift and macro isn't running (Stop and Hold)
             if(liftInput == 0 && !slideMacroActive && !robot.liftBottomSensor.isPressed()){
-                if(positionToHold == -99){positionToHold= lift.getPosition();}
+                if(positionToHold == -99){positionToHold = lift.getPosition();}
 
                 lift.runToPosition(positionToHold,0.5);
                 telemetry.addLine("Slide Holding.");
@@ -245,14 +245,10 @@ public class MainTeleOp extends LinearOpMode {
 
             /// Box Control
             if(boxInput){
-                robot.boxServo.setPosition(robot.boxDumpPosition);
-                if(robot.boxServo.getPosition() > robot.boxDumpPosition){
-                    robot.boxServo.setPosition(robot.boxServo.getPosition() -2);
-                    sleep(200);
-                }
+                box.dump();
             }
             else{
-                robot.boxServo.setPosition(robot.boxTransferPosition);
+                box.transfer();
             }
 
             // update telemetry
