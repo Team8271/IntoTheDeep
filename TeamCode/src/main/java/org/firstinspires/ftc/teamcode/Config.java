@@ -12,41 +12,56 @@ import dev.narlyx.tweetybird.Drivers.Mecanum;
 import dev.narlyx.tweetybird.Odometers.ThreeWheeled;
 import dev.narlyx.tweetybird.TweetyBird;
 
+@SuppressWarnings("FieldCanBeLocal")  // suppress "may be converted to local variable" warnings
 /// Robot Configuration Class.
 public class Config {
-    private final LinearOpMode opMode;
 
-    public DcMotor fl, fr, bl, br, leftSlide, rightSlide, intakeMotor, liftMotor; // motors
-    public DcMotor activeSlide; // defines which slide motor to use
-    public Servo intakeFlip, clawLeft, clawRight, boxServo;
+    // private instances
+    private final LinearOpMode opMode;
+    private DcMotor leftSlide, rightSlide, intakeMotor, liftMotor;
+    private DcMotor activeSlide; // defines which slide motor to use
+    private Servo intakeFlip, clawLeft, clawRight, boxServo;
+    private static double clawLeftOpen, clawRightOpen, clawLeftClosed, clawRightClosed;
+
+    // public instances
+    public DcMotor fl, fr, bl, br;  // drive motors
     public TouchSensor robotFrontBottomSensor, robotFrontTopSensor, liftBottomSensor, slideSensor;
-    private double clawLeftOpen, clawRightOpen, clawLeftClosed, clawRightClosed; // claw values
-    public RobotClaw claw; // claw class
-    public RobotLift lift; // lift class
-    public RobotSlide slide; // slide class
+    public RobotClaw claw;          // claw class
+    public RobotLift lift;          // lift class
+    public RobotSlide slide;        // slide class
+    public RobotWrist wrist;        // wrist class
+    public RobotBox box;            // box class
+    public RobotIntake intake;      // intake class
     public ThreeWheeled odometer;   // odometer pods
     public Mecanum mecanum;         // mecanum wheels
     public TweetyBird tweetyBird;   // tweetyBird
 
-    public final double intakeCollectPosition  = 0.95,
-                        intakeUpPosition       = 0.3,
-                        intakeTransferPosition = 0.1,
-                        intakePower            = .8,
-                        boxDumpPosition        = 0.83,
-                        boxTransferPosition    = 0.07,
-                        boxStoragePosition     = 0.2,
-                        clawClosedValue        = 0.30, // smaller # = More Closed (0-1) (left claw)
-                        clawOpenValue          = 0.5;  // larger # = More Open (0-1)  (left claw)
+    private static final double
+            wristCollectPos     = 0.95,
+            wristUpPos          = 0.3,
+            wristTransferPos    = 0.1,
+            boxDumpPos          = 0.83,
+            boxTransferPos      = 0.07,
+            boxStorePos         = 0.2,
+            clawClosedPos       = 0.30, // smaller # = More Closed (0-1) (left claw)
+            clawOpenPos         = 0.5,  // larger # = More Open (0-1)  (left claw)
+            liftDownwardPower   = 0.4,
+            liftUpwardPower     = 0.8,
+            intakeInPower       = 0.8,
+            intakeOutPower      = 0.4;
+
+    private static final int
+            liftAboveChamberPos = 1665,
+            liftBelowChamberPos = 1200,
+            liftWallPos         = 280,
+            liftAboveWallPos    = 400;
 
 
-    public int  liftAboveChamber    = 1665,
-                liftBelowChamber    = 1200,
-                liftWallHeight      = 280,
-                liftHighBasket      = 0,
-                liftMaxHeight       = 3300,
-                slideMaxDistance    = 450,
-                intakeOnDistance    = 250,  // distance the intake flips down to collect
-                slideBrakeDistance  = 100;  // distance the slide has BRAKE mode (ZPB)
+    public static final int
+            liftLimitPos    = 3300,
+            slideMaxPos     = 450,
+            intakeOnPos     = 250,
+            slideBrakePos   = 100; // distance the slide has BRAKE mode (ZPB)
 
     // allow opMode to be referenced
     public Config(LinearOpMode opMode){this.opMode = opMode;}
@@ -112,6 +127,7 @@ public class Config {
         liftMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         liftMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 
+
         /// Define Servos
         intakeFlip = hwMap.get(Servo.class,"IntakeFlip");
         boxServo = hwMap.get(Servo.class,"BoxServo");
@@ -119,10 +135,11 @@ public class Config {
         clawRight = hwMap.get(Servo.class,"ClawRight");
 
         // define values for claw servos
-        clawLeftOpen    = clawOpenValue;
-        clawRightOpen   = 1-clawOpenValue;
-        clawLeftClosed  = clawClosedValue;
-        clawRightClosed = 1-clawClosedValue;
+        clawLeftOpen    = clawOpenPos;
+        clawRightOpen   = 1- clawOpenPos;
+        clawLeftClosed  = clawClosedPos;
+        clawRightClosed = 1- clawClosedPos;
+
 
         /// Define Touch Sensors
         robotFrontBottomSensor = hwMap.get(TouchSensor.class,"FrontTouch");
@@ -130,10 +147,14 @@ public class Config {
         liftBottomSensor = hwMap.get(TouchSensor.class,"MagnetTouch");
         slideSensor = hwMap.get(TouchSensor.class,"HorzTouch");
 
+
         /// Define Classes for OpMode Use
-        RobotClaw claw = new RobotClaw(clawLeft,clawRight);
-        RobotLift lift = new RobotLift(liftMotor);
-        RobotSlide slide = new RobotSlide(activeSlide);
+        claw = new RobotClaw(clawLeft,clawRight);
+        lift = new RobotLift(liftMotor);
+        slide = new RobotSlide(activeSlide);
+        wrist = new RobotWrist(intakeFlip);
+        box = new RobotBox(boxServo);
+        intake = new RobotIntake(intakeMotor);
 
         // built drive
         mecanum = new Mecanum.Builder()
@@ -181,8 +202,72 @@ public class Config {
                 .build();
     }
 
+    /// Class that contains actions for intake wrist.
+    public static class RobotWrist {
+        Servo intakeWrist;
+
+        // constructor
+        private RobotWrist(Servo intakeWrist){this.intakeWrist = intakeWrist;}
+
+        /** Set specific wrist position.
+         *
+         * @param pos servo position
+         */
+        public void position(double pos){
+            intakeWrist.setPosition(pos);
+        }
+
+        /// Set wrist in collect position.
+        public void collect(){
+            intakeWrist.setPosition(wristCollectPos);
+        }
+
+        /// Set wrist in transfer position.
+        public void transfer(){
+            intakeWrist.setPosition(wristTransferPos);
+        }
+
+        /// Set wrist in up position.
+        public void up(){
+            intakeWrist.setPosition(wristUpPos);
+        }
+    }
+
+    /// Class that contains actions for box.
+    public static class RobotBox {
+        Servo boxServo;
+
+        // constructor
+        private RobotBox(Servo boxServo){this.boxServo = boxServo;}
+
+        /** Set specific box position.
+         *
+         * @param pos servo position
+         */
+        public void position(double pos){
+            boxServo.setPosition(pos);
+        }
+
+        /// Set box in dump position.
+        public void dump(){
+            boxServo.setPosition(boxDumpPos);
+        }
+
+        /// Set box in storage position.
+        public void store(){
+            boxServo.setPosition(boxStorePos);
+        }
+
+        /// Set box in transfer position.
+        public void transfer(){
+            boxServo.setPosition(boxTransferPos);
+        }
+
+
+    }
+
     /// Class that contains actions for claw.
-    public class RobotClaw {
+    public static class RobotClaw {
         Servo clawLeft, clawRight;
 
         // constructor
@@ -203,94 +288,159 @@ public class Config {
         }
     }
 
+    /// Class that contains actions for intake.
+    public static class RobotIntake {
+        DcMotor intakeMotor;
+
+        // constructor
+        private RobotIntake(DcMotor intakeMotor){this.intakeMotor = intakeMotor;}
+
+        /// Set intake to 'in' power.
+        public void in(){
+            intakeMotor.setPower(intakeInPower);
+        }
+
+        /// Set intake to 'out' power
+        public void out(){
+            intakeMotor.setPower(intakeOutPower);
+        }
+
+        /// Set intake power to zero.
+        public void stop(){
+            intakeMotor.setPower(0);
+        }
+    }
+
     /// Class that contains actions for lift.
-    public class RobotLift {
+    public static class RobotLift {
         DcMotor liftMotor;
 
         // constructor
         private RobotLift(DcMotor liftMotor){this.liftMotor = liftMotor;}
 
-        /// Move lift to given position.
-        /// @param target desired position
-        /// @param power motor power
+        /// Move lift above chamber.
+        public void aboveChamber(){
+            runToPosition(liftAboveChamberPos);
+        }
+
+        /// Move lift to wall height.
+        public void wall(){
+            runToPosition(liftWallPos);
+        }
+
+        /// Move lift above wall.
+        public void aboveWall(){
+            runToPosition(liftAboveWallPos);
+        }
+
+        /// Move lift below chamber.
+        public void belowChamber(){
+            runToPosition(liftBelowChamberPos);
+        }
+
+        /** Move to position and reduce speed if going down.
+         * @param target desired position in ticks.
+         */
+        public void runToPosition(int target){
+            if(target < getPosition()){ // target is down
+                motorRunToPosition(liftMotor, target, liftDownwardPower);
+            }
+            else{ //target is up
+                motorRunToPosition(liftMotor, target, liftUpwardPower);
+            }
+        }
+
+        /** Move to position using runMode RUN_TO_POSITION
+         *
+         * @param target desired position in ticks.
+         * @param power desired power.
+         */
         public void runToPosition(int target, double power){
             motorRunToPosition(liftMotor, target, power);
         }
 
-        /// Return lift position in ticks
+        /// Return lift position in ticks.
         public int getPosition(){
             return liftMotor.getCurrentPosition();
         }
 
-        /// Set ZPB for lift
-        /// @param ZPB Behavior
+        /** Set ZPB for lift.
+         * @param ZPB behavior.
+         */
         public void setZPB(DcMotor.ZeroPowerBehavior ZPB){
             if(liftMotor.getZeroPowerBehavior() != ZPB){
                 liftMotor.setZeroPowerBehavior(ZPB);
             }
         }
 
-        /// Set RunMode for lift
-        /// @param runMode desired runMode
+        /** Set RunMode for lift.
+         * @param runMode desired runMode.
+         * */
         public void setRunMode(DcMotor.RunMode runMode){
             if(liftMotor.getMode() != runMode){
                 liftMotor.setMode(runMode);
             }
         }
 
-        /// Set power for lift
-        /// @param power desired power
+        /** Set power for lift.
+         * @param power desired power.
+         */
         public void setPower(double power){
             liftMotor.setPower(power);
         }
     }
 
     /// Class that contains actions for slide.
-    public class RobotSlide {
+    public static class RobotSlide {
         DcMotor activeSlide;
 
         // constructor
         public RobotSlide(DcMotor activeSlide){this.activeSlide = activeSlide;}
 
-        /// Move slide to given position.
-        /// @param target desired position
-        /// @param power motor power
+        /** Move slide to given position.
+         * @param target desired position.
+         * @param power motor power.
+         */
         public void runToPosition(int target, double power){
             motorRunToPosition(activeSlide, target, power);
         }
 
-        /// Return slide position in ticks
+        /// Return slide position in ticks.
         public int getPosition(){
             return activeSlide.getCurrentPosition();
         }
 
-        /// Set ZPB for slide
-        /// @param ZPB Behavior
+        /** Set ZPB for slide.
+         * @param ZPB Behavior.
+         */
         public void setZPB(DcMotor.ZeroPowerBehavior ZPB){
             if(activeSlide.getZeroPowerBehavior() != ZPB){
                 activeSlide.setZeroPowerBehavior(ZPB);
             }
         }
 
-        /// Set RunMode for slide
-        /// @param runMode desired runMode
+        /** Set RunMode for slide.
+         * @param runMode desired runMode.
+         */
         public void setRunMode(DcMotor.RunMode runMode){
             if(activeSlide.getMode() != runMode){
                 activeSlide.setMode(runMode);
             }
         }
 
-        /// Set power for slide
-        /// @param power desired power
+        /** Set power for slide.
+         * @param power desired power.
+         */
         public void setPower(double power){
             activeSlide.setPower(power);
         }
     }
 
-    /// Uses DcMotor RunMode RUN_TO_POSITION to move motor
-    /// @param motor motor to move
-    /// @param target target position (in ticks)
-    /// @param power power for motor
+    /** Uses DcMotor RunMode RUN_TO_POSITION to move motor.
+     * @param motor motor to move.
+     * @param target target position (in ticks).
+     * @param power power for motor.
+     */
     private static void motorRunToPosition(DcMotor motor, int target, double power){
         motor.setTargetPosition(target);
         if(motor.getMode() != DcMotor.RunMode.RUN_TO_POSITION){
