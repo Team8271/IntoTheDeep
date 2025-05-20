@@ -1,5 +1,9 @@
 package org.firstinspires.ftc.teamcode;
 
+import androidx.annotation.NonNull;
+
+import com.acmerobotics.dashboard.telemetry.TelemetryPacket;
+import com.acmerobotics.roadrunner.Action;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
@@ -27,23 +31,26 @@ public class Config {
     public DcMotor fl, fr, bl, br;  // drive motors
     public TouchSensor robotFrontBottomSensor, robotFrontTopSensor, liftBottomSensor, slideSensor;
     public RobotClaw claw;          // claw class
+    public RobotClaw.RoadRunner rRClaw; // claw for RR
     public RobotLift lift;          // lift class
+    public RobotLift.RoadRunner rRLift; // lift for RR
     public RobotSlide slide;        // slide class
     public RobotWrist wrist;        // wrist class
     public RobotBox box;            // box class
+    public RobotBox.RoadRunner rRBox; // box for RR
     public RobotIntake intake;      // intake class
     public ThreeWheeled odometer;   // odometer pods
     public Mecanum mecanum;         // mecanum wheels
     public TweetyBird tweetyBird;   // tweetyBird
 
     private static final double
-            wristCollectPos     = 0.95,
-            wristUpPos          = 0.3,
-            wristTransferPos    = 0.1,
+            wristCollectPos     = 0.02,
+            wristUpPos          = 0.6,
+            wristTransferPos    = 0.9,
             boxDumpPos          = 0.83,
             boxTransferPos      = 0.07,
             boxStorePos         = 0.2,
-            clawClosedPos       = 0.30, // smaller # = More Closed (0-1) (left claw)
+            clawClosedPos       = 0.3, // smaller # = More Closed (0-1) (left claw)
             clawOpenPos         = 0.5,  // larger # = More Open (0-1)  (left claw)
             liftDownwardPower   = 0.4,
             liftUpwardPower     = 0.8,
@@ -134,6 +141,7 @@ public class Config {
         clawLeft = hwMap.get(Servo.class,"ClawLeft");
         clawRight = hwMap.get(Servo.class,"ClawRight");
 
+
         // define values for claw servos
         clawLeftOpen    = clawOpenPos;
         clawRightOpen   = 1- clawOpenPos;
@@ -150,10 +158,13 @@ public class Config {
 
         /// Define Classes for OpMode Use
         claw = new RobotClaw(clawLeft,clawRight);
+        rRClaw = claw.new RoadRunner();
         lift = new RobotLift(liftMotor);
+        rRLift = lift.new RoadRunner();
         slide = new RobotSlide(activeSlide);
         wrist = new RobotWrist(intakeFlip);
         box = new RobotBox(boxServo);
+        rRBox = box.new RoadRunner();
         intake = new RobotIntake(intakeMotor);
 
         // built drive
@@ -240,6 +251,48 @@ public class Config {
         // constructor
         private RobotBox(Servo boxServo){this.boxServo = boxServo;}
 
+        // rr actions
+        public class RoadRunner{
+
+            // dump action
+            public class Dump implements Action{
+
+                @Override
+                public boolean run(@NonNull TelemetryPacket telemetryPacket) {
+                    dump();
+                    return false;
+                }
+            }
+            // method that instantiates for ease of use
+            public Action rRDump(){return new Dump();}
+
+            // store action
+            public class Store implements Action{
+
+                @Override
+                public boolean run(@NonNull TelemetryPacket telemetryPacket) {
+                    store();
+                    return false;
+                }
+            }
+            // method that instantiates for ease of use
+            public Action rRStore(){return new Store();}
+
+            // transfer action
+            public class Transfer implements Action{
+
+                @Override
+                public boolean run(@NonNull TelemetryPacket telemetryPacket) {
+                    transfer();
+                    return false;
+                }
+            }
+            // method that instantiates for ease of use
+            public Action rRTransfer(){return new Transfer();}
+
+
+        }
+
         /** Set specific box position.
          *
          * @param pos servo position
@@ -274,6 +327,34 @@ public class Config {
         private RobotClaw(Servo clawLeft, Servo clawRight){
             this.clawLeft = clawLeft;
             this.clawRight = clawRight;
+        }
+
+        // rr actions
+        public class RoadRunner{
+            // close action
+            public class Close implements Action{
+
+                @Override
+                public boolean run(@NonNull TelemetryPacket telemetryPacket) {
+                    close();
+                    return false;
+                }
+            }
+            // method that instantiates for ease of use
+            public Action rRClose(){return new Close();}
+
+            // open action
+            public class Open implements Action{
+
+                @Override
+                public boolean run(@NonNull TelemetryPacket telemetryPacket) {
+                    open();
+                    // wait for the claws to open
+                    return false;
+                }
+            }
+            // method that instantiates for ease of use
+            public Action rROpen(){return new Open();}
         }
 
         /// Close the claw.
@@ -318,6 +399,70 @@ public class Config {
         // constructor
         private RobotLift(DcMotor liftMotor){this.liftMotor = liftMotor;}
 
+        // rr actions
+        public class RoadRunner{
+            // above chamber action
+            public class AboveChamber implements Action{
+                boolean wait;
+                public AboveChamber(boolean wait){this.wait = wait;}
+
+                @Override
+                public boolean run(@NonNull TelemetryPacket telemetryPacket) {
+                    runToPosition(liftAboveChamberPos);
+                    return wait && !motorAtTarget(liftMotor);
+                }
+            }
+            // methods that instantiate aboveChamber for convenience
+            public Action aboveChamber(boolean wait){return new AboveChamber(wait);}
+            public Action aboveChamber(){return new AboveChamber(false);}
+
+            // wall action
+            public class Wall implements Action{
+                boolean wait;
+                public Wall(boolean wait){this.wait = wait;}
+
+                @Override
+                public boolean run(@NonNull TelemetryPacket telemetryPacket) {
+                    runToPosition(liftWallPos);
+                    return wait && !motorAtTarget(liftMotor);
+                }
+            }
+            // methods that instantiate wall for convenience
+            public Action wall(boolean wait){return new Wall(wait);}
+            public Action wall(){return new Wall(false);}
+
+            // above wall action
+            public class AboveWall implements Action{
+                boolean wait;
+                public AboveWall(boolean wait){this.wait = wait;}
+
+                @Override
+                public boolean run(@NonNull TelemetryPacket telemetryPacket) {
+                    runToPosition(liftAboveWallPos);
+                    return wait && !motorAtTarget(liftMotor);
+                }
+            }
+            // methods that instantiate above wall for convenience
+            public Action aboveWall(boolean wait){return new AboveWall(wait);}
+            public Action aboveWall(){return new AboveWall(false);}
+
+            // below chamber action
+            public class BelowChamber implements Action{
+                boolean wait;
+                public BelowChamber(boolean wait){this.wait = wait;}
+
+                @Override
+                public boolean run(@NonNull TelemetryPacket telemetryPacket) {
+                    runToPosition(liftBelowChamberPos);
+                    return wait && !motorAtTarget(liftMotor);
+                }
+            }
+            // methods that instantiate above below chamber convenience
+            public Action belowChamber(boolean wait){return new BelowChamber(wait);}
+            public Action belowChamber(){return new BelowChamber(false);}
+
+        }
+
         /// Move lift above chamber.
         public void aboveChamber(){
             runToPosition(liftAboveChamberPos);
@@ -339,6 +484,7 @@ public class Config {
         }
 
         /** Move to position and reduce speed if going down.
+         *
          * @param target desired position in ticks.
          */
         public void runToPosition(int target){
@@ -365,6 +511,7 @@ public class Config {
         }
 
         /** Set ZPB for lift.
+         *
          * @param ZPB behavior.
          */
         public void setZPB(DcMotor.ZeroPowerBehavior ZPB){
@@ -374,6 +521,7 @@ public class Config {
         }
 
         /** Set RunMode for lift.
+         *
          * @param runMode desired runMode.
          * */
         public void setRunMode(DcMotor.RunMode runMode){
@@ -383,6 +531,7 @@ public class Config {
         }
 
         /** Set power for lift.
+         *
          * @param power desired power.
          */
         public void setPower(double power){
@@ -437,6 +586,7 @@ public class Config {
     }
 
     /** Uses DcMotor RunMode RUN_TO_POSITION to move motor.
+     *
      * @param motor motor to move.
      * @param target target position (in ticks).
      * @param power power for motor.
@@ -449,4 +599,13 @@ public class Config {
         motor.setPower(power);
     }
 
+    /** Returns if the motor is within 5 ticks of target
+     *
+     * @param motor motor to check
+     * @return if motor is at target
+     */
+    private static boolean motorAtTarget(DcMotor motor){
+        return motor.getCurrentPosition() <= motor.getTargetPosition() +5
+                && motor.getCurrentPosition() >= motor.getTargetPosition() -5;
+    }
 }
