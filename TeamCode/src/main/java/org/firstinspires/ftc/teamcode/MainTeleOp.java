@@ -76,7 +76,6 @@ public class MainTeleOp extends LinearOpMode {
             String pos = Math.round(robot.odometer.getX()) + ", " + Math.round(robot.odometer.getY()) + ", " + Math.round(Math.toDegrees(robot.odometer.getZ()));
             telemetry.addLine(pos);
 
-
             /// Driver Two Controls
             double slideInput = gamepad2.right_stick_x;
             double liftInput = -gamepad2.left_stick_y;
@@ -137,9 +136,13 @@ public class MainTeleOp extends LinearOpMode {
                 telemetry.addLine("Slide Fully Retracted!");
                 if(slide.getPosition() != 0){
                     slide.setRunMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+                    slide.setRunMode(DcMotor.RunMode.RUN_USING_ENCODER);
                 }
                 if(slideInput >= 0){ // positive controller input
                     slide.setPower(slideInput);
+                }
+                else{
+                    slide.setPower(0);
                 }
             }
             // slide fully extended
@@ -150,14 +153,14 @@ public class MainTeleOp extends LinearOpMode {
                     slide.setPower(slideInput);
                 }
             }
-            //Slide gray zone
+            // Slide gray zone
             else{
                 telemetry.addLine("Slide Gray Zone.");
                 slide.setPower(slideInput);
             }
 
 
-            ///Intake Start
+            /// Intake / Wrist Start
             boolean intakeAutoOn = false;
             if(intakeOverride){ // override mode
                 wrist.up();
@@ -252,6 +255,9 @@ public class MainTeleOp extends LinearOpMode {
             }
 
             // update telemetry
+            telemetry.addData("Slide position", slide.getPosition());
+            telemetry.addData("Slide Input", slideInput);
+
             telemetry.update();
 
         }
